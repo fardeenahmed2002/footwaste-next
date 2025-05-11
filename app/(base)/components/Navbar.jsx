@@ -10,7 +10,7 @@ const Navbar = () => {
     const handlelogout = async () => {
         try {
             axios.defaults.withCredentials = true;
-            const { data } = await axios.post('http://localhost:3000/api/auth/logout');
+            const { data } = await axios.post('/api/auth/logout');
             if (data.success) {
                 setUser(false);
                 setIsloggedin(false);

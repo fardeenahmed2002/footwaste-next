@@ -53,7 +53,7 @@ export default function Page() {
       form.append("donorof", formdata.donorof)
       form.append("avatar", avatar)
       axios.defaults.withCredentials = true;
-      const { data } = await axios.post("http://localhost:3000/api/auth/signup/donor", form, {
+      const { data } = await axios.post("/api/auth/signup/donor", form, {
         headers: {
           "Content-Type": "multipart/form-data"
         }

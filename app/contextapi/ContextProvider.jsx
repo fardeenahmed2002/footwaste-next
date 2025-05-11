@@ -11,7 +11,7 @@ const ContextProvider = ({ children }) => {
 
   const getuserdata = async () => {
     try {
-      const { data } = await axios.get('http://localhost:3000/api/user/userdata', { withCredentials: true })
+      const { data } = await axios.get('/api/user/userdata', { withCredentials: true })
       if (data.success && data.user) {
         setLoading(false)
         setUser(data.user)
@@ -25,7 +25,7 @@ const ContextProvider = ({ children }) => {
   }
   const getAuthstatus = async () => {
     try {
-      const { data } = await axios.get('http://localhost:3000/api/auth/login', { withCredentials: true });
+      const { data } = await axios.get('/api/auth/login', { withCredentials: true });
       if (data.success) {
         setIsloggedin(true)
         getuserdata()
