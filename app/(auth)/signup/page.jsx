@@ -38,6 +38,7 @@ export default function Page() {
 
     if (!formdata.name || !formdata.email || !formdata.password || !formdata.address || !formdata.contactNumber) {
       setError("All fields are required!");
+      setLoading(false)
       return;
     }
     try {
@@ -52,7 +53,7 @@ export default function Page() {
       form.append("role", formdata.role)
       form.append("avatar", avatar)
       axios.defaults.withCredentials = true;
-      const { data } = await axios.post("/api/auth/signup", form, {
+      const { data } = await axios.post("http://localhost:3000/api/auth/signup", form, {
         headers: {
           "Content-Type": "multipart/form-data"
         }
@@ -65,9 +66,12 @@ export default function Page() {
       }
       else {
         setError(data.message)
+        setLoading(false)
       }
     } catch (error) {
       console.log(error.message)
+      setError(error.message)
+      setLoading(false)
     }
   }
   return (
@@ -135,7 +139,7 @@ export default function Page() {
                 name="contactNumber"
                 value={formdata.contactNumber}
                 onChange={handleChange}
-                placeholder="0123456789"
+                placeholder="+88"
                 className="w-full px-4 py-2 mt-1 bg-white/20 text-white placeholder-white rounded-md border border-white/30 focus:outline-none"
               />
             </div>

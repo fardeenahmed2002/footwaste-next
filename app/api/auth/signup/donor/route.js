@@ -1,6 +1,7 @@
 import { signup } from "@/app/controllers/authController"
 import connectToDB from "@/app/Utils/database"
 import { uploadImage } from "@/app/Utils/uploadimage"
+import { NextResponse } from "next/server"
 export const POST = async (req) => {
   await connectToDB()
   try {
@@ -13,7 +14,14 @@ export const POST = async (req) => {
     const address = formData.get('address')
     const role = formData.get('role')
     const donorof = formData.get('donorof')
-    const image = await uploadImage(formData, 'avatar', '/uploads/person.png')
+    const imageResult = await uploadImage(formData, 'avatar', '/uploads/person.png')
+    if (typeof imageResult === 'object' && imageResult.success === false) {
+      return NextResponse.json({
+        success: false,
+        message: imageResult.message
+      });
+    }
+    const image = imageResult;
     const result = await signup({
       name,
       email,

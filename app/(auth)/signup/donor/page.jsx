@@ -21,6 +21,7 @@ export default function Page() {
   const [error, setError] = useState(null)
   const [avatar, setAvatar] = useState(null)
   const profileimg = (e) => {
+    setLoading(false)
     setAvatar(e.target.files[0])
   }
   const router = useRouter()
@@ -66,9 +67,11 @@ export default function Page() {
       }
       else {
         setError(data.message)
+        setLoading(false)
       }
     } catch (error) {
       console.log(error.message)
+      setLoading(false)
     }
   }
   return (

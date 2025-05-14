@@ -30,7 +30,7 @@ export default function page() {
       }
       setError("")
       axios.defaults.withCredentials = true
-      const { data } = await axios.post('/api/auth/login',
+      const { data } = await axios.post('http://localhost:3000/api/auth/login',
         { email: formdata.email, password: formdata.password })
       if (data.success) {
         setLoading(true)

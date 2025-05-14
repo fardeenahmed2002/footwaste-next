@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs'
 import transporter from "../Utils/nodemailer.js"
 import jwt from "jsonwebtoken"
 export const signup = async (formData) => {
-    const { name, email, password, contactNumber, address, noOfTeamMember, role, yourCollectingArea, ngoRegistrationNumber, collectorType, image = '', donorof } = formData
+    const { name, email, password, contactNumber, address, noOfTeamMember, role, yourCollectingArea, ngoRegistrationNumber, collectorType, image = '', donorof, certificateimage = '' } = formData
     try {
         if (!name || !email || !password || !role || !contactNumber) {
             return NextResponse.json({
@@ -29,6 +29,12 @@ export const signup = async (formData) => {
         const hashedpassword = await bcrypt.hash(password, 10)
         let user
         if (role === `user`) {
+            if (!image) {
+                return NextResponse.json({
+                    message: 'upload your image',
+                    success: false
+                })
+            }
             user = new Usermodel({
                 name,
                 email,
@@ -41,7 +47,7 @@ export const signup = async (formData) => {
             })
         }
         else if (role === `donor`) {
-            if (!donorof) {
+            if (!donorof || !image) {
                 return NextResponse.json({
                     message: `did not get data properly`,
                     success: false
@@ -60,6 +66,12 @@ export const signup = async (formData) => {
             })
         }
         else if (role === `collector`) {
+            if (!certificateimage) {
+                return NextResponse.json({
+                    success: false,
+                    message: 'your institutions certificate is missing'
+                })
+            }
             user = new Usermodel({
                 name,
                 email,
@@ -68,7 +80,12 @@ export const signup = async (formData) => {
                 address,
                 isCollector: true,
                 role: `collector`,
-                image
+                image,
+                certificateimage,
+                noOfTeamMember,
+                yourCollectingArea,
+                ngoRegistrationNumber,
+                collectorType
             })
         }
         else {
@@ -106,10 +123,13 @@ export const signup = async (formData) => {
         return response;
     }
     catch (error) {
-        console.log(error.message)
+        return NextResponse.json({ success: false, message: error.message });
     }
-
 }
+
+
+
+
 export const login = async (req) => {
     const { email, password } = await req.json()
     try {
@@ -156,7 +176,10 @@ export const login = async (req) => {
         })
         return response;
     } catch (error) {
-        console.log(error.message)
+        return NextResponse.json({
+            success: false,
+            message: error.message,
+        }, { status: 400 });
     }
 
 }

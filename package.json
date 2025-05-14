@@ -10,9 +10,13 @@
   },
   "dependencies": {
     "@chatscope/chat-ui-kit-react": "^2.0.3",
+    "@tensorflow/tfjs": "^4.22.0",
+    "@vladmandic/face-api": "^1.7.15",
     "axios": "^1.9.0",
     "bcryptjs": "^3.0.2",
+    "canvas": "^3.1.0",
     "daisyui": "^5.0.35",
+    "face-api.js": "^0.22.2",
     "formidable": "^3.5.4",
     "framer-motion": "^12.10.0",
     "jsonwebtoken": "^9.0.2",
