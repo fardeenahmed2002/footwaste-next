@@ -77,7 +77,7 @@ export default function Page() {
         await getuserdata()
         navigate.push('/')
       }
-      else {
+      if (!data.success) {
         setError(data.message)
         setLoading(false)
       }

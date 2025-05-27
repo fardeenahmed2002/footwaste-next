@@ -26,7 +26,7 @@ const OurTeam = () => {
     ];
 
     return (
-        <section className=" py-16 px-6 bg-gray-100 border-x-[20px] mt-[-25px] border-[#3B42D2] border-double">
+        <section className=" py-16 px-6 bg-[#FFF7E6] border-x-[20px] mt-[-25px] border-[#15803D] border-double">
             <div className="mx-auto text-center">
                 <Header childern={`Meet Our Team`} />
                 <p className="mt-4 text-lg text-gray-700 max-w-3xl mx-auto">

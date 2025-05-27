@@ -3,10 +3,10 @@ import { HandHeart, Users, Megaphone, DollarSign, Handshake, HeartHandshake } fr
 import Header from '../../components/Header';
 const HowYouCanHelp = () => {
     return (
-        <section className="bg-[url('/help.png')] bg-cover bg-center bg-no-repeat py-12 px-6 bg-gray-100 border-x-[20px] border-[#3B42D2] mt-[-25px] border-double">
+        <section className="bg-[url('/help.png')] bg-cover bg-center bg-no-repeat py-12 px-6 bg-[#FFF7E6] border-x-[20px] border-[#15803D] mt-[-25px] border-double">
             <div className="backdrop-blur-sm max-w-5xl mx-auto text-center">
                 <Header childern={`How You Can Help`} />
-                <p className="mt-4 text-lg text-gray-700">
+                <p className="mt-4 text-lg text-black">
                     Every small effort counts. Here are a few ways you can make a difference and help us in our mission:
                 </p>
 
@@ -49,7 +49,7 @@ const HowYouCanHelp = () => {
 function HelpCard({ Icon, title, text }) {
     return (
         <div className="help-option bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
-            <div className="flex justify-center mb-4 text-[#3B42D2]">
+            <div className="flex justify-center mb-4 text-[#15803D]">
                 <Icon size={36} strokeWidth={2.5} />
             </div>
             <h3 className="text-xl font-semibold text-gray-800">{title}</h3>

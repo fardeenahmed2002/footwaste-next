@@ -3,6 +3,7 @@ import { Usermodel } from "../Models/User.js"
 import bcrypt from 'bcryptjs'
 import transporter from "../Utils/nodemailer.js"
 import jwt from "jsonwebtoken"
+import { format } from 'date-fns'
 export const signup = async (formData) => {
     const { name, email, password, contactNumber, address, noOfTeamMember, role, yourCollectingArea, ngoRegistrationNumber, collectorType, image = '', donorof, certificateimage = '' } = formData
     try {
@@ -127,9 +128,6 @@ export const signup = async (formData) => {
     }
 }
 
-
-
-
 export const login = async (req) => {
     const { email, password } = await req.json()
     try {
@@ -212,5 +210,82 @@ export const isLoggedIn = async (req) => {
         })
     } catch (error) {
         console.log(error.message)
+    }
+}
+
+export const sentVerifyOTPtoMail = async (userid) => {
+    try {
+        const user = await Usermodel.findById(userid)
+        if (user.isVarified) {
+            return NextResponse.json({
+                success: false,
+                message: 'user is already verified'
+            })
+        }
+        const otp = String(Math.floor(100000 + Math.random() * 900000))
+        user.verificationOtp = otp
+        user.verificationOtpExpireAt = Date.now() + 1 * 60 * 60 * 1000
+        const currentTime = format(new Date(), "yyyy-MM-dd HH:mm:ss");
+        const expiryTime = format(new Date(user.verificationOtpExpireAt), "yyyy-MM-dd HH:mm:ss");
+        await user.save()
+        const mailOptions = {
+            from: process.env.SENDER_EMAIL,
+            to: user.email,
+            subject: `accout varification otp`,
+            text: `Your OTP is ${otp}. It is valid from ${currentTime} to ${expiryTime}.`
+        }
+        await transporter.sendMail(mailOptions)
+        return NextResponse.json({
+            success: true,
+            message: `verification message sent on ${user.email}`
+        })
+    } catch (error) {
+        return NextResponse.json({ success: false, message: error.message });
+    }
+}
+
+
+export const receiveOTPfromUser = async (userid, req) => {
+    try {
+        const { otp } = await req.json()
+        if (!otp || !userid) {
+            return NextResponse.json({
+                success: false,
+                message: `invalied data`
+            })
+        }
+        const user = await Usermodel.findById(userid)
+        if (!user) {
+            return NextResponse.json({
+                success: false,
+                message: `no user found`
+            })
+        }
+        if (user.verificationOtp === `` || `${user.verificationOtp}` !== `${otp}`) {
+            return NextResponse.json({
+                success: false,
+                message: `invalied otp ${otp} please re-check your otp`
+            })
+        }
+        if (user.verificationOtpExpireAt < Date.now()) {
+            return NextResponse.json({
+                success: false,
+                message: `otp expired`
+            })
+        }
+        user.isVarified = true
+        user.verificationOtp = ``
+        user.verificationOtpExpireAt = 0
+
+        await user.save()
+        return NextResponse.json({
+            success: true,
+            message: `email verified succesfully`
+        })
+    } catch (error) {
+        return NextResponse.json({
+            success: false,
+            message: 'error to sent otp'
+        })
     }
 }

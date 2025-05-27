@@ -27,12 +27,11 @@ const userSchema = new mongoose.Schema({
         match: [bdPhoneRegex, "Invalid phone number"],
     },
     address: String,
-    verificationOtp: { type: String, default: "" },
+    verificationOtp: { type: Number, default: 0 },
     verificationOtpExpireAt: { type: Number, default: 0 },
     isVarified: { type: Boolean, default: false },
     resetOtp: { type: String, default: "" },
     resetOtpExpireAt: { type: Number, default: 0 },
-
     isAdmin: { type: Boolean, default: false },
     isUser: { type: Boolean, default: false },
     isCollector: { type: Boolean, default: false },

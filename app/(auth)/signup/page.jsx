@@ -22,7 +22,7 @@ export default function Page() {
   const profileimg = (e) => {
     setAvatar(e.target.files[0])
   }
-  const router = useRouter()
+
   const { getuserdata, setIsloggedin } = useContext(Context)
   const navigate = useRouter()
   const handleChange = (e) => {
@@ -64,7 +64,7 @@ export default function Page() {
         await getuserdata()
         navigate.push('/')
       }
-      else {
+      if (!data.success) {
         setError(data.message)
         setLoading(false)
       }
@@ -103,11 +103,11 @@ export default function Page() {
               <input type="radio" name="role" defaultChecked />
               <span>User</span>
             </label>
-            <label className="flex items-center gap-1 cursor-pointer" onClick={() => router.push('/signup/donor')}>
+            <label className="flex items-center gap-1 cursor-pointer" onClick={() => navigate.push('/signup/donor')}>
               <input type="radio" name="role" />
               <span>Donor</span>
             </label>
-            <label className="flex items-center gap-1 cursor-pointer" onClick={() => router.push('/signup/collector')}>
+            <label className="flex items-center gap-1 cursor-pointer" onClick={() => navigate.push('/signup/collector')}>
               <input type="radio" name="role" />
               <span>Collector</span>
             </label>

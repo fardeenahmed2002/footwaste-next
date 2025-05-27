@@ -33,9 +33,9 @@ const FAQ = () => {
     };
 
     return (
-        <section className="py-12 px-6 bg-gray-50 border-x-[20px] border-[#3B42D2] mt-[-25px] border-double">
+        <section className="py-12 px-6 bg-gray-50 border-x-[20px] border-[#15803D] mt-[-25px] border-double">
             <div className="max-w-4xl mx-auto text-center">
-                <Header childern={`Frequently Asked Questions`}/>
+                <Header childern={`Frequently Asked Questions`} />
                 <div className="mt-8 space-y-6">
                     {faqs.map((faq, index) => (
                         <div key={index} className="faq-item bg-white p-6 rounded-lg shadow-md">
@@ -54,12 +54,12 @@ const FAQ = () => {
                         </div>
                     ))}
                 </div>
-                
+
                 <div className="mt-12 bg-green-600 text-white p-8 rounded-lg">
                     <h3 className="text-2xl font-bold">Have Further Questions?</h3>
                     <p className="mt-4 text-lg">If you have any other questions or need more information, feel free to reach out to us. We're here to help!</p>
                     <button className="mt-6 bg-white text-green-600 font-semibold px-6 py-2 rounded-lg hover:bg-gray-100 transition-all">
-                        <Link href='/contact'> Contact Us</Link>
+                        <Link href='/pages/contactus'> Contact Us</Link>
                     </button>
                 </div>
             </div>

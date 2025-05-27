@@ -1,104 +1,63 @@
 "use client"
+
+import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Parkinsans } from 'next/font/google'
+
 const parkinsans = Parkinsans({
   subsets: ['latin'],
-});
+})
 
 export default function Hero() {
-  return (
-    <div className="relative bg-cover bg-center h-[480px] w-full bg-[#334DDA]" >
-      <div className="flex flex-row gap-[100px] p-[50px]">
-        <div className="flex flex-row relative">
-          <motion.img
-            whileInView={{ y: [-100, 160], opacity: [0, 1] }}
-            transition={{ delay: 0.15, duration: 1 }}
-            src="/food1.jpeg"
-            alt="Food 1"
-            className='w-[70px] h-[70px] rounded-full glow-border' />
-          <motion.img
-            whileInView={{ y: [-100, 70], opacity: [0, 1] }}
-            transition={{ delay: 0.30, duration: 1 }}
-            src="/food2.jpeg"
-            alt="Food 2"
-            className='w-[70px] h-[70px] rounded-full glow-border' />
-          <motion.img
-            whileInView={{ y: [-100, -20], opacity: [0, 1] }}
-            transition={{ delay: 0.40, duration: 1 }}
-            src="/food3.jpeg"
-            alt="Food 3"
-            className='w-[70px] h-[70px] rounded-full glow-border' />
-          <motion.img
-            whileInView={{ y: [-100, 70], opacity: [0, 1] }}
-            transition={{ delay: 0.35, duration: 1 }}
-            src="/food4.jpeg"
-            alt="Food 4"
-            className='w-[70px] h-[70px] rounded-full glow-border' />
-          <motion.img
-            whileInView={{ y: [-100, 160], opacity: [0, 1] }}
-            transition={{ delay: 0.25, duration: 1 }}
-            src="/food5.jpeg"
-            alt="Food 5"
-            className='w-[70px] h-[70px] rounded-full glow-border' />
-          <motion.img
-            whileInView={{ y: [-100, 260], opacity: [0, 1] }}
-            transition={{ delay: 0.05, duration: 1 }}
-            src="/food6.jpeg"
-            alt="Food 6"
-            className='w-[70px] h-[70px] rounded-full absolute left-[70px] glow-border' />
-          <motion.img
-            whileInView={{ y: [-100, 260], opacity: [0, 1] }}
-            transition={{ delay: 0.10, duration: 1 }}
-            src="/food7.jpeg"
-            alt="Food 7"
-            className='w-[70px] h-[70px] rounded-full absolute left-[210px] glow-border' />
-          <motion.img
-            whileInView={{ y: [-100, 160], opacity: [0, 1] }}
-            transition={{ delay: 0.20, duration: 1 }}
-            src="/food8.jpeg"
-            alt="Food 8"
-            className='w-[70px] h-[70px] rounded-full absolute left-[140px] glow-border' />
-          <motion.img
-            whileInView={{ y: [-100, 350], opacity: [0, 1] }}
-            transition={{ delay: 0.00, duration: 1 }}
-            src="/food9.jpeg"
-            alt="Food 9"
-            className='w-[70px] h-[70px] rounded-full absolute left-[140px] glow-border' />
-        </div>
-        <div className="w-[630px] ml-[-50px]">
-          <h1 className="text-5xl font-bold animate-heading">
-            <motion.p
-              whileInView={{ y: [-100, 0], opacity: [0, 1] }}
-              transition={{ delay: 2, duration: 1 }}
-              className="font-robotoCondensed text-6xl text-white">Reuse</motion.p>
-            <motion.p
-              whileInView={{ y: [-100, 0], opacity: [0, 1] }}
-              transition={{ delay: 1.5, duration: 1 }}
-              className="font-robotoCondensed text-6xl text-white">Revive</motion.p>
-            <motion.p
-              whileInView={{ y: [-100, 0], opacity: [0, 1] }}
-              transition={{ delay: 1, duration: 1 }}
-              className='font-robotoCondensed text-6xl text-white'>Rescue</motion.p>
-          </h1>
-          <br />
-          <p className={`text-black text-justify w-[325px] ${parkinsans.className}`}>
-            Every year, tons of perfectly good food go to waste while millions go hungry. We're here to change that. Join us in reducing food waste.
-          </p>
-          <br />
-          <button
+  const router = useRouter()
 
-            className={`mt-6 bg-green-600 hover:bg-green-700 px-6 py-2 rounded-lg text-white font-semibold transition-all`}
-          >
-            Join With Us
-          </button>
-        </div>
-      </div>
-      <motion.img
-        whileInView={{ y: [-350, 0], opacity: [0, 1] }}
-        transition={{ delay: 0.25, duration: 1 }}
-        src="bg.png"
-        alt=""
-        className='absolute left-[738px] top-[72px]' />
-    </div>
+  const register = () => {
+    router.push('/signup')
+  }
+
+  return (
+    <section className="bg-[#fff7e6] px-8 py-12 md:flex items-center justify-between relative overflow-hidden">
+      <motion.div
+        className="max-w-xl z-10"
+        initial={{ x: -100, opacity: 0 }}
+        whileInView={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.8, ease: 'easeOut' }}
+      >
+        <p className="text-green-700 italic text-lg mb-2">100% Organic Foods</p>
+        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-snug">
+          <span className="text-black">Reuse </span>
+          <span className="text-black">Revive </span>
+          <span className="text-green-700">Rescue</span>
+        </h1>
+        <br />
+        <p className={`text-black text-justify w-[325px] ${parkinsans.className}`}>
+          Every year, tons of perfectly good food go to waste while millions go hungry. We're here to change that. Join us in reducing food waste.
+        </p>
+        <motion.button
+          className="mt-6 bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-full transition-all duration-300"
+          onClick={register}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 0.6 }}
+        >
+          Join us →
+        </motion.button>
+      </motion.div>
+
+      <motion.div
+        className="mt-10 md:mt-0"
+        initial={{ x: 100, opacity: 0 }}
+        whileInView={{ x: 0, opacity: 1 }}
+        transition={{ duration: 1, ease: 'easeOut' }}
+      >
+        <img
+          src="/veggies.png"
+          alt="Organic Vegetables"
+          className="w-full max-w-lg object-contain"
+        />
+      </motion.div>
+
+      <div className="absolute inset-0 opacity-20 bg-[url('/background-veggie-pattern.png')] bg-repeat pointer-events-none hidden md:block" />
+    </section>
   )
 }

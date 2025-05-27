@@ -5,7 +5,7 @@ import "./style.css"
 const Tips = () => {
     return (
         <>
-            <div className="bg-gray-100 py-12 border-x-[20px] mt-[-25px] border-[#3B42D2] border-double">
+            <div className="bg-[#fff7e6] py-12 border-x-[20px] mt-[-25px] border-[#15803D] border-double">
                 <Header childern={`Food Waste Reduction Tips`}/>
                 <p className="text-center text-lg text-gray-600 mb-12">
                     Simple, practical steps to help you reduce food waste at home and make a positive impact.
