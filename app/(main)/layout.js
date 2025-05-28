@@ -20,7 +20,7 @@ export default function RootLayout({ children }) {
           <Navbar />
           <ChatWidget />
           {children}
-          <ToastContainer position="top-center" autoClose={1000} />
+          <ToastContainer position="top-center" />
         </ContextProvider>
       </body>
     </html>

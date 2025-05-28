@@ -116,7 +116,7 @@ export const signup = async (formData) => {
         response.cookies.set("token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+            sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
             maxAge: 7 * 24 * 60 * 60,
             path: "/",
         });
@@ -158,17 +158,25 @@ export const login = async (req) => {
                 success: false
             })
         }
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: `7d` })
+        const token = jwt.sign(
+            {
+                id: user._id,
+                role: user.role,
+                isVerified: user.isVerified
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: `7d` }
+        )
         const response = NextResponse.json({
             message: `Login successful`,
             success: true,
             user,
-            token
+            token,
         })
         response.cookies.set("token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+            sameSite: "lax",
             maxAge: 7 * 24 * 60 * 60,
             path: "/",
         })

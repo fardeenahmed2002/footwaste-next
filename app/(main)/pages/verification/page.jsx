@@ -5,6 +5,7 @@ import { ShieldCheck, MailCheck } from "lucide-react"
 import axios from 'axios'
 import Loader from './Loader'
 import { useRouter } from 'next/navigation'
+import { toast } from 'react-toastify'
 const Page = () => {
   const { user } = useContext(Context)
   const [loading, setLoading] = useState(false)
@@ -19,13 +20,16 @@ const Page = () => {
         setLoading(true)
         navigate.push("/pages/verification/otp")
       }
+      if(!data.success){
+        setLoading(false)
+        toast.error(data.message)
+      }
     } catch (error) {
       console.log(error)
       setError(error)
       setLoading(false)
     }
   }
-
   return (
     <div className="h-[484px] relative flex items-center justify-center overflow-hidden px-4">
       <div className="absolute inset-0 z-0">
@@ -76,7 +80,8 @@ const Page = () => {
             </li>
           </ul>
         </div>
-      </div>
+        {error && (<p className='text-center text-[red] font-bold'>{error}</p>)}
+      </div> 
     </div>
   )
 }

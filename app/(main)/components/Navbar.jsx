@@ -42,7 +42,7 @@ const Navbar = () => {
   }
   return (
     <nav className="bg-[#fff7e6] border-b border-green-300 shadow-md px-6 py-4 sticky top-0 z-50">
-      {isloggedin && !user?.isVarified && (
+      {isloggedin && !user?.isVerified && (
         <div className=" flex items-center gap-3 p-4 mt-[-15px]">
           <div className="flex-1 text-center">
             <span className="text-sm font-medium">

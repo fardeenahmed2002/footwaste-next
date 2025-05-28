@@ -31,7 +31,7 @@ export default function ProfileCard() {
                                     <h2 className="text-3xl font-bold text-cyan-400">{user.name}</h2>
                                     <span className="text-sm text-cyan-400">online <span className="text-green-500">●</span></span>
                                 </div>
-                                <p className="text-cyan-200">(user)</p>
+                                <p className="text-cyan-200">({user.role})</p>
                                 <div>
                                     <h3 className="text-cyan-400 text-xl font-semibold">Bio</h3>
                                     <p className="text-sm text-gray-300 mt-1 text-justify break-words">

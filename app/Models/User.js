@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
     address: String,
     verificationOtp: { type: Number, default: 0 },
     verificationOtpExpireAt: { type: Number, default: 0 },
-    isVarified: { type: Boolean, default: false },
+    isVerified: { type: Boolean, default: false },
     resetOtp: { type: String, default: "" },
     resetOtpExpireAt: { type: Number, default: 0 },
     isAdmin: { type: Boolean, default: false },
