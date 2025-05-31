@@ -6,14 +6,15 @@ export const POST = async (req) => {
   await connectToDB();
   try {
     const formData = await req.formData()
-
     const name = formData.get('name')
     const email = formData.get('email')
     const password = formData.get('password')
     const contactNumber = formData.get('contactNumber')
     const address = formData.get('address')
     const role = formData.get('role')
+
     const imageResult = await uploadProfileImage(formData, 'avatar', '')
+
     const certificateimage = await uploadCertificateImage(formData, 'certificateimage', '')
     if (typeof imageResult === 'object' && imageResult.success === false) {
       return NextResponse.json({
@@ -31,7 +32,7 @@ export const POST = async (req) => {
       role,
       image,
       certificateimage
-    });
+    })
     return result;
   } catch (error) {
     console.error("Signup error:", error)

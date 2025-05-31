@@ -79,12 +79,16 @@ export default function Page() {
       className="min-h-screen w-full bg-cover bg-center flex items-center justify-center relative"
       style={{ backgroundImage: "url('/loginbg.jpg')" }}
     >
+
       <div className="absolute inset-0 bg-black/30 backdrop-blur-sm z-0"></div>
+
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="relative z-10 w-[90%] my-[20px] max-w-2xl bg-white/10 backdrop-blur-md rounded-2xl p-8 shadow-xl text-white flex flex-col items-center">
+          
         <div className="mb-6">
           <Link href={'/'}>
             <img

@@ -18,6 +18,7 @@ import {
   Users,
   HandCoins,
   MapPin,
+  HandHelping
 } from 'lucide-react';
 import { Context } from '@/app/contextapi/ContextProvider';
 import { useRouter } from 'next/navigation';
@@ -53,13 +54,15 @@ const Navbar = () => {
       )}
       <div className="flex flex-wrap justify-between items-center gap-4">
         <div className="flex items-center gap-3">
-          <Image
-            src="/logo.jpeg"
-            alt="Logo"
-            width={48}
-            height={48}
-            className="rounded-full shadow-md border border-green-700"
-          />
+          <Link href={'/'}>
+            <Image
+              src="/logo.jpeg"
+              alt="Logo"
+              width={48}
+              height={48}
+              className="rounded-full shadow-md border border-green-700"
+            />
+          </Link>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-green-800 drop-shadow-sm">
             Food Waste Rescue
           </h1>
@@ -75,7 +78,9 @@ const Navbar = () => {
             <Link href="/pages/contactus" className={navLinkClass}>
               <Phone size={18} /> Contact
             </Link>
-
+            <Link href="/user" className={navLinkClass}>
+              <HandHelping size={18} /> Donate now
+            </Link>
           </>
         </div>
         <div>
