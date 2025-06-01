@@ -46,7 +46,7 @@ export const uploadCertificateImage = async (formData, fieldName, defaultPath) =
     const filepath = path.join(uploadDir, filename);
     fs.writeFileSync(filepath, buffer);
   }
-  return filename ? `/uploads/${filename}` : defaultImgPath;
+  return filename ? `/certificate/${filename}` : defaultImgPath;
 }
 
 export const uploadDonatedFoods = async (formData, fieldName, defaultPath) => {
@@ -62,5 +62,5 @@ export const uploadDonatedFoods = async (formData, fieldName, defaultPath) => {
     const filepath = path.join(uploadDir, filename);
     fs.writeFileSync(filepath, buffer);
   }
-  return filename ? `/uploads/${filename}` : defaultImgPath;
+  return filename ? `/donated-foods/${filename}` : defaultImgPath;
 }

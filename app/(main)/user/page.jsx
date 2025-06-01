@@ -54,7 +54,6 @@ export default function Page() {
             }
         );
     }, []);
-
     const handleSubmit = async (e) => {
         e.preventDefault()
         setLoading(true)
@@ -104,14 +103,8 @@ export default function Page() {
     return (
         <div className="min-h-screen w-full bg-cover bg-center flex items-center justify-center relative"
             style={{ backgroundImage: "url('/donate.jpg')" }}>
-
-
             <div className="absolute inset-0 bg-black/30 backdrop-blur-sm z-0"></div>
-
-
             <div className="relative z-10 w-[90%] my-[20px] max-w-2xl bg-white/10 backdrop-blur-md rounded-2xl p-8 shadow-xl text-white flex flex-col items-center">
-
-
                 <div className="">
                     <h2 className="text-3xl font-bold text-center text-white">Post a Food For Donation</h2> <br />
                     {error && (<p className='text-center text-[red] mb-[20px]'>{error}</p>)}

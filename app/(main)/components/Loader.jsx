@@ -1,11 +1,14 @@
-import React from 'react'
+import React from 'react';
 
-const Loader = () => {
+const Loader = ({ message }) => {
     return (
-        <div>
+        <div className="flex flex-col items-center justify-center gap-2">
             <span className="loading loading-spinner loading-lg"></span>
+            <p className="text-sm text-black font-medium animate-pulse">
+                {message}
+            </p>
         </div>
-    )
-}
+    );
+};
 
-export default Loader
+export default Loader;

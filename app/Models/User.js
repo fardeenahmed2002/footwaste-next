@@ -46,7 +46,7 @@ const userSchema = new mongoose.Schema({
     yourCollectingArea: { type: String, default: "" },
     image: { type: String, default: '/uploads/person.png' },
     certificateimage: { type: String, default: '' },
-    // donatedFoods: [{ type: mongoose.Schema.Types.ObjectId, ref: "foods" }],
+    donatedFoods: [{ type: mongoose.Schema.Types.ObjectId, ref: "DonatedFoods" }],
     // saleFoods: [{ type: mongoose.Schema.Types.ObjectId, ref: "sellfoods" }],
     createdAt: { type: Date, default: Date.now },
 });

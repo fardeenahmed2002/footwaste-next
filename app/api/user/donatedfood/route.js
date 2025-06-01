@@ -1,4 +1,4 @@
-import { postOfFoodDonation } from "@/app/controllers/donatedFoodController"
+import { displayUsersDonatedFoods, postOfFoodDonation } from "@/app/controllers/donatedFoodController"
 import connectToDB from "@/app/Utils/database"
 import { uploadDonatedFoods } from "@/app/Utils/uploadimage"
 import { NextResponse } from "next/server"
@@ -34,5 +34,20 @@ export const POST = async (req) => {
     } catch (error) {
         console.error("donate error:", error)
         return new Response("Something went wrong", { status: 500 })
+    }
+}
+// http://localhost:3000/api/user/donatedfood
+export const GET = async (req) => {
+    try {
+        const auth = await userAuth(req)
+        if (!auth.authorized) {
+            return NextResponse.json(
+                { success: false, message: auth.error },
+                { status: 401 }
+            )
+        }
+        return displayUsersDonatedFoods(auth.userid)
+    } catch (error) {
+
     }
 }

@@ -12,6 +12,9 @@ const donatedFoodsSchema = new mongoose.Schema({
         type: String,
         required: [true, 'enter from where are u donating']
     },
+    description: {
+        type: String
+    },
     expiryDate: {
         type: Date,
         required: [true, 'enter the expiry date']
@@ -28,4 +31,4 @@ const donatedFoodsSchema = new mongoose.Schema({
     }
 })
 
-export const DonatedFoodModel = mongoose.model("DonatedFoods", donatedFoodsSchema)
+export const DonatedFoodModel = mongoose.models.DonatedFoods || mongoose.model("DonatedFoods", donatedFoodsSchema)
