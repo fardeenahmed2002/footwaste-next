@@ -7,7 +7,6 @@ import Tips from "./pages/home/Tips.jsx";
 import ContactUs from "./pages/home/ContactUs.jsx";
 import Footer from "./components/Footer.jsx";
 import StatusStats from './pages/home/StatusStats.jsx';
-
 export default function page() {
   return (
     <div>

@@ -9,7 +9,7 @@ import {
 
 export default function Footer() {
   return (
-    <div className="relative border-x-[20px] border-b-[20px] border-[#15803D] border-double mt-[-25px] rounded-b-3xl overflow-hidden">
+    <div className="relative border-x-[10px] border-b-[10px] border-[#FFF7E6] rounded-b-3xl overflow-hidden">
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: "url('/footer.png')" }}

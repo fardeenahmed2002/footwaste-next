@@ -1,8 +1,8 @@
 "use client"
 import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import Header from "../../components/Header.jsx"
-import "./style.css"
+
+
 
 const tipsData = [
   {
@@ -83,43 +83,39 @@ const Tips = () => {
     <div className="relative bg-[url('/tipsbg.jpg')] bg-cover border-x-[10px] border-[#FFF7E6] min-h-screen pb-10 overflow-hidden">
       <div className="absolute inset-0 bg-black/10 backdrop-blur-sm z-0" />
       <div className="relative z-10">
-        <Header children={`Food Waste Reduction Tips`} />
         <div className="flex justify-center">
           <AnimatePresence mode="wait">
-            <div
+            <motion.div
               key={currentTip.id}
-              className="w-[960px] h-[420px] bg-black/20 backdrop-blur-md rounded-xl shadow-2xl p-4 text-black flex flex-row items-center gap-[150px]"
+              className=" bg-black/10 backdrop-blur-md rounded-xl shadow-2xl p-6 text-center text-black flex flex-col items-center justify-start"
+
             >
               <motion.img
                 src={currentTip.img}
                 alt={currentTip.title}
-                className="w-[400px] h-[400px] object-cover rounded-lg"
+                className="w-[400px] h-[400px] object-cover rounded-lg mb-6"
                 initial={{ x: -80, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 exit={{ x: 80, opacity: 0 }}
                 transition={{ duration: 0.6 }}
               />
-              <div className="flex flex-col text-[#FFF7E6] w-[420px]">
-                <motion.h3
-                  className="text-2xl font-bold mb-2"
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.5, delay: 0.2 }}
-                >
-                  {currentTip.title}
-                </motion.h3>
-                <motion.p
-                  className="text-base"
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.5, delay: 0.3 }}
-                >
-                  {currentTip.desc}
-                </motion.p>
-              </div>
-            </div>
+              <motion.h3
+                className="text-2xl font-semibold mb-2"
+                initial={{ y: 50, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                {currentTip.title}
+              </motion.h3>
+              <motion.p
+                className="text-base px-2"
+                initial={{ y: 50, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+              >
+                {currentTip.desc}
+              </motion.p>
+            </motion.div>
           </AnimatePresence>
         </div>
       </div>

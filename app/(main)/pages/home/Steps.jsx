@@ -1,8 +1,6 @@
 "use client";
-
 import { motion } from 'framer-motion';
 import Header from "../../components/Header.jsx";
-
 export default function Steps() {
   const steps = [
     {
@@ -24,12 +22,11 @@ export default function Steps() {
       delay: 0.75,
     },
   ];
-
   return (
-    <div className="relative border-x-[20px] mt-[-25px] border-[#15803D] border-double py-16 px-4 overflow-hidden">
-      <div className="absolute inset-0 opacity-30 bg-[#FFF7E6] pointer-events-none z-0 hidden md:block" />
-      <div className="relative z-10">
-        <Header childern={`Our Approach to Tackling Food Waste`} />
+    <div className="relative border-x-[10px] border-[#FFF7E6] py-16 px-4 overflow-hidden bg-[url('/stepsbg.jpg')] bg-cover">
+      <div className="absolute inset-0 bg-black/10 backdrop-blur-sm z-0" />
+      <div className="relative z-10"> 
+        <Header children={`Our Approach to Tackling Food Waste`} />
         <div className="flex flex-wrap justify-center gap-10 mt-10">
           {steps.map((step, i) => (
             <motion.div
