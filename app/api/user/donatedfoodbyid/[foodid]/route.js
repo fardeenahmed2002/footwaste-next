@@ -1,6 +1,7 @@
-import { foodDetailsById } from "@/app/controllers/donatedFoodController"
+import { deletefoodbyid, editDonatedfood, foodDetailsById } from "@/app/controllers/donatedFoodController"
 import { userAuth } from "@/app/middlewares/userAuth"
-// http://localhost:3000/api/user/donatedfoodbyid/.......
+import { uploadDonatedFoods } from "@/app/Utils/uploadimage"
+// /api/user/donatedfoodbyid/id
 export const GET = async (req, { params }) => {
     try {
         const auth = await userAuth(req)
@@ -10,9 +11,59 @@ export const GET = async (req, { params }) => {
                 { status: 401 }
             )
         }
-        const { foodid } = params
+        const { foodid } = await params
         return foodDetailsById(auth.userid, foodid)
     } catch (error) {
-
+        console.error("updating error:", error)
+        return new Response("Something went wrong", { status: 500 })
+    }
+}
+// /api/user/donatedfoodbyid/id
+export const PUT = async (req, { params }) => {
+    try {
+        const auth = await userAuth(req)
+        if (!auth.authorized) {
+            return NextResponse.json(
+                { success: false, message: auth.error },
+                { status: 401 }
+            )
+        }
+        const { foodid } = await params
+        const formData = await req.formData()
+        const title = formData.get('title')
+        const quantity = formData.get('quantity')
+        const location = formData.get('location')
+        const expiryDate = formData.get('expiryDate')
+        const description = formData.get('description')
+        const imageOfDonatedFood = await uploadDonatedFoods(formData, 'imageOfDonatedFood', '')
+        const result = await editDonatedfood({
+            title,
+            description,
+            location,
+            expiryDate,
+            imageOfDonatedFood,
+            quantity
+        }, auth.userid, foodid)
+        return result
+    } catch (error) {
+        console.error("updating error:", error)
+        return new Response("Something went wrong", { status: 500 })
+    }
+}
+// /api/user/donatedfoodbyid/id
+export const DELETE = async (req, { params }) => {
+    try {
+        const { foodid } = await params
+        const auth = await userAuth(req)
+        if (!auth.authorized) {
+            return NextResponse.json(
+                { success: false, message: auth.error },
+                { status: 401 }
+            )
+        }
+        return deletefoodbyid(auth.userid, foodid)
+    } catch (error) {
+        console.error("updating error:", error)
+        return new Response("Something went wrong", { status: 500 })
     }
 }

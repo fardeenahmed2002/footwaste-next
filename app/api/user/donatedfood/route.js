@@ -3,7 +3,7 @@ import connectToDB from "@/app/Utils/database"
 import { uploadDonatedFoods } from "@/app/Utils/uploadimage"
 import { NextResponse } from "next/server"
 import { userAuth } from "@/app/middlewares/userAuth"
-// http://localhost:3000/api/user/donatedfood
+// /api/user/donatedfood
 export const POST = async (req) => {
     await connectToDB()
     try {
@@ -21,13 +21,12 @@ export const POST = async (req) => {
         const expiryDate = formData.get('expiryDate')
         const description = formData.get('description')
         const imageOfDonatedFood = await uploadDonatedFoods(formData, 'imageOfDonatedFood', '')
-        const foodsImage = imageOfDonatedFood
         const result = await postOfFoodDonation({
             title,
             description,
             location,
             expiryDate,
-            foodsImage,
+            imageOfDonatedFood,
             quantity
         }, auth.userid)
         return result
@@ -36,7 +35,7 @@ export const POST = async (req) => {
         return new Response("Something went wrong", { status: 500 })
     }
 }
-// http://localhost:3000/api/user/donatedfood
+// /api/user/donatedfood
 export const GET = async (req) => {
     try {
         const auth = await userAuth(req)

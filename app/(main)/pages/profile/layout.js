@@ -12,7 +12,7 @@ export default function RootLayout({ children }) {
     <div >
       <ContextProvider>
         <Profile />
-        <ProfileNav/>
+        <ProfileNav />
         {children}
       </ContextProvider>
 

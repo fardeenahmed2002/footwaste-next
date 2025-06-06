@@ -281,7 +281,7 @@ export const receiveOTPfromUser = async (userid, req) => {
                 message: `otp expired`
             })
         }
-        user.isVarified = true
+        user.isVerified = true
         user.verificationOtp = ``
         user.verificationOtpExpireAt = 0
 

@@ -80,15 +80,15 @@ const Tips = () => {
   const currentTip = tipsData[currentTipIndex]
 
   return (
-    <div className="relative bg-[url('/tipsbg.jpg')] bg-cover border-x-[10px] border-[#FFF7E6] min-h-screen pb-10 overflow-hidden">
-      <div className="absolute inset-0 bg-black/10 backdrop-blur-sm z-0" />
+    <div className="relative bg-[url('/tipsbg.jpg')] bg-cover border-x-[10px] border-[#2171b5] min-h-screen pb-10 overflow-hidden">
+      <div className="absolute inset-0  backdrop-blur-[5px] z-0" />
       <div className="relative z-10">
         <Header children={`Food Waste Reduction Tips`} />
         <div className="flex justify-center">
           <AnimatePresence mode="wait">
             <div
               key={currentTip.id}
-              className="w-[960px] h-[420px] bg-black/20 backdrop-blur-md rounded-xl shadow-2xl p-4 text-black flex flex-row items-center gap-[150px]"
+              className="w-[860px] h-[320px] bg-black/20 backdrop-blur-md rounded-xl shadow-2xl p-4 text-black flex flex-row items-center gap-[150px]"
             >
               <motion.img
                 src={currentTip.img}

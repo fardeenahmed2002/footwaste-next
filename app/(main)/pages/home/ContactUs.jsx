@@ -16,17 +16,19 @@ export default function ContactUs() {
     <motion.div
       whileInView={{ y: [200, 0] }}
       transition={{ delay: 0.25, duration: 1 }}
-      className="relative border-x-[10px] border-[#FFF7E6] py-16 px-4 overflow-hidden bg-[url('/contactusbg.jpg')] bg-cover"
+      className="relative border-x-[10px] border-[#2171b5] py-16 px-4 overflow-hidden bg-[url('/contactusbg.jpg')] bg-cover"
     >
-      <div className="absolute inset-0 bg-black/10 backdrop-blur-sm z-0" />
+      <div className="absolute inset-0 backdrop-blur-sm z-0" />
       
       <div className="relative z-10 p-8 rounded-lg text-white w-[95%] ml-[35px]">
         <Header children="Contact Us" />
-        <p className="mt-4 max-w-4xl text-lg leading-relaxed">
+        <p className="mt-4 max-w-4xl text-lg leading-relaxed text-center text-black">
           Whether you're interested in volunteering, donating, or just want to say hello — we’d love to hear from you. Our team is dedicated to building a stronger, more sustainable community by reducing food waste and fighting hunger. Reach out anytime!
         </p>
         <div className="mt-10 flex flex-col md:flex-row gap-8">
-          <div className="flex-1 space-y-6 bg-white/10 backdrop-blur-xl p-6 rounded-xl shadow-xl border border-white/20 text-black">
+
+          <div className="relative flex-1 space-y-6 bg-[#6baed6]/50 backdrop-blur-xl p-6 rounded-xl shadow-xl border border-white/20 text-black">
+          <div className="absolute inset-0 bg-[url('/background-veggie-pattern.png')] bg-repeat bg-cover bg-center opacity-[30%] pointer-events-none z-0" />
             <div className="flex items-start gap-4">
               <Phone className="w-6 h-6 text-green-400 mt-1" />
               <div>
@@ -55,7 +57,8 @@ export default function ContactUs() {
               <Link href="/contact">Get in Touch</Link>
             </motion.button>
           </div>
-          <div className="flex-1 space-y-4 bg-white/10 backdrop-blur-xl p-6 rounded-xl shadow-xl border border-white/20 text-black">
+          <div className="relative flex-1 space-y-4 bg-[#6baed6]/50 backdrop-blur-xl p-6 rounded-xl shadow-xl border border-white/20 text-black">
+          <div className="absolute inset-0 bg-[url('/background-veggie-pattern.png')] bg-repeat bg-cover bg-center opacity-[30%] pointer-events-none z-0" />
             <div className="flex gap-2">
               <input
                 type="text"

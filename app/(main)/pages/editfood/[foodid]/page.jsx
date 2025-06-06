@@ -3,18 +3,20 @@ import { useState, useEffect } from 'react'
 import { ImageIcon, MapPin, Calendar, PencilLine, Package, StickyNote, HandHeart } from "lucide-react"
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import Loader from './Loader'
+import Loader from '@/app/(main)/components/Loader'
+import { useParams } from 'next/navigation'
+import { serverError } from '@/app/Utils/serverError'
 export default function Page() {
+    const { foodid } = useParams()
     const [imageOfDonatedFood, setImageOfDonatedFood] = useState(null)
     const [preview, setPreview] = useState(null)
-    const [address, setAddress] = useState("Searching location...")
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(false)
     const [formData, setFormData] = useState({
         title: '',
         description: '',
         quantity: '',
-        location: address,
+        location: '',
         expiryDate: '',
     })
     const handleImageChange = (e) => {
@@ -31,37 +33,30 @@ export default function Page() {
             [e.target.name]: e.target.value,
         })
     }
-    useEffect(() => {
-        navigator.geolocation.getCurrentPosition(
-            async (position) => {
-                const { latitude, longitude } = position.coords;
-                try {
-                    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`);
-                    const data = await res.json();
-                    if (data?.display_name) {
-                        setAddress(data.display_name);
-                        setFormData(prev => ({ ...prev, location: data.display_name }));
-                    } else {
-                        setAddress("Address not found");
-                    }
-                } catch {
-                    setAddress("Failed to fetch address");
-                }
-            },
-            () => {
-                setAddress("Failed to get current location");
-                setFormData(prev => ({ ...prev, location: "Failed to get current location" }));
+    const foodsList = async () => {
+        try {
+            axios.defaults.withCredentials = true
+            const { data } = await axios.get(`/api/user/donatedfoodbyid/${foodid}`)
+            if (data.success) {
+                setFormData({
+                    ...data.food,
+                    expiryDate: data.food.expiryDate.split("T")[0]
+                })
+                setPreview(data.food.imageOfDonatedFood)
             }
-        );
-    }, []);
+        } catch (error) {
+            console.log(error.message)
+        } finally {
+            setLoading(false)
+        }
+    }
+    useEffect(() => {
+        foodsList()
+    }, [])
     const handleSubmit = async (e) => {
         e.preventDefault()
         setLoading(true)
-        if (!formData.title || !formData.quantity || !formData.location || !formData.expiryDate || !formData.description || !imageOfDonatedFood) {
-            setLoading(false)
-            setError("all field required")
-            return;
-        }
+
         try {
             const form = new FormData();
             form.append("title", formData.title)
@@ -70,8 +65,9 @@ export default function Page() {
             form.append("expiryDate", formData.expiryDate)
             form.append("description", formData.description)
             form.append("imageOfDonatedFood", imageOfDonatedFood)
+            console.log(form)
             axios.defaults.withCredentials = true
-            const { data } = await axios.post("http://localhost:3000/api/user/donatedfood", form, {
+            const { data } = await axios.put(`/api/user/donatedfoodbyid/${foodid}`, form, {
                 headers: {
                     "Content-Type": "multipart/form-data"
                 }
@@ -81,22 +77,18 @@ export default function Page() {
                     title: '',
                     description: '',
                     quantity: '',
-                    location: address,
+                    location: '',
                     expiryDate: '',
                 })
                 setLoading(false)
                 setImageOfDonatedFood(null)
                 setPreview(null)
                 setError(null)
-                toast.success("post published successfully")
+                toast.success("post edited successfully")
             }
-            if (!data.success) {
-                setLoading(false)
-                setError(data.message)
-            }
+            
         } catch (error) {
-            console.log(error.message)
-            setError(error.message)
+            setError(serverError(error))
             setLoading(false)
         }
     }
@@ -106,7 +98,7 @@ export default function Page() {
             <div className="absolute inset-0 bg-black/30 backdrop-blur-sm z-0"></div>
             <div className="relative z-10 w-[90%] my-[20px] max-w-2xl bg-white/10 backdrop-blur-md rounded-2xl p-8 shadow-xl text-white flex flex-col items-center">
                 <div className="">
-                    <h2 className="text-3xl font-bold text-center text-white">Post a Food For Donation</h2> <br />
+                    <h2 className="text-3xl font-bold text-center text-white">Edit Post</h2> <br />
                     {error && (<p className='text-center text-[red] mb-[20px]'>{error}</p>)}
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

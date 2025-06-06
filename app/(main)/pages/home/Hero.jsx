@@ -14,21 +14,21 @@ export default function Hero() {
     router.push('/signup')
   }
   return (
-    <section className="relative bg-[#FFF7E6] bg-[url('/hero.jpg')] bg-cover px-8 py-12 overflow-hidden">
-      <div className="absolute inset-0 bg-black/10 backdrop-blur-sm z-0" />
+    <section className="relative bg-[url('/hero.jpg')] bg-fit px-8 py-12 overflow-hidden">
+      <div className="absolute inset-0 backdrop-blur-sm z-0" />
       <div className="pt-[60px] relative z-10 flex flex-col-reverse md:flex-row items-center justify-between max-w-7xl mx-auto">
         <motion.div
           className="max-w-xl text-center md:text-left "
           initial={{ x: -100, opacity: 0 }}
           whileInView={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.8, ease: 'easeOut' }}>
-          <p className="text-[#FFF7E6] italic text-lg mb-2">100% Organic Foods</p>
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-snug">
+          <p className="text-[white] italic text-lg">100% Organic Foods</p>
+          <h1 className="text-4xl md:text-5xl font-bold leading-snug">
             <span className="text-[#FFF7E6]">Reuse </span>
             <span className="text-[#FFF7E6]">Revive </span>
-            <span className="text-green-700">Rescue</span>
+            <span className="text-[#2171b5]">Rescue</span>
           </h1>
-          <p className={`mt-4 text-[#FFF7E6] text-justify ${parkinsans.className}`}>
+          <p className={`mt-4 text-[white] text-justify ${parkinsans.className}`}>
             Every year, tons of perfectly good food go to waste while millions go hungry.
             We're here to change that. Join us in reducing food waste.
             Together, we can bridge the gap between surplus and scarcity.
@@ -36,7 +36,7 @@ export default function Hero() {
             Be a part of a movement that nourishes people, protects the planet, and builds a more compassionate world.
           </p>
           <motion.button
-            className="mt-6 bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-full transition-all duration-300"
+            className="mt-6 bg-[#2171b5] hover:bg-[#6baed6] text-black font-semibold px-6 py-3 rounded-full transition-all duration-300"
             onClick={register}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

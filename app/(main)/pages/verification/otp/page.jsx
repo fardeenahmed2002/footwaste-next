@@ -4,10 +4,11 @@ import React, { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Loader from "../Loader";
+import { toast } from "react-toastify";
+import { serverError } from "@/app/Utils/serverError";
 export default function OTPPage() {
     const navigate = useRouter();
     const [input, setInput] = useState({ input1: "", input2: "", input3: "", input4: "", input5: "", input6: "" });
-    const [err, setErr] = useState(null);
     const [loading, setLoading] = useState(false)
     const refs = {
         input1: useRef(),
@@ -42,12 +43,12 @@ export default function OTPPage() {
                 navigate.push('/')
             }
             if (!data.success) {
-                setErr(data.message)
                 setLoading(false)
+                toast.error(data.message)
             }
         } catch (error) {
-            setErr(error.message);
             setLoading(false)
+            toast.error(serverError(error))
         }
     }
     return (
@@ -82,7 +83,6 @@ export default function OTPPage() {
                         </button>
                     )}
                 </form>
-                {err && <p className="mt-2 text-red-600 font-semibold text-center">{err}</p>}
             </div>
         </div>
     );

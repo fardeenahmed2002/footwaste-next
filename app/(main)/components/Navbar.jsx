@@ -1,8 +1,8 @@
-'use client';
-import React, { useContext } from 'react';
-import axios from 'axios';
-import Link from 'next/link';
-import Image from 'next/image';
+'use client'
+import React, { useContext } from 'react'
+import axios from 'axios'
+import Link from 'next/link'
+import Image from 'next/image'
 import {
   Home,
   Info,
@@ -11,37 +11,36 @@ import {
   Settings,
   LogOut,
   LogIn,
-  HandHelping
-} from 'lucide-react';
-import { Context } from '@/app/contextapi/ContextProvider';
-import { useRouter } from 'next/navigation';
+  HandHelping,
+  ShieldCheck
+} from 'lucide-react'
+
+import { Context } from '@/app/contextapi/ContextProvider'
+import { useRouter } from 'next/navigation'
 
 const Navbar = () => {
-  const { isloggedin, setUser, setIsloggedin, user } = useContext(Context);
-  const router = useRouter();
+  const { isloggedin, setUser, setIsloggedin, user } = useContext(Context)
+  const router = useRouter()
 
   const navLinkClass =
-    'flex items-center gap-1 text-green-900 hover:text-green-950 font-semibold px-4 py-2 rounded-full transition-all bg-white/30 backdrop-blur-md border border-white/30 shadow-sm';
+    'flex items-center gap-1 text-white hover:text-green-950 font-semibold px-4 py-2 rounded-full transition-all bg-[#6baed6]/10 backdrop-blur-md border border-white/30 shadow-sm';
 
   const handlelogout = async () => {
     try {
-      axios.defaults.withCredentials = true;
-      const { data } = await axios.post('/api/auth/logout');
+      axios.defaults.withCredentials = true
+      const { data } = await axios.post('/api/auth/logout')
       if (data.success) {
-        setUser(false);
-        setIsloggedin(false);
-        router.push('/');
+        setUser(false)
+        setIsloggedin(false)
+        router.push('/')
       }
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
-
+  }
   return (
-    <nav className="bg-[#fff7e6]/70 border-b border-green-300 shadow-md px-6 py-3 sticky top-0 z-50 backdrop-blur-md">
+    <nav className="bg-[#2171b5]/70 border-b border-[#6baed6] shadow-md px-6 py-3 sticky top-0 z-50 backdrop-blur-md">
       <div className="absolute inset-0 bg-black/10 backdrop-blur-md z-0" />
-
-      {/* Verification Banner */}
       {isloggedin && !user?.isVerified && (
         <div className="relative z-10 flex justify-center py-2 mb-2 bg-yellow-100/80 backdrop-blur-sm rounded-md shadow">
           <span className="text-sm text-yellow-900 font-medium">
@@ -53,10 +52,8 @@ const Navbar = () => {
           </span>
         </div>
       )}
-
       <div className="relative z-10 flex flex-wrap justify-between items-center gap-6">
-        {/* Logo and Site Name */}
-        <div className="flex items-center gap-3 bg-white/30 backdrop-blur-md p-2 px-4 rounded-full border border-white/30 shadow">
+        <div className="flex items-center gap-3 bg-[#6baed6]/10 backdrop-blur-md p-2 px-4 rounded-full border border-white/30 shadow">
           <Link href="/">
             <Image
               src="/sitelogo.jpeg"
@@ -66,12 +63,10 @@ const Navbar = () => {
               className="rounded-full shadow"
             />
           </Link>
-          <h1 className="text-2xl font-extrabold text-green-900 drop-shadow-sm">
+          <h1 className="text-2xl font-extrabold text-white drop-shadow-sm">
             Food Waste Rescue
           </h1>
         </div>
-
-        {/* Navigation Links */}
         <div className="flex flex-wrap items-center gap-4">
           <Link href="/" className={navLinkClass}>
             <Home size={18} /> Home
@@ -82,12 +77,14 @@ const Navbar = () => {
           <Link href="/pages/contactus" className={navLinkClass}>
             <Phone size={18} /> Contact
           </Link>
-          <Link href="/user" className={navLinkClass}>
-            <HandHelping size={18} /> Donate
-          </Link>
+          {
+            user?.isVerified &&
+            (user?.role === 'donor' || user?.role === 'user') &&
+            <Link href="/user" className={navLinkClass}>
+              <HandHelping size={18} /> Donate
+            </Link>
+          }
         </div>
-
-        {/* Right Side: Auth */}
         <div>
           {isloggedin ? (
             <div className="dropdown dropdown-end">
@@ -111,22 +108,22 @@ const Navbar = () => {
               </button>
               <ul
                 tabIndex={0}
-                className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-white/70 backdrop-blur-md border border-white/30 rounded-box w-52 z-10"
+                className="menu menu-sm dropdown-content mt-3 p-2 shadow  backdrop-blur-md border border-white/30 rounded-box w-52 z-10"
               >
                 <li>
-                  <Link href="/pages/profile" className="flex items-center gap-2">
+                  <Link href="/pages/profile" className="flex items-center gap-2 bg-[white] mb-[5px]">
                     <UserCircle size={18} /> Profile
                   </Link>
                 </li>
                 <li>
-                  <button className="flex items-center gap-2 w-full text-left">
+                  <button className="flex items-center gap-2 w-full text-left bg-[white] mb-[5px]">
                     <Settings size={18} /> Settings
                   </button>
                 </li>
                 <li>
                   <button
                     onClick={handlelogout}
-                    className="flex items-center gap-2 text-red-500 hover:text-red-700 w-full text-left"
+                    className="flex items-center gap-2 text-red-500 hover:text-red-700 w-full text-left bg-[white]"
                     type="button"
                   >
                     <LogOut size={18} /> Logout

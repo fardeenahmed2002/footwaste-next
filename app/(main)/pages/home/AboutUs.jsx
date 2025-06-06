@@ -5,16 +5,14 @@ import { motion } from "framer-motion";
 
 const AboutUs = () => {
   return (
-    <div className="relative bg-[url('/aboutushomebg.jpg')] bg-cover bg-center bg-no-repeat border-x-[10px] border-[#FFF7E6] py-20 px-4">
-      
-   
-      <div className="absolute inset-0 bg-black/30 backdrop-blur-sm z-0" />
+    <div className="relative bg-[url('/aboutusbg.jpg')] bg-cover bg-center bg-no-repeat border-x-[10px] border-[#2171b5] py-20 px-4">
 
-      <div className="relative z-10 bg-white/10 backdrop-blur-md rounded-xl p-10 mx-auto shadow-2xl max-w-6xl">
-        <Header children="About Us"/>
-        
+
+      <div className="relative z-10 bg-black/30 backdrop-blur-md rounded-xl p-10 mx-auto shadow-2xl max-w-6xl">
+        <Header children="About Us" />
+
         <div className="flex flex-col md:flex-row items-center gap-10">
-          
+
           <div className="flex-1 text-center md:text-left">
             <p className="text-lg text-[#FFF7E6] text-justify md:pl-10">
               We are a mission-driven organization focused on reducing food waste and combating hunger.
@@ -23,7 +21,7 @@ const AboutUs = () => {
             </p>
             <div className="mt-8 md:pl-10">
               <Link href="/pages/about">
-                <button className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-full transition-all duration-300">
+                <button className="bg-[#2171b5] hover:bg-[#6baed6] text-white font-semibold px-6 py-3 rounded-full transition-all duration-300">
                   Learn More
                 </button>
               </Link>
