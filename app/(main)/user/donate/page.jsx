@@ -71,7 +71,7 @@ export default function Page() {
             form.append("description", formData.description)
             form.append("imageOfDonatedFood", imageOfDonatedFood)
             axios.defaults.withCredentials = true
-            const { data } = await axios.post("http://localhost:3000/api/user/donatedfood", form, {
+            const { data } = await axios.post("/api/user/donatedfood", form, {
                 headers: {
                     "Content-Type": "multipart/form-data"
                 }
