@@ -66,7 +66,7 @@ export default function Page() {
       form.append("ngoRegistrationNumber", formdata.ngoRegistrationNumber)
 
       axios.defaults.withCredentials = true;
-      const { data } = await axios.post("http://localhost:3000/api/auth/signup", form, {
+      const { data } = await axios.post("/api/auth/signup", form, {
         headers: {
           "Content-Type": "multipart/form-data"
         }
