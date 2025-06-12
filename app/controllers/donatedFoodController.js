@@ -4,27 +4,51 @@ import { Usermodel } from "../Models/User"
 import path from 'path'
 import fs from 'fs'
 export const postOfFoodDonation = async (formData, userid) => {
-    const { title, description, quantity, location, expiryDate, imageOfDonatedFood } = formData
+    const {
+        title,
+        description,
+        quantity,
+        location,
+        expiryDate,
+        imageOfDonatedFood,
+        pickupTime,
+        foodType,
+        foodCategory,
+        storageCondition
+    } = formData;
+
     if (!userid) {
         return NextResponse.json({
             success: false,
-            message: "unautorized"
-        })
+            message: "unauthorized"
+        });
     }
-    if (!title || !description || !quantity || !location || !expiryDate || !imageOfDonatedFood) {
-        return NextResponse.json({
-            success: false,
-            message: "All fields are required"
-        }, { status: 400 })
-    }
+
     try {
-        const user = await Usermodel.findById(userid).select('-password')
+        const user = await Usermodel.findById(userid).select('-password');
         if (!user) {
             return NextResponse.json({
                 message: "no user found",
                 success: false
-            })
+            });
         }
+
+        if (!title || !description || !quantity || !location || !expiryDate || !imageOfDonatedFood) {
+            return NextResponse.json({
+                success: false,
+                message: "All required fields must be filled"
+            }, { status: 400 });
+        }
+
+        if (user.role === "donor") {
+            if (!pickupTime || !foodType || !foodCategory || !storageCondition) {
+                return NextResponse.json({
+                    success: false,
+                    message: "All required fields must be filled"
+                }, { status: 400 });
+            }
+        }
+
         const food = new DonatedFoodModel({
             title,
             description,
@@ -32,24 +56,33 @@ export const postOfFoodDonation = async (formData, userid) => {
             location,
             expiryDate,
             imageOfDonatedFood,
-            donorOfThisFood: userid
-        })
-        const donatedFood = await food.save()
-        user.donatedFoods.push(donatedFood._id)
-        await user.save()
+            donorOfThisFood: userid,
+            ...(user.role === "donor" && {
+                pickupTime,
+                foodType,
+                foodCategory,
+                storageCondition
+            })
+        });
+
+        const donatedFood = await food.save();
+        user.donatedFoods?.push(donatedFood._id);
+        await user.save();
+
         return NextResponse.json({
             success: true,
             message: 'Food donated successfully',
             donatedFood
-        }, { status: 201 })
+        }, { status: 201 });
     } catch (error) {
-        console.error("Donation failed:", error.message)
+        console.error("Donation failed:", error.message);
         return NextResponse.json({
             success: false,
             message: "Internal server error"
-        }, { status: 500 })
+        }, { status: 500 });
     }
-}
+};
+
 
 export const displayUsersDonatedFoods = async (userid) => {
     try {
@@ -125,8 +158,6 @@ export const foodDetailsById = async (userid, foodid) => {
 export const editDonatedfood = async (formData, userid, foodid) => {
     try {
         const { title, description, quantity, location, expiryDate, imageOfDonatedFood } = formData
-
-
         if (!userid) {
             return NextResponse.json({
                 message: "no user found",

@@ -220,7 +220,7 @@ export const isLoggedIn = async (req) => {
         console.log(error.message)
     }
 }
-
+ 
 export const sentVerifyOTPtoMail = async (userid) => {
     try {
         const user = await Usermodel.findById(userid)

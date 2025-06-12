@@ -1,9 +1,9 @@
 "use client"
 import { useState, useEffect } from 'react'
-import { ImageIcon, MapPin, Calendar, PencilLine, Package, StickyNote, HandHeart } from "lucide-react"
+import { ImageIcon, MapPin, Calendar, PencilLine, Package, StickyNote, FileEdit } from "lucide-react"
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import Loader from '@/app/(main)/components/Loader'
+import Loader from '@/app/loader/Loader'
 import { useParams } from 'next/navigation'
 import { serverError } from '@/app/Utils/serverError'
 export default function Page() {
@@ -36,7 +36,7 @@ export default function Page() {
     const foodsList = async () => {
         try {
             axios.defaults.withCredentials = true
-            const { data } = await axios.get(`/api/user/donatedfoodbyid/${foodid}`)
+            const { data } = await axios.get(`/api/donor/donatedfoodbyid/${foodid}`)
             if (data.success) {
                 setFormData({
                     ...data.food,
@@ -67,7 +67,7 @@ export default function Page() {
             form.append("imageOfDonatedFood", imageOfDonatedFood)
             console.log(form)
             axios.defaults.withCredentials = true
-            const { data } = await axios.put(`/api/user/donatedfoodbyid/${foodid}`, form, {
+            const { data } = await axios.put(`/api/donor/donatedfoodbyid/${foodid}`, form, {
                 headers: {
                     "Content-Type": "multipart/form-data"
                 }
@@ -84,7 +84,7 @@ export default function Page() {
                 setImageOfDonatedFood(null)
                 setPreview(null)
                 setError(null)
-                toast.success("post edited successfully")
+                toast.success("post updated successfully")
             }
             
         } catch (error) {
@@ -193,15 +193,15 @@ export default function Page() {
                                 type="submit"
                                 className="w-full flex items-center justify-center gap-2 bg-green-600 text-white py-2 rounded-xl font-semibold hover:bg-green-700 active:scale-95 transition-all shadow-md"
                             >
-                                <Loader />
+                                <Loader message={'updating data...'}/>
                             </button>
                         ) : (
                             <button
                                 type="submit"
                                 className="w-full flex items-center justify-center gap-2 bg-green-600 text-white py-2 rounded-xl font-semibold hover:bg-green-700 active:scale-95 transition-all shadow-md"
                             >
-                                <HandHeart size={18} />
-                                Post Food For Donation
+                                <FileEdit size={18} />
+                                Update
                             </button>
                         )}
                     </form>

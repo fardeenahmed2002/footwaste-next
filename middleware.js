@@ -19,8 +19,8 @@ export async function middleware(request) {
       }
     }
 
-    if ((pathname.startsWith('/user')) || (pathname.startsWith('/pages/foodDetails')) || (pathname.startsWith('/pages/editfood'))) {
-      if (payload.role === 'user' && payload.role === 'donor' && payload.isVerified) {
+    if (pathname.startsWith('/user')) {
+      if (payload.role === 'user' && payload.isVerified) {
         return NextResponse.next()
       } else {
         return NextResponse.redirect(new URL('/pageNotFound', request.url))
@@ -35,5 +35,5 @@ export async function middleware(request) {
 }
 
 export const config = {
-  matcher: ['/collector/:path*', '/user/:path*', '/admin/:path*', '/donor/:path*', '/pages/foodDetails/:path*','/pages/editfood/:path*'],
+  matcher: ['/collector/:path*', '/user/:path*', '/admin/:path*', '/donor/:path*'],
 }

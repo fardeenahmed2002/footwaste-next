@@ -1,7 +1,7 @@
 import { deletefoodbyid, editDonatedfood, foodDetailsById } from "@/app/controllers/donatedFoodController"
 import { userAuth } from "@/app/middlewares/userAuth"
 import { uploadDonatedFoods } from "@/app/Utils/uploadimage"
-// /api/user/donatedfoodbyid/id
+// /api/donor/donatedfoodbyid/id
 export const GET = async (req, { params }) => {
     try {
         const auth = await userAuth(req)
@@ -18,7 +18,7 @@ export const GET = async (req, { params }) => {
         return new Response("Something went wrong", { status: 500 })
     }
 }
-// /api/user/donatedfoodbyid/id
+// /api/donor/donatedfoodbyid/id
 export const PUT = async (req, { params }) => {
     try {
         const auth = await userAuth(req)
@@ -50,7 +50,7 @@ export const PUT = async (req, { params }) => {
         return new Response("Something went wrong", { status: 500 })
     }
 }
-// /api/user/donatedfoodbyid/id
+// /api/donor/donatedfoodbyid/id
 export const DELETE = async (req, { params }) => {
     try {
         const { foodid } = await params
@@ -63,7 +63,7 @@ export const DELETE = async (req, { params }) => {
         }
         return deletefoodbyid(auth.userid, foodid)
     } catch (error) {
-        console.error("delete error:", error)
+        console.error("updating error:", error)
         return new Response("Something went wrong", { status: 500 })
     }
 }

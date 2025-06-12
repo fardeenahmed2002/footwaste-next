@@ -79,8 +79,15 @@ const Navbar = () => {
           </Link>
           {
             user?.isVerified &&
-            (user?.role === 'donor' || user?.role === 'user') &&
-            <Link href="/user" className={navLinkClass}>
+            (user?.role === 'user') &&
+            <Link href="/user/donate" className={navLinkClass}>
+              <HandHelping size={18} /> Donate
+            </Link>
+          }
+          {
+            user?.isVerified &&
+            (user?.role === 'donor') &&
+            <Link href="/donor" className={navLinkClass}>
               <HandHelping size={18} /> Donate
             </Link>
           }
@@ -134,7 +141,7 @@ const Navbar = () => {
           ) : (
             <button
               onClick={() => router.push('/login')}
-              className="group flex items-center gap-2 bg-white/30 backdrop-blur-md border border-white/30 text-green-900 px-5 py-2 rounded-full font-semibold shadow hover:scale-105 transition-all"
+              className="group flex items-center gap-2 bg-white/30 backdrop-blur-md border border-white/30 text-white px-5 py-2 rounded-full font-semibold shadow hover:scale-105 transition-all"
               type="button"
             >
               <LogIn size={20} className="group-hover:translate-x-1 transition-transform" />

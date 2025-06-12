@@ -5,7 +5,7 @@ import Image from "next/image"
 import { MdCalendarToday } from "react-icons/md"
 import { Trash2 } from "lucide-react"
 import Link from "next/link"
-import Loader from "../../../components/Loader"
+import Loader from "@/app/loader/Loader"
 import { toast } from "react-toastify"
 import { serverError } from "@/app/Utils/serverError"
 const Page = () => {
@@ -14,7 +14,7 @@ const Page = () => {
   const foodsList = async () => {
     try {
       axios.defaults.withCredentials = true
-      const { data } = await axios.get("/api/user/donatedfood")
+      const { data } = await axios.get("/api/donor/donatedfood")
       if (data.success) {
         setListOfDonatedFoods(data.food)
       }
@@ -27,7 +27,7 @@ const Page = () => {
   const deletefood = async (id) => {
     try {
       axios.defaults.withCredentials = true
-      const { data } = await axios.delete(`/api/user/donatedfoodbyid/${id}`)
+      const { data } = await axios.delete(`/api/donor/donatedfoodbyid/${id}`)
       if (data.success) {
         setListOfDonatedFoods((old) => {
           return old.filter((food) => {
@@ -111,7 +111,7 @@ const Page = () => {
                     (<p className="text-[red] font-bold">food is expired</p>)}
                   <br />
                   <Link
-                    href={`/pages/foodDetails/${food._id}`}
+                    href={`./foodDetails/${food._id}`}
                     className="inline-block text-center bg-green-600 hover:bg-green-700 transition text-white font-semibold rounded-md py-1.5 px-3 text-xs sm:text-sm"
                   >
                     Details

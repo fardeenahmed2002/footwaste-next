@@ -1,23 +1,31 @@
-import mongoose from "mongoose";
+import mongoose from "mongoose"
 const donatedFoodsSchema = new mongoose.Schema({
     title: {
         type: String,
-        required: [true, "food name is required"]
-    },
-    quantity: {
-        type: String,
-        required: [true, "quantity is required"]
-    },
-    location: {
-        type: String,
-        required: [true, 'enter from where are u donating']
     },
     description: {
         type: String
     },
+    quantity: {
+        type: String,
+    },
+    location: {
+        type: String,
+    },
     expiryDate: {
         type: Date,
-        required: [true, 'enter the expiry date']
+    },
+    pickupTime: {
+        type: String
+    },
+    foodType: {
+        type: String
+    },
+    foodCategory: {
+        type: String
+    },
+    storageCondition: {
+        type: String
     },
     imageOfDonatedFood: {
         type: String
