@@ -3,6 +3,7 @@ import path from 'path';
 import { Canvas, Image, ImageData } from 'canvas';
 import { loadImage } from 'canvas';
 import * as faceapi from 'face-api.js';
+import { uploadInCloudinary } from './cloudupload';
 faceapi.env.monkeyPatch({ Canvas, Image, ImageData });
 let modelsLoaded = false;
 const loadModels = async () => {
@@ -34,10 +35,9 @@ export const uploadProfileImage = async (formData, fieldName) => {
   return filename ? `/uploads/${filename}` : '';
 }
 
-export const uploadCertificateImage = async (formData, fieldName, defaultPath) => {
+export const uploadCertificateImage = async (formData, fieldName) => {
   const file = formData.get(fieldName);
   let filename = '';
-  const defaultImgPath = defaultPath
   if (file && file.name) {
     const buffer = Buffer.from(await file.arrayBuffer());
     filename = Date.now() + '-' + file.name.replace(/\s+/g, '');
@@ -46,7 +46,7 @@ export const uploadCertificateImage = async (formData, fieldName, defaultPath) =
     const filepath = path.join(uploadDir, filename);
     fs.writeFileSync(filepath, buffer);
   }
-  return filename ? `/certificate/${filename}` : defaultImgPath;
+  return filename ? `/certificate/${filename}` : null;
 }
 
 export const uploadDonatedFoods = async (formData, fieldName) => {
@@ -64,15 +64,29 @@ export const uploadDonatedFoods = async (formData, fieldName) => {
 }
 
 export const uploadBlogs = async (formData, fieldName) => {
-  const file = formData.get(fieldName);
-  let filename = '';
-  if (file && file.name) {
-    const buffer = Buffer.from(await file.arrayBuffer());
-    filename = Date.now() + '-' + file.name.replace(/\s+/g, '');
-    const uploadDir = path.join(process.cwd(), 'public', 'blogs');
-    fs.mkdirSync(uploadDir, { recursive: true });
-    const filepath = path.join(uploadDir, filename);
-    fs.writeFileSync(filepath, buffer);
+  const file = formData.get(fieldName)
+  if (!file || !file.name) return null
+
+  const MAX_SIZE = 2 * 1024 * 1024
+  if (file.size > MAX_SIZE) {
+    throw new Error('File size exceeds 2MB limit');
   }
-  return filename ? `/blogs/${filename}` : null;
+  const buffer = Buffer.from(await file.arrayBuffer())
+
+  if (process.env.USE_CLOUDINARY === 'true') {
+    try {
+      const result = await uploadInCloudinary(buffer, { folder: 'blogs' })
+      return result.secure_url
+    } catch (error) {
+      console.error('Cloudinary upload error:', error)
+      return null
+    }
+  } else {
+    const filename = Date.now() + '-' + file.name.replace(/\s+/g, '')
+    const uploadDir = path.join(process.cwd(), 'public', 'blogs')
+    fs.mkdirSync(uploadDir, { recursive: true })
+    const filepath = path.join(uploadDir, filename)
+    fs.writeFileSync(filepath, buffer)
+    return `/blogs/${filename}`
+  }
 }

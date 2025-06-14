@@ -2,7 +2,7 @@ import { displayUsersBlogPost, postBlog } from "@/app/controllers/blogController
 import { userAuth } from "@/app/middlewares/userAuth"
 import connectToDB from "@/app/Utils/database"
 import { uploadBlogs } from "@/app/Utils/uploadimage"
-
+import { NextResponse } from "next/server"
 export const POST = async (req) => {
     try {
         await connectToDB()
@@ -16,7 +16,19 @@ export const POST = async (req) => {
         const formData = await req.formData()
         const title = formData.get('title')
         const content = formData.get('content')
-        const image = await uploadBlogs(formData, 'image')
+
+        let image
+        try {
+            image = await uploadBlogs(formData, 'image')
+        } catch (uploadError) {
+            return NextResponse.json({
+                    success: false,
+                    message: uploadError.message
+                },
+                { status: 400 }
+            )
+        }
+
         const result = await postBlog({
             title, content, image
         }, auth.userid)
