@@ -1,6 +1,7 @@
 import { deletefoodbyid, editDonatedfood, foodDetailsById } from "@/app/controllers/donatedFoodController"
 import { userAuth } from "@/app/middlewares/userAuth"
-import { uploadDonatedFoods } from "@/app/Utils/uploadimage"
+import { uploadImage } from "@/app/Utils/uploadimage"
+import { NextResponse } from "next/server"
 // /api/user/donatedfoodbyid/id
 export const GET = async (req, { params }) => {
     try {
@@ -35,7 +36,17 @@ export const PUT = async (req, { params }) => {
         const location = formData.get('location')
         const expiryDate = formData.get('expiryDate')
         const description = formData.get('description')
-        const imageOfDonatedFood = await uploadDonatedFoods(formData, 'imageOfDonatedFood', '')
+        let imageOfDonatedFood
+        try {
+            imageOfDonatedFood = await uploadImage(formData, 'imageOfDonatedFood', 'donated-foods')
+        } catch (uploadError) {
+            return NextResponse.json({
+                success: false,
+                message: uploadError.message
+            },
+                { status: 400 }
+            )
+        }
         const result = await editDonatedfood({
             title,
             description,

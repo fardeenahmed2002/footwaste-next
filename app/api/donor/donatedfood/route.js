@@ -1,6 +1,6 @@
 import { displayUsersDonatedFoods, postOfFoodDonation } from "@/app/controllers/donatedFoodController"
 import connectToDB from "@/app/Utils/database"
-import { uploadDonatedFoods } from "@/app/Utils/uploadimage"
+import { uploadImage } from "@/app/Utils/uploadimage"
 import { NextResponse } from "next/server"
 import { userAuth } from "@/app/middlewares/userAuth"
 // /api/donor/donatedfood
@@ -26,7 +26,17 @@ export const POST = async (req) => {
         const foodCategory = formData.get('foodCategory')
         const storageCondition = formData.get('storageCondition')
 
-        const imageOfDonatedFood = await uploadDonatedFoods(formData, 'imageOfDonatedFood', '')
+        let imageOfDonatedFood
+        try {
+            imageOfDonatedFood = await uploadImage(formData, 'imageOfDonatedFood', 'donated-foods')
+        } catch (uploadError) {
+            return NextResponse.json({
+                success: false,
+                message: uploadError.message
+            },
+                { status: 400 }
+            )
+        }
 
         const result = await postOfFoodDonation({
             title,

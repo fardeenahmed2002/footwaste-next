@@ -1,6 +1,6 @@
 import { signup } from "@/app/controllers/authController"
 import connectToDB from "@/app/Utils/database"
-import { uploadCertificateImage, uploadProfileImage } from "@/app/Utils/uploadimage"
+import { uploadProfileImage } from "@/app/Utils/uploadimage"
 import { NextResponse } from "next/server"
 export const POST = async (req) => {
   await connectToDB();
@@ -12,17 +12,14 @@ export const POST = async (req) => {
     const contactNumber = formData.get('contactNumber')
     const address = formData.get('address')
     const role = formData.get('role')
-
-    const imageResult = await uploadProfileImage(formData, 'avatar', '')
-
-    const certificateimage = await uploadCertificateImage(formData, 'certificateimage', '')
-    if (typeof imageResult === 'object' && imageResult.success === false) {
+    const imageResult = await uploadProfileImage(formData, 'avatar');
+    if (!imageResult || !imageResult.success) {
       return NextResponse.json({
         success: false,
-        message: imageResult.message
-      })
+        message: imageResult?.message || 'Unknown image upload error'
+      });
     }
-    const image = imageResult
+    const image = imageResult.url;
     const result = await signup({
       name,
       email,
@@ -31,8 +28,8 @@ export const POST = async (req) => {
       address,
       role,
       image,
-      certificateimage
     })
+
     return result;
   } catch (error) {
     console.error("Signup error:", error)

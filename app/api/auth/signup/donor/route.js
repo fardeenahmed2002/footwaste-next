@@ -14,14 +14,14 @@ export const POST = async (req) => {
     const address = formData.get('address')
     const role = formData.get('role')
     const donorof = formData.get('donorof')
-    const imageResult = await uploadProfileImage(formData, 'avatar', '/uploads/person.png')
-    if (typeof imageResult === 'object' && imageResult.success === false) {
+    const imageResult = await uploadProfileImage(formData, 'avatar');
+    if (!imageResult || !imageResult.success) {
       return NextResponse.json({
         success: false,
-        message: imageResult.message
+        message: imageResult?.message || 'Unknown image upload error'
       });
     }
-    const image = imageResult;
+    const image = imageResult.url;
     const result = await signup({
       name,
       email,

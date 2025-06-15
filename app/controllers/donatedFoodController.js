@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server"
 import { DonatedFoodModel } from "../Models/DonatedFoods"
 import { Usermodel } from "../Models/User"
-import path from 'path'
-import fs from 'fs'
+import { deleteImage } from "../Utils/deleteimage"
 export const postOfFoodDonation = async (formData, userid) => {
     const {
         title,
@@ -158,24 +157,18 @@ export const foodDetailsById = async (userid, foodid) => {
 export const editDonatedfood = async (formData, userid, foodid) => {
     try {
         const { title, description, quantity, location, expiryDate, imageOfDonatedFood } = formData
+
         if (!userid) {
-            return NextResponse.json({
-                message: "no user found",
-                success: false
-            })
+            return NextResponse.json({ message: "no user found", success: false })
         }
+
         if (!foodid) {
-            return NextResponse.json({
-                message: "no such name food found",
-                success: false
-            })
+            return NextResponse.json({ message: "no such name food found", success: false })
         }
+
         const getfood = await DonatedFoodModel.findById(foodid)
         if (!getfood) {
-            return NextResponse.json({
-                success: false,
-                message: "no food found by this id"
-            })
+            return NextResponse.json({ success: false, message: "no food found by this id" })
         }
         const finalImage = imageOfDonatedFood || getfood.imageOfDonatedFood
         if (!title || !description || !quantity || !location || !expiryDate || !finalImage) {
@@ -184,26 +177,28 @@ export const editDonatedfood = async (formData, userid, foodid) => {
                 message: "All fields are required"
             }, { status: 400 })
         }
-        if (getfood && getfood.imageOfDonatedFood && formData.imageOfDonatedFood !== getfood.imageOfDonatedFood) {
-            const oldpath = path.join(process.cwd(), "public", getfood.imageOfDonatedFood)
-            if (fs.existsSync(oldpath)) {
-                fs.unlinkSync(oldpath)
-            }
+        if (
+            getfood.imageOfDonatedFood &&
+            imageOfDonatedFood &&
+            getfood.imageOfDonatedFood !== imageOfDonatedFood
+        ) {
+            const oldImage = getfood.imageOfDonatedFood;
+            deleteImage(oldImage)
         }
-        const updatedFood = await DonatedFoodModel.findByIdAndUpdate(foodid, {
-            title,
-            description,
-            quantity,
-            location,
-            expiryDate,
-            imageOfDonatedFood: finalImage
-        }, { new: true })
-
+        const updatedFood = await DonatedFoodModel.findByIdAndUpdate(
+            foodid,
+            {
+                title,
+                description,
+                quantity,
+                location,
+                expiryDate,
+                imageOfDonatedFood: finalImage
+            },
+            { new: true }
+        )
         if (!updatedFood) {
-            return NextResponse.json({
-                message: "no food found",
-                success: false
-            })
+            return NextResponse.json({ message: "no food found", success: false })
         }
         return NextResponse.json({
             message: "food updated successfully",
@@ -218,7 +213,6 @@ export const editDonatedfood = async (formData, userid, foodid) => {
         }, { status: 500 })
     }
 }
-
 export const deletefoodbyid = async (userid, foodid) => {
     try {
         if (!userid) {
@@ -241,10 +235,9 @@ export const deletefoodbyid = async (userid, foodid) => {
             })
         }
         const foodTODetete = await DonatedFoodModel.findByIdAndDelete(foodid)
-        const oldpath = path.join(process.cwd(), "public", foodTODetete.imageOfDonatedFood)
-        if (fs.existsSync(oldpath)) {
-            fs.unlinkSync(oldpath)
-        }
+        const oldImage = foodTODetete.imageOfDonatedFood
+        deleteImage(oldImage)
+
         return NextResponse.json({
             success: true,
             message: `${foodTODetete.title} is deteleted successfully`

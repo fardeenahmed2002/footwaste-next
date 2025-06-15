@@ -115,17 +115,24 @@ export const deleteABlog = async (userid, blogid) => {
                 message: 'no blog found'
             })
         }
+        const oldImage = blog.image
+        
+        if (oldImage.startsWith("https://res.cloudinary.com")) {
+            await deleteFromCloudinary(oldImage)
+        } else {
+            const oldPath = path.join(process.cwd(), "public", oldImage)
+            if (!oldPath) {
+                return NextResponse.json({
+                    success: false,
+                    message: 'no image found'
+                })
+            }
+            if (fs.existsSync(oldPath)) {
+                fs.unlinkSync(oldPath)
+            }
+        }
 
-        const oldpath = path.join(process.cwd(), "public", blog.image)
-        if (fs.existsSync(oldpath)) {
-            fs.unlinkSync(oldpath)
-        }
-        if (!oldpath) {
-            return NextResponse.json({
-                success: false,
-                message: 'no image found'
-            })
-        }
+
         const updateuser = await Usermodel.findByIdAndUpdate(userid, { $pull: { blogs: blogid } }, { new: true })
         if (!updateuser) {
             return NextResponse.json({
