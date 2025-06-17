@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server"
 import { BlogModel } from "../Models/Blog"
 import { Usermodel } from "../Models/User"
-import path from 'path'
-import fs from 'fs'
+import { deleteImage } from "../Utils/deleteimage"
+
 export const postBlog = async (formData, userid) => {
     try {
         const { title, content, image } = formData
@@ -53,7 +53,6 @@ export const postBlog = async (formData, userid) => {
     }
 }
 
-
 export const displayUsersBlogPost = async (userid) => {
     try {
         if (!userid) {
@@ -76,7 +75,7 @@ export const displayUsersBlogPost = async (userid) => {
             blog: user.blogs
         })
     } catch (error) {
-        console.error("food fetching failed", error.message)
+        console.error("blog fetching failed", error.message)
         return NextResponse.json({
             success: false,
             message: "Internal server error"
@@ -84,6 +83,34 @@ export const displayUsersBlogPost = async (userid) => {
     }
 }
 
+export const getAllBlogs = async () => {
+    try {
+        const allblogs = await BlogModel.find().sort({ createdAt: -1 }).populate('blogger', 'name image')
+        if (!allblogs) {
+            return NextResponse.json({
+                success: false,
+                message: "error fetching blogs"
+            })
+        }
+        if (allblogs.length === 0) {
+            return NextResponse.json({
+                success: true,
+                message: 'no blogs posted yet'
+            })
+        }
+        return NextResponse.json({
+            success: true,
+            message: "all blogs found",
+            blogs: allblogs
+        })
+    } catch (error) {
+        console.error("blogs fetching failed", error.message)
+        return NextResponse.json({
+            success: false,
+            message: "Internal server error"
+        }, { status: 500 })
+    }
+}
 
 export const deleteABlog = async (userid, blogid) => {
     try {
@@ -116,22 +143,8 @@ export const deleteABlog = async (userid, blogid) => {
             })
         }
         const oldImage = blog.image
-        
-        if (oldImage.startsWith("https://res.cloudinary.com")) {
-            await deleteFromCloudinary(oldImage)
-        } else {
-            const oldPath = path.join(process.cwd(), "public", oldImage)
-            if (!oldPath) {
-                return NextResponse.json({
-                    success: false,
-                    message: 'no image found'
-                })
-            }
-            if (fs.existsSync(oldPath)) {
-                fs.unlinkSync(oldPath)
-            }
-        }
 
+        deleteImage(oldImage)
 
         const updateuser = await Usermodel.findByIdAndUpdate(userid, { $pull: { blogs: blogid } }, { new: true })
         if (!updateuser) {
@@ -146,6 +159,160 @@ export const deleteABlog = async (userid, blogid) => {
         })
     } catch (error) {
         console.error("blog deleting failed", error.message)
+        return NextResponse.json({
+            success: false,
+            message: "Internal server error"
+        }, { status: 500 })
+    }
+}
+
+export const starTheBlog = async (userid, blogid, status) => {
+    try {
+        if (!userid) {
+            return NextResponse.json({
+                success: false,
+                message: 'not authed'
+            })
+        }
+        if (!blogid) {
+            return NextResponse.json({
+                success: false,
+                message: "no blog found"
+            })
+        }
+        const rater = await Usermodel.findById(userid)
+
+        const blog = await BlogModel.findById(blogid)
+        if (status === 'starred') {
+            blog.stars += 1
+            if (!rater.starredBlogs.includes(blog._id)) {
+                rater.starredBlogs?.push(blog._id)
+            }
+
+        }
+
+        if (status === 'unstarred') {
+            if (rater.starredBlogs.includes(blog._id)) {
+                await Usermodel.findByIdAndUpdate(userid, { $pull: { starredBlogs: blogid } }, { new: true })
+            }
+            blog.stars -= 1
+        }
+        await blog.save()
+        await rater.save()
+        return NextResponse.json({
+            success: true,
+            message: `Blog ${status} successfully`,
+            updatedStars: blog.stars
+        })
+    } catch (error) {
+        console.error("blog rating failed", error.message)
+        return NextResponse.json({
+            success: false,
+            message: "Internal server error"
+        }, { status: 500 })
+    }
+}
+
+export const getBlogsById = async (blogid) => {
+    try {
+        if (!blogid) {
+            return NextResponse.json({ success: false, message: "Invalid blog ID" }, { status: 400 })
+        }
+        const blog = await BlogModel.findById(blogid).populate('blogger', 'name _id')
+
+        if (!blog) {
+            return NextResponse.json({
+                success: false,
+                message: "Blog not found"
+            }, { status: 404 })
+        }
+
+        return NextResponse.json({
+            success: true,
+            message: "Blog found",
+            blog
+        })
+    } catch (error) {
+        console.error("blogs fetching failed", error.message)
+        return NextResponse.json({
+            success: false,
+            message: "Internal server error"
+        }, { status: 500 })
+    }
+}
+
+
+export const reportblogbyid = async (userid, blogid, report) => {
+    try {
+        if (!userid) {
+            return NextResponse.json({
+                success: false,
+                message: "user not found"
+            }, { status: 404 })
+        }
+        if (!blogid) {
+            return NextResponse.json({
+                success: false,
+                message: 'no blog id not found'
+            })
+        }
+        const blog = await BlogModel.findById(blogid).populate('blogger', 'name image')
+        const user = await Usermodel.findById(userid).select('-password')
+        if (!user) {
+            return NextResponse.json({
+                success: false,
+                message: 'user not found'
+            }, { status: 404 })
+        }
+        if (!blog) {
+            return NextResponse.json({
+                success: false,
+                message: 'no blog found'
+            }, { status: 404 })
+        }
+
+        blog.reportCount += 1
+        user.notifications?.push(`your blog '${blog.title.toUpperCase()}'has been reported. Reason is ${report}`)
+        user.notificationcount += 1
+        await blog.save()
+        await user.save()
+        return NextResponse.json({
+            success: true,
+            message: "Reported successfully",
+            blog
+        })
+    } catch (error) {
+        console.error("blog getting faild", error.message)
+        return NextResponse.json({
+            success: false,
+            message: "Internal server error"
+        }, { status: 500 })
+    }
+}
+
+export const removenotific = async (userid) => {
+    try {
+        if (!userid) {
+            return NextResponse.json({
+                success: false,
+                message: "user not found"
+            }, { status: 404 })
+        }
+        const user = await Usermodel.findById(userid)
+        if (!user) {
+            return NextResponse.json({
+                success: false,
+                message: "user not found"
+            }, { status: 404 })
+        }
+        user.notificationcount = 0
+        await user.save()
+        return NextResponse.json({
+            success: true,
+            message: "set"
+        })
+    } catch (error) {
+        console.error("error to reset notifications", error.message)
         return NextResponse.json({
             success: false,
             message: "Internal server error"

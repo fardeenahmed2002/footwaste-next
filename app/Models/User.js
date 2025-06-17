@@ -48,7 +48,11 @@ const userSchema = new mongoose.Schema({
     certificateimage: { type: String, default: '' },
     donatedFoods: [{ type: mongoose.Schema.Types.ObjectId, ref: "DonatedFoods" }],
     blogs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Blog" }],
+    starredBlogs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Blog", default: [] }],
+    notifications: [{ type: String, default: [] }],
+    notificationcount: { type: Number, default: 0 },
     createdAt: { type: Date, default: Date.now },
+
 });
 
 export const Usermodel = mongoose.models.User || mongoose.model("User", userSchema);

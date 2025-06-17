@@ -1,8 +1,9 @@
 import { displayUsersBlogPost, postBlog } from "@/app/controllers/blogController"
 import { userAuth } from "@/app/middlewares/userAuth"
 import connectToDB from "@/app/Utils/database"
-import { uploadBlogs, uploadImage } from "@/app/Utils/uploadimage"
+import { uploadImage } from "@/app/Utils/uploadimage"
 import { NextResponse } from "next/server"
+// /api/user/blog
 export const POST = async (req) => {
     try {
         await connectToDB()
@@ -28,7 +29,6 @@ export const POST = async (req) => {
                 { status: 400 }
             )
         }
-
         const result = await postBlog({
             title, content, image
         }, auth.userid)
@@ -38,7 +38,7 @@ export const POST = async (req) => {
         return new Response("Something went wrong", { status: 500 })
     }
 }
-
+// /api/user/blog
 export const GET = async (req) => {
     try {
         await connectToDB()

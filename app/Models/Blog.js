@@ -13,6 +13,14 @@ const blogsSchema = new mongoose.Schema({
     blogger: {
         type: mongoose.Schema.Types.ObjectId, ref: "User"
     },
+    stars: {
+        type: Number,
+        default: 0
+    },
+    reportCount: {
+        type: Number,
+        default: 0
+    },
     createdAt: {
         type: Date,
         default: Date.now
