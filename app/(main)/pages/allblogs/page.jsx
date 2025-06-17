@@ -11,7 +11,7 @@ const Page = () => {
     const [blogs, setBlogs] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
-    const { user } = useContext(Context)
+    const { user, isloggedin } = useContext(Context)
     const [displayStar, setDisplayStar] = useState(new Set())
     useEffect(() => {
         if (user?.starredBlogs?.length) {
@@ -44,7 +44,6 @@ const Page = () => {
             setError(serverError(error.message))
         }
     }
-
     useEffect(() => {
         const fetchBlogs = async () => {
             try {
@@ -86,8 +85,7 @@ const Page = () => {
                                     </time>
                                 </div>
                             </div>
-
-                            <div className="dropdown dropdown-end">
+                            {isloggedin && (<div className="dropdown dropdown-end">
                                 <button tabIndex={0} className="btn btn-ghost btn-sm">
                                     <MoreVertical size={18} className="text-gray-500" />
                                 </button>
@@ -95,11 +93,10 @@ const Page = () => {
                                     tabIndex={0}
                                     className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-40"
                                 >
-                                    <Link href={`/pages/report/${blog._id}`}>Report</Link> 
+                                    <Link href={`/pages/report/${blog._id}`}>Report</Link>
                                 </ul>
-                            </div>
+                            </div>)}
                         </header>
-
                         <section className="px-3 pb-3">
                             <h2 className="text-md font-semibold mb-1 line-clamp-1">{blog.title}</h2>
                             <p className="text-gray-800 text-sm mb-2 line-clamp-3">{blog.content}</p>
@@ -114,25 +111,31 @@ const Page = () => {
                                     />
                                 </div>
                             )}
+                            {
+                                isloggedin ? (
+                                    <nav className="flex items-center justify-between px-4 py-3 border-t border-gray-200 bg-gray-50 text-gray-700 text-sm rounded-b-md">
+                                        <label className="cursor-pointer flex items-center gap-2 group">
+                                            <input
+                                                type="checkbox"
+                                                className="hidden"
+                                                onChange={(e) => star(blog._id, e.target.checked)}
+                                            />
+                                            {displayStar.has(blog._id) ? (
+                                                <span className="text-yellow-400 text-xl group-hover:scale-110 transition-transform">⭐</span>
+                                            ) : (
+                                                <span className="text-yellow-400 text-xl group-hover:scale-110 transition-transform">☆</span>
+                                            )}
+                                            <span className="group-hover:text-yellow-600 transition">Star ({blog.stars})</span>
+                                        </label>
 
-                            <nav className="flex items-center justify-between px-3 py-2 border-t border-gray-200 text-gray-600 text-sm">
-                                <label className="cursor-pointer flex items-center gap-1 group">
-                                    <input
-                                        type="checkbox"
-                                        className="hidden"
-                                        onChange={(e) => star(blog._id, e.target.checked)}
-                                    />
-                                    {displayStar.has(blog._id) ? (
-                                        <p className={`text-yellow-500`}>⭐</p>
-                                    ) : (
-                                        <p className={`text-yellow-500`}>☆</p>
-                                    )}
-                                    <span className="ml-1">Star ({blog.stars})</span>
-                                </label>
-                                <button className="hover:text-blue-600 transition flex items-center gap-1">
-                                    💬 <span>Comment</span>
-                                </button>
-                            </nav>
+                                        <button className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition">
+                                            💬 <span className="font-medium">Comment</span>
+                                        </button>
+                                    </nav>
+                                ) : (
+                                    <p className="text-sm text-gray-500 italic mt-2">Login to see star and comment options.</p>
+                                )
+                            }
                         </section>
                     </article>
                 ))

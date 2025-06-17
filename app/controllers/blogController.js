@@ -319,3 +319,37 @@ export const removenotific = async (userid) => {
         }, { status: 500 })
     }
 }
+
+
+
+export const deletenotification = async (userid, indexToRemove) => {
+    try {
+        if (!userid) {
+            return NextResponse.json(
+                { success: false, message: 'User not found' },
+                { status: 404 }
+            )
+        }
+        await Usermodel.findByIdAndUpdate(userid, {
+            $unset: { [`notifications.${indexToRemove}`]: 1 }
+        })
+
+        const updatedUser = await Usermodel.findByIdAndUpdate(
+            userid,
+            { $pull: { notifications: null } },
+            { new: true } 
+        )
+
+        return NextResponse.json({
+            success: true,
+            message: 'Notification deleted successfully',
+            notifications: updatedUser.notifications
+        })
+    } catch (error) {
+        console.error('Error deleting notification:', error)
+        return NextResponse.json(
+            { success: false, message: 'Internal server error' },
+            { status: 500 }
+        )
+    }
+}

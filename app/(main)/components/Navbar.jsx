@@ -1,5 +1,5 @@
 'use client'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useState } from 'react'
 import axios from 'axios'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -21,8 +21,6 @@ import { Context } from '@/app/contextapi/ContextProvider'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 import { serverError } from '@/app/Utils/serverError'
-import { set } from 'date-fns'
-
 const Navbar = () => {
   const { isloggedin, setUser, setIsloggedin, user } = useContext(Context)
   const router = useRouter()
@@ -61,6 +59,23 @@ const Navbar = () => {
       toast.error(serverError(error))
     }
   }
+  const handledelete = async (index) => {
+    try {
+      axios.defaults.withCredentials = true
+      const { data } = await axios.post('/api/notify', { index })
+      if (data.success) {
+        setTimeout(() => {
+           window.location.reload()
+        }, 500);
+        toast.success('deleted')
+      }
+      if (!data.success) {
+        toast.error(data.message)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
   return (
     <nav className="bg-[#2171b5]/70 border-b border-[#6baed6] shadow-md px-6 py-3 sticky top-0 z-50 backdrop-blur-md">
       <div className="absolute inset-0 bg-black/10 backdrop-blur-md z-0" />
@@ -76,7 +91,6 @@ const Navbar = () => {
         </div>
       )}
       <div className="relative z-10 flex flex-wrap justify-between items-center gap-6">
-
         <div className="flex items-center gap-3 bg-[#6baed6]/10 backdrop-blur-md p-2 px-4 rounded-full border border-white/30 shadow">
           <Link href="/">
             <Image
@@ -91,7 +105,6 @@ const Navbar = () => {
             Food Waste Rescue
           </h1>
         </div>
-
         <div className="flex flex-wrap items-center gap-4">
           <Link href="/" className={navLinkClass}>
             <Home size={18} /> Home
@@ -120,10 +133,7 @@ const Navbar = () => {
             </Link>
           }
         </div>
-
         <div className='flex flex-row justify-center align-middle items-center gap-[40px]'>
-
-
           {isloggedin && (<div className="relative group cursor-pointer" onClick={() => { handlenotification() }}>
             <Bell
               size={24}
@@ -133,26 +143,32 @@ const Navbar = () => {
               {countnotifications === 0 ? 0 : user?.notificationcount}
             </span>
             {showNotification && (
-              <div className="absolute top-16 right-10 w-80 bg-white border border-[#6baed6] rounded-lg shadow-xl z-[9999] p-4 backdrop-blur-md">
+              <div className="absolute top-16 right-[-104px] w-80 h-[500px] bg-white border border-[#6baed6] rounded-lg shadow-xl z-[9999] p-4 backdrop-blur-md">
                 <h3 className="font-bold text-lg mb-2 text-[#2171b5]">Notifications</h3>
-                <ul className="max-h-60 overflow-y-auto pr-3 scrollbar-thin scrollbar-thumb-blue-400 scrollbar-track-gray-200 space-y-3">
-                  {user?.notifications?.slice().reverse().map((notif, index) => (
-                    <li
-                      key={index}
-                      className="bg-white hover:bg-blue-50 transition-colors duration-300 p-4 rounded-lg shadow border border-gray-300 flex justify-between items-start"
-                      role="listitem"
-                    >
-                      <p className="text-gray-900 font-semibold mb-1 break-words max-w-[90%]">
-                        {notif}
-                      </p>
-                      <button
-                        aria-label="Delete notification"
-                        className="text-gray-400 hover:text-red-600 transition-colors cursor-pointer"
+                <ul className="h-[400px] overflow-y-auto pr-3 scrollbar-thin scrollbar-thumb-blue-400 scrollbar-track-gray-200 space-y-3">
+                  {(user?.notifications).map((_, i, arr) => {
+                    const reversedIndex = arr.length - 1 - i
+                    const notif = arr[reversedIndex]
+                    return (
+                      <li
+                        key={reversedIndex}
+                        className="bg-white hover:bg-blue-50 transition-colors duration-300 p-4 rounded-lg shadow border border-gray-300 flex justify-between items-start"
+                        role="listitem"
                       >
-                        <Trash2 size={25} />
-                      </button>
-                    </li>
-                  ))}
+                        <p className="text-gray-900 font-semibold mb-1 break-words max-w-[90%]">
+                          {notif}
+                        </p>
+                        <button
+                          aria-label="Delete notification"
+                          className="text-gray-400 hover:text-red-600 transition-colors cursor-pointer"
+                          onClick={() => handledelete(reversedIndex)}
+                        >
+                          <Trash2 size={25} />
+                        </button>
+                      </li>
+                    )
+                  })}
+
                 </ul>
               </div>
             )}
