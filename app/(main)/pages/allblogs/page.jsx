@@ -70,33 +70,57 @@ const Page = () => {
                         className="bg-white rounded-lg shadow-sm border border-gray-200 max-w-md mx-auto"
                     >
                         <header className="flex items-center justify-between p-3">
-                            <div className="flex items-center">
-                                <img
-                                    src={blog.blogger.image || '/default-profile.png'}
-                                    alt={blog.blogger.name}
-                                    width={32}
-                                    height={32}
-                                    className="rounded-full object-cover"
-                                />
-                                <div className="ml-2">
+                            <div className="flex items-center space-x-2">
+
+                                <div className="relative group">
+                                    <img
+                                        src={blog.blogger.image || '/default-profile.png'}
+                                        alt={blog.blogger.name}
+                                        width={32}
+                                        height={32}
+                                        className="rounded-full object-cover cursor-pointer"
+                                    />
+                                    <div className="absolute top-1/2 left-0 -translate-x-full -translate-y-1/2 w-[350px] h-[250px] bg-white rounded-xl shadow-xl border border-gray-200 p-5 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-50 flex flex-col items-center text-center">
+                                        <img
+                                            src={blog.blogger.image || '/default-profile.png'}
+                                            alt={blog.blogger.name}
+                                            className="w-20 h-20 rounded-full object-cover mb-3 border-2 border-blue-500 shadow"
+                                        />
+                                        <h3 className="text-lg font-semibold text-gray-900">{blog.blogger.name}</h3>
+                                        <p className="text-sm text-gray-600 mt-1">{blog.blogger.email}</p>
+                                        <p className="text-sm text-gray-500">{blog.blogger.address}</p>
+                                        <Link
+                                            href={`/pages/chat/${blog.blogger._id}`}
+                                            className="mt-4 px-4 py-1.5 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition"
+                                        >
+                                            Message
+                                        </Link>
+                                    </div>
+                                </div>
+                                <div>
                                     <h3 className="font-semibold text-gray-900 text-sm">{blog.blogger.name}</h3>
                                     <time className="text-xs text-gray-500" dateTime={blog.createdAt}>
                                         {new Date(blog.createdAt).toLocaleDateString()}
                                     </time>
                                 </div>
                             </div>
-                            {isloggedin && (<div className="dropdown dropdown-end">
-                                <button tabIndex={0} className="btn btn-ghost btn-sm">
-                                    <MoreVertical size={18} className="text-gray-500" />
-                                </button>
-                                <ul
-                                    tabIndex={0}
-                                    className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-40"
-                                >
-                                    <Link href={`/pages/report/${blog._id}`}>Report</Link>
-                                </ul>
-                            </div>)}
+
+
+                            {isloggedin && (
+                                <div className="dropdown dropdown-end">
+                                    <button tabIndex={0} className="btn btn-ghost btn-sm">
+                                        <MoreVertical size={18} className="text-gray-500" />
+                                    </button>
+                                    <ul
+                                        tabIndex={0}
+                                        className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-40"
+                                    >
+                                        <Link href={`/pages/report/${blog._id}`}>Report</Link>
+                                    </ul>
+                                </div>
+                            )}
                         </header>
+
                         <section className="px-3 pb-3">
                             <h2 className="text-md font-semibold mb-1 line-clamp-1">{blog.title}</h2>
                             <p className="text-gray-800 text-sm mb-2 line-clamp-3">{blog.content}</p>

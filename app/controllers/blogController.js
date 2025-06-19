@@ -85,7 +85,7 @@ export const displayUsersBlogPost = async (userid) => {
 
 export const getAllBlogs = async () => {
     try {
-        const allblogs = await BlogModel.find().sort({ createdAt: -1 }).populate('blogger', 'name image')
+        const allblogs = await BlogModel.find().sort({ createdAt: -1 }).populate('blogger', 'name image email _id address')
         if (!allblogs) {
             return NextResponse.json({
                 success: false,

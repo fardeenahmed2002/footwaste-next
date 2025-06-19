@@ -49,10 +49,21 @@ const userSchema = new mongoose.Schema({
     donatedFoods: [{ type: mongoose.Schema.Types.ObjectId, ref: "DonatedFoods" }],
     blogs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Blog" }],
     starredBlogs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Blog", default: [] }],
+    chattedpersons: [
+        {
+            receiverId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+            name: String
+        }
+    ],
+    chatRequest: [
+        {
+            senderId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+            name: String
+        }
+    ],
     notifications: [{ type: String, default: [] }],
     notificationcount: { type: Number, default: 0 },
     createdAt: { type: Date, default: Date.now },
-
-});
+})
 
 export const Usermodel = mongoose.models.User || mongoose.model("User", userSchema);
