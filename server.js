@@ -7,7 +7,7 @@ import connectToDB from './app/Utils/database.js';
 import { ChatModel } from './app/Models/Chat.js';
 import { Usermodel } from './app/Models/User.js';
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3000 || 10000;
 const dev = process.env.NODE_ENV !== 'production'
 
 const nextApp = next({ dev });
