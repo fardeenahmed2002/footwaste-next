@@ -21,22 +21,11 @@ export default function ChatPage() {
   useEffect(() => {
     if (!user?._id || !receiverId) return;
 
-    socket = io();
+    const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:3000';
+
+    socket = io(SOCKET_URL);
+
     socket.emit('addUser', user._id);
-
-    // Fetch chat history
-    // const fetchChats = async () => {
-    //   try {
-    //     const { data } = await axios.get(`/api/chat/allchats?sender=${user._id}&receiver=${receiverId}`
-    //     );
-    //     if (data.success) setMessages(data.chats);
-    //   } catch (err) {
-    //     console.error('Failed to fetch chats:', err);
-    //   }
-    // };
-
-    // fetchChats();
-
     socket.on('getMessage', (data) => {
       setMessages((prev) => [
         ...prev,
@@ -95,8 +84,8 @@ export default function ChatPage() {
               key={idx}
               ref={idx === messages.length - 1 ? scrollRef : null}
               className={`max-w-[70%] px-4 py-2 rounded-xl break-words ${msg.sender === user._id || msg.senderId === user._id
-                  ? 'bg-blue-500 text-white self-end ml-auto'
-                  : 'bg-gray-300 text-black self-start mr-auto'
+                ? 'bg-blue-500 text-white self-end ml-auto'
+                : 'bg-gray-300 text-black self-start mr-auto'
                 }`}
             >
               {msg.text}
