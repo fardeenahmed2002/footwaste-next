@@ -1,48 +1,87 @@
 'use client';
 
-import { useEffect, useState, useContext, useRef } from 'react';
-import io from 'socket.io-client';
+import { useEffect, useRef, useState, useContext } from 'react';
 import { Context } from '@/app/contextapi/ContextProvider';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
+import { io } from 'socket.io-client';
 import axios from 'axios';
+import { serverError } from '@/app/Utils/serverError';
 
 let socket;
 
 export default function ChatPage() {
   const { user } = useContext(Context);
   const { id: receiverId } = useParams();
-  const router = useRouter();
 
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const scrollRef = useRef();
 
-  // Connect socket and fetch chat
+  // Initialize Socket.IO server on the backend
+  useEffect(() => {
+    fetch('/api/socket');
+  }, []);
+
+  // Setup socket connection
   useEffect(() => {
     if (!user?._id || !receiverId) return;
 
-    const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:3000';
+    socket = io('', { path: '/api/socket' });
 
-    socket = io(SOCKET_URL);
+    socket.on('connect', () => {
+      console.log('✅ Socket connected:', socket.id);
+      socket.emit('addUser', user._id);
+    });
 
-    socket.emit('addUser', user._id);
+    socket.on('connect_error', (err) => {
+      console.error('❌ Socket error:', err);
+    });
+
     socket.on('getMessage', (data) => {
+      console.log('📥 Message received:', data);
       setMessages((prev) => [
         ...prev,
-        { sender: data.senderId, text: data.text, timestamp: new Date() },
+        {
+          sender: data.senderId,
+          message: data.text,
+          timestamp: new Date(data.timestamp),
+        },
       ]);
     });
 
     return () => {
       socket.disconnect();
+      console.log('🔌 Socket disconnected');
     };
   }, [user?._id, receiverId]);
 
-  // Scroll to latest message
+  // Fetch existing messages
+  useEffect(() => {
+    const getAllMessages = async () => {
+      try {
+        axios.defaults.withCredentials = true;
+        const { data } = await axios.get(`/api/chat/${receiverId}`);
+        if (data.success && Array.isArray(data.chats)) {
+          setMessages(data.chats);
+        } else {
+          setMessages([]);
+        }
+      } catch (err) {
+        console.error(err.message);
+        serverError(err.message);
+        setMessages([]);
+      }
+    };
+
+    if (receiverId) getAllMessages();
+  }, [receiverId]);
+
+  // Scroll to last message
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Send a message
   const handleSend = () => {
     if (!newMessage.trim()) return;
 
@@ -52,10 +91,15 @@ export default function ChatPage() {
       text: newMessage,
     });
 
-    setMessages([
-      ...messages,
-      { sender: user._id, text: newMessage, timestamp: new Date() },
+    setMessages((prev) => [
+      ...prev,
+      {
+        sender: user._id,
+        message: newMessage,
+        timestamp: new Date(),
+      },
     ]);
+
     setNewMessage('');
   };
 
@@ -64,52 +108,60 @@ export default function ChatPage() {
       {/* Sidebar */}
       <div className="w-1/4 border-r bg-gray-50 p-4 overflow-y-auto">
         <h2 className="text-lg font-semibold mb-4">Chats</h2>
-        {user?.chattedpersons?.map((id) => (
+        {user?.chattedpersons?.map((idObj) => (
           <div
-            key={id}
-            onClick={() => router.push(`/pages/chat/${id.receiverId}`)}
-            className={`p-3 mb-2 rounded cursor-pointer hover:bg-blue-100 ${receiverId === id ? 'bg-blue-200' : ''
-              }`}
+            key={idObj.receiverId}
+            onClick={() => (window.location.href = `/chat/${idObj.receiverId}`)}
+            className={`p-3 mb-2 rounded cursor-pointer hover:bg-blue-100 ${
+              receiverId === idObj.receiverId ? 'bg-blue-200' : ''
+            }`}
           >
-            {id.name}
+            {idObj.name}
           </div>
         ))}
       </div>
 
       {/* Chat Window */}
       <div className="flex flex-col flex-1 p-4">
-        <div className="flex-1 overflow-y-auto mb-2 space-y-2">
-          {messages.map((msg, idx) => (
-            <div
-              key={idx}
-              ref={idx === messages.length - 1 ? scrollRef : null}
-              className={`max-w-[70%] px-4 py-2 rounded-xl break-words ${msg.sender === user._id || msg.senderId === user._id
-                ? 'bg-blue-500 text-white self-end ml-auto'
-                : 'bg-gray-300 text-black self-start mr-auto'
-                }`}
-            >
-              {msg.text}
+        {user?._id ? (
+          <>
+            <div className="flex-1 overflow-y-auto mb-2 space-y-2">
+              {messages.map((msg, idx) => (
+                <div
+                  key={idx}
+                  ref={idx === messages.length - 1 ? scrollRef : null}
+                  className={`max-w-[70%] px-4 py-2 rounded-xl break-words ${
+                    user?._id && msg.sender === user._id
+                      ? 'bg-blue-500 text-white self-end ml-auto'
+                      : 'bg-gray-300 text-black self-start mr-auto'
+                  }`}
+                >
+                  {msg.message}
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
 
-        {/* Input */}
-        <div className="flex items-center border-t pt-3">
-          <input
-            type="text"
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-            placeholder="Type your message..."
-            className="flex-1 px-4 py-2 border rounded-full focus:outline-none focus:ring-2"
-          />
-          <button
-            onClick={handleSend}
-            className="ml-2 px-5 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700"
-          >
-            Send
-          </button>
-        </div>
+            {/* Input Box */}
+            <div className="flex items-center border-t pt-3">
+              <input
+                type="text"
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                placeholder="Type your message..."
+                className="flex-1 px-4 py-2 border rounded-full focus:outline-none focus:ring-2"
+              />
+              <button
+                onClick={handleSend}
+                className="ml-2 px-5 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700"
+              >
+                Send
+              </button>
+            </div>
+          </>
+        ) : (
+          <p>Loading chat...</p>
+        )}
       </div>
     </div>
   );
