@@ -72,8 +72,13 @@ export default function ChatPage() {
         setMessages([]);
       }
     };
-
-    if (receiverId) getAllMessages();
+    let interval
+    if (receiverId) {
+      interval = setInterval(() => {
+        getAllMessages();
+      }, 1000);
+    }
+    return () => clearInterval(interval);
   }, [receiverId]);
 
   // Scroll to last message
@@ -112,9 +117,8 @@ export default function ChatPage() {
           <div
             key={idObj.receiverId}
             onClick={() => (window.location.href = `/chat/${idObj.receiverId}`)}
-            className={`p-3 mb-2 rounded cursor-pointer hover:bg-blue-100 ${
-              receiverId === idObj.receiverId ? 'bg-blue-200' : ''
-            }`}
+            className={`p-3 mb-2 rounded cursor-pointer hover:bg-blue-100 ${receiverId === idObj.receiverId ? 'bg-blue-200' : ''
+              }`}
           >
             {idObj.name}
           </div>
@@ -130,11 +134,10 @@ export default function ChatPage() {
                 <div
                   key={idx}
                   ref={idx === messages.length - 1 ? scrollRef : null}
-                  className={`max-w-[70%] px-4 py-2 rounded-xl break-words ${
-                    user?._id && msg.sender === user._id
-                      ? 'bg-blue-500 text-white self-end ml-auto'
-                      : 'bg-gray-300 text-black self-start mr-auto'
-                  }`}
+                  className={`max-w-[70%] px-4 py-2 rounded-xl break-words ${user?._id && msg.sender === user._id
+                    ? 'bg-blue-500 text-white self-end ml-auto'
+                    : 'bg-gray-300 text-black self-start mr-auto'
+                    }`}
                 >
                   {msg.message}
                 </div>
