@@ -1,8 +1,6 @@
 import { Server } from 'socket.io';
 import connectToDB from '@/app/Utils/database';
-import { ChatModel } from '@/app/Models/Chat';
-import { Usermodel } from '@/app/Models/User';
-
+import { SendMessage } from '@/app/controllers/chatController';
 let io;
 
 export default async function handler(req, res) {
@@ -24,59 +22,16 @@ export default async function handler(req, res) {
     const onlineUsers = new Map();
 
     io.on('connection', (socket) => {
-      console.log('🟢 Socket connected:', socket.id);
+      console.log('🟢 Socket connected:', socket.id)
 
       socket.on('addUser', (userId) => {
-        onlineUsers.set(userId, socket.id);
-        console.log('✅ Online user added:', userId);
-      });
+        onlineUsers.set(userId, socket.id)
+        console.log('✅ Online user added:', userId)
+      })
 
-      socket.on('sendMessage', async ({ senderId, receiverId, text }) => {
-        console.log('📤 Message received from client:', senderId, '→', receiverId, text);
-        console.log('💾 Trying to save message...');
-
-        try {
-          // ✅ match schema field name
-          await ChatModel.create({
-            sender: senderId,
-            receiver: receiverId,
-            message: text, // ✅ correct key
-          });
-
-          const receiver = await Usermodel.findById(receiverId);
-          const sender = await Usermodel.findById(senderId);
-          if (receiver && sender) {
-            const alreadyChatted = sender.chattedpersons.some(
-              (entry) => entry.receiverId.toString() === receiverId
-            );
-            if (!alreadyChatted) {
-              sender.chattedpersons.push({ receiverId, name: receiver.name });
-              await sender.save();
-            }
-
-            const alreadyRequested = receiver.chatRequest.some(
-              (entry) => entry.senderId.toString() === senderId
-            );
-            if (!alreadyRequested) {
-              receiver.chatRequest.push({ senderId, name: sender.name });
-              await receiver.save();
-            }
-          }
-
-          const receiverSocketId = onlineUsers.get(receiverId);
-          if (receiverSocketId) {
-            io.to(receiverSocketId).emit('getMessage', {
-              senderId,
-              text, // keeping `text` in payload to client
-              timestamp: new Date(),
-            });
-          }
-
-          console.log('✅ Message saved');
-        } catch (err) {
-          console.error('❌ Failed to save message:', err.message);
-        }
-      });
+      socket.on('sendMessage', (data) => {
+        SendMessage(data, io, onlineUsers)
+      })
 
       socket.on('disconnect', () => {
         for (const [userId, sockId] of onlineUsers.entries()) {
@@ -89,6 +44,5 @@ export default async function handler(req, res) {
       });
     });
   }
-
   res.end();
 }

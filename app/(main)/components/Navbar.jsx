@@ -4,15 +4,12 @@ import axios from 'axios'
 import Link from 'next/link'
 import Image from 'next/image'
 import {
-  Home,
-  Info,
-  Phone,
+
   UserCircle,
   Settings,
   LogOut,
   LogIn,
-  HandHelping,
-  FileText,
+
   Bell,
   Trash2,
   MessageCircle
@@ -22,6 +19,10 @@ import { Context } from '@/app/contextapi/ContextProvider'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 import { serverError } from '@/app/Utils/serverError'
+import Verify from './navcomponents/Verify'
+import Logo from './navcomponents/Logo'
+import NavPages from './navcomponents/NavPages'
+import Notification from './navcomponents/Notification'
 
 const Navbar = () => {
   const { isloggedin, setUser, setIsloggedin, user } = useContext(Context)
@@ -30,9 +31,6 @@ const Navbar = () => {
   const [showRequestPanel, setShowRequestPanel] = useState(false)
   const [countnotifications, setCountnotifications] = useState(user?.notificationcount)
   const [loading, setLoading] = useState(false)
-
-  const navLinkClass =
-    'flex items-center gap-1 text-white hover:text-green-950 font-semibold px-4 py-2 rounded-full transition-all bg-[#6baed6]/10 backdrop-blur-md border border-white/30 shadow-sm';
 
   const handlelogout = async () => {
     try {
@@ -63,21 +61,7 @@ const Navbar = () => {
     }
   }
 
-  const handledelete = async (index) => {
-    try {
-      axios.defaults.withCredentials = true
-      setLoading(true)
-      const { data } = await axios.post('/api/notify', { index })
-      if (data.success) {
-        window.location.reload()
-      }
-      if (!data.success) {
-        toast.error(data.message)
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  
 
   const handleAccept = async (senderId) => {
     router.push(`/pages/chat/${senderId}`)
@@ -92,111 +76,15 @@ const Navbar = () => {
     <nav className="bg-[#2171b5]/70 border-b border-[#6baed6] shadow-md px-6 py-3 sticky top-0 z-50 backdrop-blur-md">
       <div className="absolute inset-0 bg-black/10 backdrop-blur-md z-0" />
       {isloggedin && !user?.isVerified && (
-        <div className="relative z-10 flex justify-center py-2 mb-2 bg-yellow-100/80 backdrop-blur-sm rounded-md shadow">
-          <span className="text-sm text-yellow-900 font-medium">
-            Your account isn’t verified. Please{' '}
-            <Link href="/pages/verification" className="underline text-yellow-900 hover:text-yellow-700">
-              verify now
-            </Link>{' '}
-            to unlock all features.
-          </span>
-        </div>
+        <Verify />
       )}
       <div className="relative z-10 flex flex-wrap justify-between items-center gap-6">
-        <div className="flex items-center gap-3 bg-[#6baed6]/10 backdrop-blur-md p-2 px-4 rounded-full border border-white/30 shadow">
-          <Link href="/">
-            <Image
-              src="/sitelogo.jpeg"
-              alt="Logo"
-              width={44}
-              height={44}
-              className="rounded-full shadow"
-            />
-          </Link>
-          <h1 className="text-2xl font-extrabold text-white drop-shadow-sm">
-            Food Waste Rescue
-          </h1>
-        </div>
-        <div className="flex flex-wrap items-center gap-4">
-          <Link href="/" className={navLinkClass}>
-            <Home size={18} /> Home
-          </Link>
-          <Link href="/pages/about" className={navLinkClass}>
-            <Info size={18} /> About
-          </Link>
-          <Link href="/pages/contactus" className={navLinkClass}>
-            <Phone size={18} /> Contact
-          </Link>
-          <Link href="/pages/allblogs" className={navLinkClass}>
-            <FileText size={18} /> Blogs
-          </Link>
-          {
-            user?.isVerified && user?.role === 'user' &&
-            <Link href="/user/donate" className={navLinkClass}>
-              <HandHelping size={18} /> Donate
-            </Link>
-          }
-          {
-            user?.isVerified && user?.role === 'donor' &&
-            <Link href="/donor" className={navLinkClass}>
-              <HandHelping size={18} /> Donate
-            </Link>
-          }
-        </div>
+        <Logo />
+        <NavPages />
         <div className='flex flex-row justify-center items-center gap-[30px]'>
           {/* Notification Bell */}
-          {isloggedin && (
-            <div className="relative group cursor-pointer">
-              <Bell
-                size={24}
-                className="w-10 h-10 text-white bg-[#6baed6]/20 border border-[#6baed6] rounded-full p-2 shadow-md transition duration-300 hover:scale-105 hover:shadow-blue-400/40"
-                onClick={() => {
-                  setShowNotification((prev) => !prev)
-                  setShowRequestPanel(false)
-                }}
-              />
-              <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center px-1 border border-white shadow">
-                {countnotifications === 0 ? 0 : user?.notificationcount}
-              </span>
-              {showNotification && (
-                <div className="absolute top-16 right-[-104px] w-80 h-[500px] bg-white border border-[#6baed6] rounded-lg shadow-xl z-[9999] p-4 backdrop-blur-md">
-                  <div className="flex items-center justify-between mb-4 px-2">
-                    <h3 className="text-lg font-bold text-[#2171b5] tracking-wide">Notifications</h3>
-                    <p
-                      className="text-sm text-blue-600 hover:text-blue-800 hover:underline cursor-pointer transition-all duration-200"
-                      onClick={handlenotification}
-                    >
-                      Mark all as read
-                    </p>
-                  </div>
-                  <ul className="h-[400px] overflow-y-auto pr-3 scrollbar-thin scrollbar-thumb-blue-400 scrollbar-track-gray-200 space-y-3">
-                    {user?.notifications.map((_, i, arr) => {
-                      const reversedIndex = arr.length - 1 - i
-                      const notif = arr[reversedIndex]
-                      return (
-                        <li
-                          key={reversedIndex}
-                          className="bg-white hover:bg-blue-50 transition-colors duration-300 p-4 rounded-lg shadow border border-gray-300 flex justify-between items-start"
-                        >
-                          <div className="flex-1">
-                            <h4 className="font-bold text-blue-600">{notif.title}</h4>
-                            <p className="text-gray-700">{notif.message}</p>
-                          </div>
-                          <button
-                            className="text-gray-400 hover:text-red-600 transition-colors"
-                            onClick={() => handledelete(reversedIndex)}
-                          >
-                            <Trash2 size={25} />
-                          </button>
-                        </li>
-                      )
-                    })}
-                  </ul>
-                </div>
-              )}
-            </div>
-          )}
-
+          <Notification />
+          
           {/* Message Request Panel */}
           {isloggedin && (
             <div className="relative group cursor-pointer">
@@ -304,6 +192,8 @@ const Navbar = () => {
             )}
           </div>
         </div>
+
+
       </div>
     </nav>
   );

@@ -52,13 +52,15 @@ const userSchema = new mongoose.Schema({
     chattedpersons: [
         {
             receiverId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-            name: String
+            name: String,
+            image: String
         }
     ],
     chatRequest: [
         {
             senderId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-            name: String
+            name: String,
+            image: String
         }
     ],
     notifications: [{ type: String, default: [] }],

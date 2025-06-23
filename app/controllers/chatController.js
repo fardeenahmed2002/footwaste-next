@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { ChatModel } from "../Models/Chat"
+import { Usermodel } from "../Models/User";
 
 export const getallchat = async (userid, receiverid) => {
     try {
@@ -28,5 +29,53 @@ export const getallchat = async (userid, receiverid) => {
             success: false,
             message: "Server error"
         }, { status: 500 });
+    }
+};
+
+
+
+export const SendMessage = async ({ senderId, receiverId, text }, io, onlineUsers) => {
+    try {
+        // Save the message in database
+        await ChatModel.create({
+            sender: senderId,
+            receiver: receiverId,
+            message: text
+        });
+
+
+        const receiver = await Usermodel.findById(receiverId);
+        const sender = await Usermodel.findById(senderId);
+
+        // Add chatted person and chat request if not already added
+        if (receiver && sender) {
+            const alreadyChatted = sender.chattedpersons.some(
+                (entry) => entry.receiverId.toString() === receiverId
+            );
+            if (!alreadyChatted) {
+                sender.chattedpersons.push({ receiverId, name: receiver.name, image: receiver.image });
+                await sender.save();
+            }
+
+            const alreadyRequested = receiver.chatRequest.some(
+                (entry) => entry.senderId.toString() === senderId
+            );
+            if (!alreadyRequested) {
+                receiver.chatRequest.push({ senderId, name: sender.name, image: sender.image });
+                await receiver.save();
+            }
+        }
+
+        // Send real-time message if receiver is online
+        const receiverSocketId = onlineUsers.get(receiverId);
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit('getMessage', {
+                senderId,
+                text,
+                timestamp: new Date(),
+            });
+        }
+    } catch (err) {
+        console.error('❌ Failed to handle sendMessage:', err.message);
     }
 };
