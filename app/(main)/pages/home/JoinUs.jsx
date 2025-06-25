@@ -7,17 +7,15 @@ import { Sprout, Utensils, Handshake, Heart, Globe2 } from "lucide-react";
 export default function JoinUs() {
   return (
     <div className="relative bg-[url('/joinusbg.jpg')] bg-cover border-x-[10px] border-[#2171b5]">
-
       <div className="absolute inset-0 backdrop-blur-[5px] z-0" />
 
-
-      <div className="relative z-10 w-[95%] ml-[35px] p-8 md:p-12 text-white rounded-lg">
+      <div className="relative z-10 w-full max-w-6xl mx-auto p-4 sm:p-6 md:p-12 text-white rounded-lg">
         <Header>Be Part of the Change</Header>
 
         <div className="flex flex-col md:flex-row items-center justify-between mt-8 gap-10">
- 
+          {/* Text Section */}
           <div className="text-center md:text-left w-full max-w-xl mx-auto md:mx-0">
-            <p className="mt-4 text-justify text-lg md:text-xl leading-relaxed bg-white/10 backdrop-blur-md rounded-lg p-6 tracking-wide shadow-lg text-white border border-white/20">
+            <p className="mt-4 text-left sm:text-justify text-base sm:text-lg md:text-xl leading-relaxed bg-white/10 backdrop-blur-md rounded-lg p-4 sm:p-6 tracking-wide shadow-lg text-white border border-white/20">
               Together, we can turn{" "}
               <span className="font-semibold inline-flex items-center space-x-1">
                 <Sprout className="w-5 h-5 text-green-400" />
@@ -59,24 +57,14 @@ export default function JoinUs() {
             </Link>
           </div>
 
+          {/* Optional image section */}
           <motion.div
             initial={{ y: -100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 1, ease: "easeOut" }}
+            className="hidden md:block"
           >
-            {/* <motion.img
-              src="/joinus.png"
-              alt="Join Us Illustration"
-              className="w-full max-w-md"
-              animate={{ scale: [1, 1.05, 1] }}
-              transition={{
-                delay: 1,
-                duration: 2,
-                repeat: Infinity,
-                repeatType: "loop",
-                ease: "easeInOut",
-              }}
-            /> */}
+            {/* Reserved for future image or illustration */}
           </motion.div>
         </div>
       </div>

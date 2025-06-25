@@ -3,9 +3,9 @@ import { HandHeart, Users, Megaphone, DollarSign, Handshake, HeartHandshake } fr
 import Header from '../../components/Header';
 const HowYouCanHelp = () => {
     return (
-        <section className="bg-[url('/help.png')] bg-cover bg-center bg-no-repeat py-12 px-6 bg-[#FFF7E6] border-x-[20px] border-[#15803D] mt-[-25px] border-double">
+        <section className="bg-[url('/help.png')] bg-cover bg-center bg-no-repeat py-12 px-6 bg-[#FFF7E6] border-x-[10px] border-[#2171b5] mt-[-25px]">
             <div className="backdrop-blur-sm max-w-5xl mx-auto text-center">
-                <Header childern={`How You Can Help`} />
+                <Header children={`How You Can Help`} />
                 <p className="mt-4 text-lg text-black">
                     Every small effort counts. Here are a few ways you can make a difference and help us in our mission:
                 </p>

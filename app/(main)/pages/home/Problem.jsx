@@ -39,7 +39,7 @@ const Problem = () => {
           {cards.map((card, index) => (
             <motion.div
               key={index}
-              className="relative w-[350px] h-[430px] rounded-xl shadow-xl p-6 transition-transform transform hover:scale-[1.03] hover:shadow-2xl overflow-hidden bg-[#6baed6]/50 backdrop-blur-md"
+              className="relative w-[90vw] max-w-[350px] h-[460px] sm:h-[430px] rounded-xl shadow-xl p-4 sm:p-6 transition-transform transform hover:scale-[1.03] hover:shadow-2xl overflow-hidden bg-[#6baed6]/50 backdrop-blur-md"
             >
 
               <div className="absolute inset-0 bg-[url('/background-veggie-pattern.png')] bg-repeat bg-cover bg-center opacity-[30%] pointer-events-none z-0" />
@@ -49,7 +49,7 @@ const Problem = () => {
                   whileInView={{ scale: [0.8, 1], opacity: [0, 1] }}
                   src={card.image}
                   alt={card.title}
-                  className="w-full h-40 rounded-xl shadow-inner object-cover"
+                  className="w-full h-[160px] sm:h-40 rounded-xl shadow-inner object-cover"
                 />
                 <div className="flex flex-col text-[black] grow">
                   <h1 className="text-3xl font-bold mb-2 text-center">{card.title}</h1>
