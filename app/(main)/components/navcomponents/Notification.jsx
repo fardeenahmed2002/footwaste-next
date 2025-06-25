@@ -8,17 +8,14 @@ import { toast } from "react-toastify"
 const Notification = () => {
     const { user, isloggedin } = useContext(Context)
     const [showNotification, setShowNotification] = useState(false)
-    const [loading, setLoading] = useState(false)
     const [allnotifications, setAllnotifications] = useState(user?.notifications || [])
     const handledelete = async (e, index) => {
         e.preventDefault()
-        setLoading(true)
         try {
             axios.defaults.withCredentials = true
 
             const { data } = await axios.post('/api/notify', { index })
             if (data.success) {
-
 
                 setAllnotifications((prev) => {
                     return prev.filter((_, i) => {
@@ -48,7 +45,7 @@ const Notification = () => {
                     onClick={() => { setShowNotification((prev) => !prev) }} />
 
                 {showNotification && (
-                    <div className="absolute top-16 right-[-104px] w-80 h-[500px] bg-white border border-[#6baed6] rounded-lg shadow-xl z-[9999] p-4 backdrop-blur-md">
+                    <div className=" absolute top-16 -translate-x-[7%] w-[80vw] max-w-[350px] h-[500px] bg-white border border-[#6baed6]rounded-lg shadow-xl z-[9999] p-4 backdrop-blur-md md:left-auto md:translate-x-0 md:right-[-104px] md:w-80">
                         <div className="flex items-center justify-between mb-4 px-2">
                             <h3 className="text-lg font-bold text-[#2171b5] tracking-wide">Notifications</h3>
                             <p className="text-sm text-blue-600 hover:text-blue-800 hover:underline cursor-pointer transition-all duration-200">mark all as read</p>
