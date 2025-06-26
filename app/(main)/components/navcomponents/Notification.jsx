@@ -56,7 +56,7 @@ const Notification = () => {
                                 <p className="text-center text-gray-500">No notifications</p>
                             ) :
                                 allnotifications.map((notif, index) => {
-                                    return { notif, originalIndex: index };
+                                    return { notif, originalIndex: index }
                                 }).reverse().map(({ notif, originalIndex }) => {
                                     return (
                                         <li

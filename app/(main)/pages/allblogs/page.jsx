@@ -71,52 +71,13 @@ const Page = () => {
           <article key={blog._id} className="bg-white rounded-lg shadow-sm border border-gray-200 max-w-md mx-auto">
             <header className="flex items-center justify-between p-3">
               <div className="flex items-center space-x-2">
-                {/* Blogger Avatar + Hover or Click Card */}
-                <div className="relative group sm:static">
-                  <img
-                    src={blog.blogger.image || '/default-profile.png'}
-                    alt={blog.blogger.name}
-                    className="rounded-full object-cover cursor-pointer w-[40px] h-[40px]"
-                    onClick={() => {
-                      if (typeof window !== 'undefined' && window.innerWidth < 640) {
-                        setShowProfileCard(prev => prev === blog._id ? null : blog._id)
-                      }
-                    }}
-                  />
-
-                  {/* Backdrop (mobile only) */}
-                  {showProfileCard === blog._id && (
-                    <div
-                      className="fixed inset-0 backdrop-blur-sm z-40 sm:hidden"
-                      onClick={() => setShowProfileCard(null)}
-                    ></div>
-                  )}
-
-                  {/* Profile Card */}
-                  <div
-                    className={`
-                      ${showProfileCard === blog._id ? 'fixed sm:absolute' : 'hidden sm:group-hover:flex sm:absolute'}
-                      top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-                      w-[90vw] sm:w-[350px] max-w-sm bg-white rounded-2xl shadow-2xl border border-gray-100
-                      z-50 p-6 flex flex-col items-center text-center space-y-2
-                    `}
-                  >
-                    <img
-                      src={blog.blogger.image || '/default-profile.png'}
-                      alt={blog.blogger.name}
-                      className="w-24 h-24 rounded-full object-cover mb-2 border-4 border-blue-500 shadow-md"
-                    />
-                    <h3 className="text-lg font-bold text-gray-800">{blog.blogger.name}</h3>
-                    <p className="text-sm text-gray-600">{blog.blogger.email}</p>
-                    <p className="text-sm text-gray-500">{blog.blogger.address}</p>
-                    <Link
-                      href={`/pages/chat/${blog.blogger._id}`}
-                      className="mt-3 px-6 py-2 bg-blue-600 text-white text-sm font-semibold rounded-md hover:bg-blue-700 transition"
-                    >
-                      Message
-                    </Link>
-                  </div>
-                </div>
+                {/* Blogger Avatar */}
+                <img
+                  src={blog.blogger.image || '/default-profile.png'}
+                  alt={blog.blogger.name}
+                  className="rounded-full object-cover cursor-pointer w-[40px] h-[40px]"
+                  onClick={() => setShowProfileCard(prev => prev === blog._id ? null : blog._id)}
+                />
 
                 {/* Blogger Name & Time */}
                 <div>
@@ -180,11 +141,43 @@ const Page = () => {
                 )
               }
             </section>
+
+            {/* Profile Card Modal - Shown on avatar click */}
+            {showProfileCard === blog._id && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
+                {/* Close area */}
+                <div
+                  className="absolute inset-0"
+                  onClick={() => setShowProfileCard(null)}
+                ></div>
+
+                {/* Card content */}
+                <div className="relative bg-white rounded-2xl shadow-xl border border-gray-200 p-6 w-[90vw] max-w-sm z-50 text-center space-y-3">
+                  <img
+                    src={blog.blogger.image || '/default-profile.png'}
+                    alt={blog.blogger.name}
+                    className="w-24 h-24 rounded-full object-cover mx-auto border-4 border-blue-500 shadow-md"
+                  />
+                  <h3 className="text-lg font-bold text-gray-800">{blog.blogger.name}</h3>
+                  <p className="text-sm text-gray-600">{blog.blogger.email}</p>
+                  <p className="text-sm text-gray-500">{blog.blogger.address}</p>
+                  <Link
+                    href={`/pages/chat/${blog.blogger._id}`}
+                    className="inline-block mt-3 px-6 py-2 bg-blue-600 text-white text-sm font-semibold rounded-md hover:bg-blue-700 transition"
+                  >
+                    Message
+                  </Link>
+                </div>
+              </div>
+            )}
           </article>
         ))
       )}
     </div>
   )
+
+
+
 }
 
 export default Page

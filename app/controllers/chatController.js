@@ -79,3 +79,30 @@ export const SendMessage = async ({ senderId, receiverId, text }, io, onlineUser
         console.error('❌ Failed to handle sendMessage:', err.message);
     }
 };
+
+
+
+export const declineAChat = async (userid, index) => {
+    try {
+        if (!userid) {
+            return NextResponse.json({
+                success: false,
+                message: 'not authed'
+            })
+        }
+        await Usermodel.findByIdAndUpdate(userid, { $unset: { [`chatRequest.${index}`]: 1 } })
+        const updateUser = await Usermodel.findByIdAndUpdate(userid, { $pull: { chatRequest: null } }, { new: true })
+        return NextResponse.json({
+            success: true,
+            message: 'message request removed successfully',
+            messagerequestes: updateUser.chatRequest
+        })
+    } catch (error) {
+        console.error('Error deleting chat request:', error)
+        return NextResponse.json(
+            { success: false, message: 'Internal server error' },
+            { status: 500 }
+        )
+    }
+
+}
