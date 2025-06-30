@@ -14,7 +14,6 @@ const Page = () => {
   const [loading, setLoading] = useState(true)
   const [input, setInput] = useState('')
   const [receiverDetails, setReceiverDetails] = useState(null)
-  const [receiverOrg, setReceiverOrg] = useState('')
   const [receving, setReceiving] = useState(null)
 
   useEffect(() => {
@@ -49,7 +48,6 @@ const Page = () => {
       const { data } = await axios.put('/api/collector', { foodid: id })
       if (data.success) {
         setReceiverDetails(data.receiversDetails?.pickedBy)
-        setReceiverOrg(data.receiversORG)
         setReceiving(false)
         toast.success("food recevied")
       }
@@ -118,7 +116,6 @@ const Page = () => {
                 <h2 className="font-bold text-lg mb-2">Receiver Information:</h2>
                 <p><span className="font-semibold">Name:</span> {receiverDetails.name}</p>
                 <p><span className="font-semibold">Email:</span> {receiverDetails.email || "Not available"}</p>
-                <p><span className="font-semibold">Organization:</span> {receiverOrg}</p>
               </div>
             )}
           </div>

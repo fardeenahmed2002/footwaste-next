@@ -48,7 +48,7 @@ const userSchema = new mongoose.Schema({
     organizationID: {
         type: String
     },
-    
+
     certificateimage: { type: String, default: '' },
     donatedFoods: [
         {
@@ -91,6 +91,7 @@ const userSchema = new mongoose.Schema({
             default: []
         }
     ],
+    receivedfoods: [{ type: mongoose.Schema.Types.ObjectId, ref: "DonatedFoods" }],
     notifications: [{ type: String, default: [] }],
     notificationcount: { type: Number, default: 0 },
     donorBadge: {

@@ -15,8 +15,8 @@ const NavPages = () => {
 
   return (
     <div className="flex flex-col md:flex-row flex-wrap items-start md:items-center gap-3 md:gap-4 w-full md:w-auto">
-      {!user?.role === `collector` && (
-        <div>
+      {user?.role !== 'collector' && (
+        <>
           <Link href="/" className={navLinkClass}>
             <Home size={18} /> Home
           </Link>
@@ -26,13 +26,13 @@ const NavPages = () => {
           <Link href="/pages/contactus" className={navLinkClass}>
             <Phone size={18} /> Contact
           </Link>
-        </div>
+        </>
       )}
 
-
-      <Link href={'/collector/allfoods'} className={navLinkClass}>
+      {user?.role === "collector" && user?.isVerified && (<Link href="/collector/allfoods" className={navLinkClass}>
         <Hamburger size={18} /> Donated Foods
-      </Link>
+      </Link>)}
+
       <Link href="/pages/allblogs" className={navLinkClass}>
         <FileText size={18} /> Blogs
       </Link>
@@ -49,7 +49,7 @@ const NavPages = () => {
         </Link>
       )}
     </div>
-  );
-};
+  )
+}
 
 export default NavPages;

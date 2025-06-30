@@ -68,25 +68,27 @@ export const receiveAFood = async (userid, foodid) => {
 
     const receiver = await Usermodel.findById(userid).select('-password');
 
+    receiver.receivedfoods?.push(foodid)
+    await receiver.save();
+
     const newfood = await DonatedFoodModel.findByIdAndUpdate(
       foodid,
-      { pickedBy: receiver._id },
+      {
+        status: "receiving...",
+        pickedBy: receiver._id
+      },
       { new: true }
     );
+
 
     const receiversDetails = await DonatedFoodModel.findById(foodid).populate({
       path: 'pickedBy',
       select: 'name email'
     });
-
-    const ORG = await Usermodel.findById(receiver.organizationID);
-    const receiversORG = ORG?.name || "Unknown organization";
-
     return NextResponse.json({
       success: true,
       message: 'receiving.......',
       receiversDetails,
-      receiversORG
     });
   } catch (error) {
     console.error("food getting error", error.message);
@@ -96,3 +98,66 @@ export const receiveAFood = async (userid, foodid) => {
     }, { status: 500 });
   }
 };
+
+
+export const receivedfoods = async (userid) => {
+  try {
+    if (!userid) {
+      return NextResponse.json({
+        success: false,
+        message: 'Not authenticated',
+      });
+    }
+
+    const user = await Usermodel.findById(userid).populate('receivedfoods');
+
+    if (!user) {
+      return NextResponse.json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: 'Received foods fetched successfully',
+      receivedfoods: user.receivedfoods,
+    });
+
+  } catch (error) {
+    console.error("Error fetching received foods:", error.message);
+    return NextResponse.json({
+      success: false,
+      message: 'Internal server error',
+    }, { status: 500 });
+  }
+}
+
+
+export const receiveTheFoodbyCollector = async (foodid) => {
+  try {
+    if (!foodid) {
+      return NextResponse.json({
+        success: false,
+        message: "no food id found"
+      })
+    }
+    const food = await DonatedFoodModel.findByIdAndUpdate(foodid, { status: "received" }, { new: true })
+    if (!food) {
+      return NextResponse.json({
+        success: false,
+        message: "could no received"
+      })
+    }
+    return NextResponse.json({
+      success: true,
+      message: 'food received'
+    })
+  } catch (error) {
+    console.error("Error receiveing foods:", error.message);
+    return NextResponse.json({
+      success: false,
+      message: 'Internal server error',
+    }, { status: 500 });
+  }
+}

@@ -86,48 +86,60 @@ export default function ProfileCard() {
             </div>
 
             {/* Activities and Contribution */}
-            {((user?.role === `user`) || (user?.role === `donor`)) && (
-              <div className="flex flex-col sm:flex-row justify-between gap-6">
-                <div className="sm:w-1/2">
-                  <h3 className="text-white font-semibold mb-2">Your Activity</h3>
-                  <ul className="space-y-2">
-                    <li>
-                      {(user.role === "user" || user.role === "donor") && (
+
+            <div className="flex flex-col sm:flex-row justify-between gap-6">
+              <div className="sm:w-1/2">
+                <h3 className="text-white font-semibold mb-2">Your Activity</h3>
+                <ul className="space-y-2">
+                  <li>
+                    {(user.role === "user" || user.role === "donor") && (
+                      <Link
+                        href={user.role === "user" ? "/user/donate/donatedfoods" : "/donor/donatedfoods"}
+                        className="text-cyan-300 hover:text-cyan-100 hover:underline"
+                      >
+                        📦 Donated Foods
+                      </Link>
+                    )}
+                  </li>
+                  <li>
+                    <Link
+                      href="/user/blog/myblogs"
+                      className="text-cyan-300 hover:text-cyan-100 hover:underline"
+                    >
+                      📝 My Blogs
+                    </Link>
+                  </li>
+                  {
+                    user.role === "collector" && (
+                      <li>
                         <Link
-                          href={user.role === "user" ? "/user/donate/donatedfoods" : "/donor/donatedfoods"}
+                          href="/collector/receivedfoods"
                           className="text-cyan-300 hover:text-cyan-100 hover:underline"
                         >
-                          📦 Donated Foods
+                          📝 Received foods
                         </Link>
-                      )}
-                    </li>
-                    <li>
-                      <Link
-                        href="/user/blog/myblogs"
-                        className="text-cyan-300 hover:text-cyan-100 hover:underline"
-                      >
-                        📝 My Blogs
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
+                      </li>
+                    )
+                  }
 
-                <div className="sm:w-1/2">
-                  <h3 className="text-white font-semibold mb-2">Contribute</h3>
-                  <ul className="space-y-2">
-                    <li>
-                      <Link
-                        href="/user/blog"
-                        className="text-cyan-300 hover:text-cyan-100 hover:underline"
-                      >
-                        ✍️ Post Blog
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
+
+                </ul>
               </div>
-            )}
 
+              <div className="sm:w-1/2">
+                <h3 className="text-white font-semibold mb-2">Contribute</h3>
+                <ul className="space-y-2">
+                  <li>
+                    <Link
+                      href="/user/blog"
+                      className="text-cyan-300 hover:text-cyan-100 hover:underline"
+                    >
+                      ✍️ Post Blog
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       )}

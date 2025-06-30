@@ -26,8 +26,12 @@ const Page = () => {
             }
         }
 
-        fetchFoodPosts()
+        const interval = setInterval(() => {
+            fetchFoodPosts()
+        }, 120000)
+        return () => clearInterval(interval) 
     }, [])
+
 
     if (loading) return <Loader message='getting requests....' />
 
