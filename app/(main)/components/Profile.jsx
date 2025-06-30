@@ -3,7 +3,7 @@ import { Context } from "@/app/contextapi/ContextProvider"
 import Image from "next/image"
 import Link from "next/link"
 import { useContext } from "react"
-
+import { Info } from "lucide-react"
 export default function ProfileCard() {
   const { user, loading } = useContext(Context)
 
@@ -41,7 +41,14 @@ export default function ProfileCard() {
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
                 <div>
                   <h2 className="text-2xl sm:text-3xl font-bold text-cyan-300">{user.name}</h2>
-                  <p className="text-gray-200">({user.role})</p>
+                  <p className="text-gray-200">({user.role})</p> <br />
+                  {user.role === 'donor' && (
+                    <div className="flex items-center gap-1 text-sm font-medium text-yellow-600 bg-yellow-100 px-3 py-1 rounded-full w-fit shadow-sm">
+                      <span>{user.donorBadge}</span>
+                      <Link href={'/pages/badgeinfo'}> <Info size={16} className="text-yellow-700 cursor-pointer hover:scale-110 transition-transform" /></Link>
+                    </div>
+                  )}
+
                 </div>
                 <span className="text-green-400 font-semibold">● Online</span>
               </div>
@@ -68,56 +75,59 @@ export default function ProfileCard() {
                   <h4 className="text-white font-semibold">Location</h4>
                   <p className="text-sm text-gray-300">{user.address || "Unknown"}</p>
                 </div>
+                {((user?.role === `user`) || (user?.role === `donor`)) && (
+                  <div>
+                    <h4 className="text-white font-semibold">Donation Count</h4>
+                    <p className="text-sm text-gray-300">{user.totalDonatedFoods}</p>
+                  </div>
+                )}
+
               </div>
             </div>
 
             {/* Activities and Contribution */}
-            <div className="flex flex-col sm:flex-row justify-between gap-6">
-              <div className="sm:w-1/2">
-                <h3 className="text-white font-semibold mb-2">Your Activity</h3>
-                <ul className="space-y-2">
-                  <li>
-                    {(user.role === "user" || user.role === "donor") && (
+            {((user?.role === `user`) || (user?.role === `donor`)) && (
+              <div className="flex flex-col sm:flex-row justify-between gap-6">
+                <div className="sm:w-1/2">
+                  <h3 className="text-white font-semibold mb-2">Your Activity</h3>
+                  <ul className="space-y-2">
+                    <li>
+                      {(user.role === "user" || user.role === "donor") && (
+                        <Link
+                          href={user.role === "user" ? "/user/donate/donatedfoods" : "/donor/donatedfoods"}
+                          className="text-cyan-300 hover:text-cyan-100 hover:underline"
+                        >
+                          📦 Donated Foods
+                        </Link>
+                      )}
+                    </li>
+                    <li>
                       <Link
-                        href={user.role === "user" ? "/user/donate/donatedfoods" : "/donor/donatedfoods"}
+                        href="/user/blog/myblogs"
                         className="text-cyan-300 hover:text-cyan-100 hover:underline"
                       >
-                        📦 Donated Foods
+                        📝 My Blogs
                       </Link>
-                    )}
-                  </li>
-                  <li>
-                    <Link
-                      href="/user/blog/myblogs"
-                      className="text-cyan-300 hover:text-cyan-100 hover:underline"
-                    >
-                      📝 My Blogs
-                    </Link>
-                  </li>
-                </ul>
-              </div>
+                    </li>
+                  </ul>
+                </div>
 
-              <div className="sm:w-1/2">
-                <h3 className="text-white font-semibold mb-2">Contribute</h3>
-                <ul className="space-y-2">
-                  <li>
-                    <Link
-                      href="/user/blog"
-                      className="text-cyan-300 hover:text-cyan-100 hover:underline"
-                    >
-                      ✍️ Post Blog
-                    </Link>
-                  </li>
-                </ul>
+                <div className="sm:w-1/2">
+                  <h3 className="text-white font-semibold mb-2">Contribute</h3>
+                  <ul className="space-y-2">
+                    <li>
+                      <Link
+                        href="/user/blog"
+                        className="text-cyan-300 hover:text-cyan-100 hover:underline"
+                      >
+                        ✍️ Post Blog
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
               </div>
-            </div>
+            )}
 
-            {/* Message Button */}
-            <div className="pt-4 flex justify-center sm:justify-start">
-              <button className="bg-cyan-500 hover:bg-cyan-600 text-black font-bold py-2 px-6 rounded-full shadow">
-                ✉️ Message
-              </button>
-            </div>
           </div>
         </div>
       )}

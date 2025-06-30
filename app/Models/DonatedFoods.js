@@ -33,6 +33,14 @@ const donatedFoodsSchema = new mongoose.Schema({
     donorOfThisFood: {
         type: mongoose.Schema.Types.ObjectId, ref: "User"
     },
+    pickedBy: {
+        type: mongoose.Schema.Types.ObjectId, ref: 'User',
+        default: null
+    },
+    status: {
+        type: String,
+        default: 'pending....'
+    },
     createdAt: {
         type: Date,
         default: Date.now

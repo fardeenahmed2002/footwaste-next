@@ -5,7 +5,7 @@ import transporter from "../Utils/nodemailer.js"
 import jwt from "jsonwebtoken"
 import { format } from 'date-fns'
 export const signup = async (formData) => {
-    const { name, email, password, contactNumber, address, noOfTeamMember, role, yourCollectingArea, ngoRegistrationNumber, collectorType, image = '', donorof, certificateimage = '' } = formData
+    const { name, email, password, contactNumber, address, noOfTeamMember, role, yourCollectingArea, ngoRegistrationNumber, collectorType, image = '', donorof, certificateimage = '', organizationID } = formData
     try {
         if (!name || !email || !password || !role || !contactNumber) {
             return NextResponse.json({
@@ -63,10 +63,11 @@ export const signup = async (formData) => {
                 isDonor: true,
                 role: `donor`,
                 image,
-                donorof
+                donorof,
+                donorBadge: '🥉 Copper'
             })
         }
-        else if (role === `collector`) {
+        else if (role === `organization`) {
             if (!certificateimage) {
                 return NextResponse.json({
                     success: false,
@@ -80,7 +81,7 @@ export const signup = async (formData) => {
                 contactNumber,
                 address,
                 isCollector: true,
-                role: `collector`,
+                role: `organization`,
                 image,
                 certificateimage,
                 noOfTeamMember,
@@ -88,6 +89,29 @@ export const signup = async (formData) => {
                 ngoRegistrationNumber,
                 collectorType
             })
+        }
+        else if (role === `collector`) {
+            if (!organizationID) {
+                return NextResponse.json({
+                    success: false,
+                    message: 'your institutions id is missing'
+                })
+            }
+            user = new Usermodel({
+                name,
+                email,
+                password: hashedpassword,
+                contactNumber,
+                address,
+                isCollector: true,
+                role: `collector`,
+                image,
+                yourCollectingArea,
+                organizationID,
+            })
+
+            const organization = await Usermodel.findById(organizationID)
+            
         }
         else {
             return NextResponse.json({
@@ -111,7 +135,7 @@ export const signup = async (formData) => {
             success: true,
             user,
             token
-        });
+        })
 
         response.cookies.set("token", token, {
             httpOnly: true,
@@ -220,7 +244,7 @@ export const isLoggedIn = async (req) => {
         console.log(error.message)
     }
 }
- 
+
 export const sentVerifyOTPtoMail = async (userid) => {
     try {
         const user = await Usermodel.findById(userid)

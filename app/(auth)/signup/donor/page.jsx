@@ -111,6 +111,10 @@ export default function Page() {
               <input type="radio" name="role" />
               <span>Collector</span>
             </label>
+            <label className="flex items-center gap-1 cursor-pointer" onClick={() => navigate.push('/signup/organization')}>
+              <input type="radio" name="role" />
+              <span>Organization</span>
+            </label>
           </div>
         </div>
         <motion.p

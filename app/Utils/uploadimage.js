@@ -13,6 +13,7 @@ const loadModels = async () => {
     modelsLoaded = true;
   }
 }
+
 export const uploadProfileImage = async (formData, fieldName) => {
   const file = formData.get(fieldName);
   if (!file || !file.name) {
@@ -47,18 +48,32 @@ export const uploadProfileImage = async (formData, fieldName) => {
   }
 }
 
-export const uploadCertificateImage = async (formData, fieldName) => {
-  const file = formData.get(fieldName);
-  let filename = '';
-  if (file && file.name) {
-    const buffer = Buffer.from(await file.arrayBuffer());
-    filename = Date.now() + '-' + file.name.replace(/\s+/g, '');
-    const uploadDir = path.join(process.cwd(), 'public', 'certificate')
-    fs.mkdirSync(uploadDir, { recursive: true });
-    const filepath = path.join(uploadDir, filename);
-    fs.writeFileSync(filepath, buffer);
+export const uploadCertificateImage = async (formData, fieldName, foldername) => {
+  const file = formData.get(fieldName)
+  if (!file || !file.name) return null
+
+  const MAX_SIZE = 2 * 1024 * 1024
+  if (file.size > MAX_SIZE) {
+    throw new Error('File size exceeds 2MB limit');
   }
-  return filename ? `/certificate/${filename}` : null;
+  const buffer = Buffer.from(await file.arrayBuffer())
+
+  if (process.env.USE_CLOUDINARY === 'true') {
+    try {
+      const result = await uploadInCloudinary(buffer, { folder: foldername })
+      return result.secure_url
+    } catch (error) {
+      console.error('Cloudinary upload error:', error)
+      return null
+    }
+  } else {
+    const filename = Date.now() + '-' + file.name.replace(/\s+/g, '')
+    const uploadDir = path.join(process.cwd(), 'public', foldername)
+    fs.mkdirSync(uploadDir, { recursive: true })
+    const filepath = path.join(uploadDir, filename)
+    fs.writeFileSync(filepath, buffer)
+    return `/${foldername}/${filename}`
+  }
 }
 
 export const uploadImage = async (formData, fieldName, foldername) => {

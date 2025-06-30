@@ -26,6 +26,20 @@ export async function middleware(request) {
         return NextResponse.redirect(new URL('/pageNotFound', request.url))
       }
     }
+    if (pathname.startsWith('/donor')) {
+      if (payload.role === 'donor' && payload.isVerified) {
+        return NextResponse.next()
+      } else {
+        return NextResponse.redirect(new URL('/pageNotFound', request.url))
+      }
+    }
+    if (pathname.startsWith('/organization')) {
+      if (payload.role === 'organization' && payload.isVerified) {
+        return NextResponse.next()
+      } else {
+        return NextResponse.redirect(new URL('/pageNotFound', request.url))
+      }
+    }
 
   } catch (err) {
     console.error('Invalid token', err.message)
@@ -35,5 +49,5 @@ export async function middleware(request) {
 }
 
 export const config = {
-  matcher: ['/collector/:path*', '/user/:path*', '/admin/:path*', '/donor/:path*'],
+  matcher: ['/collector/:path*', '/user/:path*', '/admin/:path*', '/donor/:path*', '/organization/:path*'],
 }

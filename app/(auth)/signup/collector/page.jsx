@@ -18,17 +18,15 @@ export default function Page() {
     collectorType: '',
     noOfTeamMember: 0,
     yourCollectingArea: '',
-    ngoRegistrationNumber: '',
+    organizationID: '',
   })
+
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [avatar, setAvatar] = useState(null)
-  const [certificateimage, setCertificateimage] = useState(null)
+
   const profileimg = (e) => {
     setAvatar(e.target.files[0])
-  }
-  const certificateimg = (e) => {
-    setCertificateimage(e.target.files[0])
   }
   const router = useRouter()
   const { getuserdata, setIsloggedin } = useContext(Context)
@@ -43,7 +41,7 @@ export default function Page() {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    if (!formdata.name || !formdata.email || !formdata.password || !formdata.address || !formdata.contactNumber || !formdata.collectorType || !formdata.yourCollectingArea) {
+    if (!formdata.name || !formdata.email || !formdata.password || !formdata.address || !formdata.contactNumber || !formdata.yourCollectingArea) {
       setError("All fields are required!");
       setLoading(false)
       return;
@@ -58,15 +56,13 @@ export default function Page() {
       form.append("address", formdata.address)
       form.append("contactNumber", formdata.contactNumber)
       form.append("role", formdata.role)
-      form.append("certificateimage", certificateimage)
       form.append("avatar", avatar)
-      form.append("collectorType", formdata.collectorType)
       form.append("noOfTeamMember", formdata.noOfTeamMember)
       form.append("yourCollectingArea", formdata.yourCollectingArea)
-      form.append("ngoRegistrationNumber", formdata.ngoRegistrationNumber)
+      form.append("organizationID", formdata.organizationID)
 
       axios.defaults.withCredentials = true;
-      const { data } = await axios.post("/api/auth/signup", form, {
+      const { data } = await axios.post("/api/auth/signup/collector", form, {
         headers: {
           "Content-Type": "multipart/form-data"
         }
@@ -123,6 +119,10 @@ export default function Page() {
             <label className="flex items-center gap-1 cursor-pointer" >
               <input type="radio" name="role" defaultChecked />
               <span>Collector</span>
+            </label>
+            <label className="flex items-center gap-1 cursor-pointer" onClick={() => navigate.push('/signup/organization')}>
+              <input type="radio" name="role" />
+              <span>Organization</span>
             </label>
           </div>
         </div>
@@ -184,52 +184,6 @@ export default function Page() {
           </div>
           <div className="flex gap-4">
             <div className="w-1/2">
-              <label className="block text-sm font-medium">Type of Registrant</label>
-              <select
-                name="collectorType"
-                value={formdata.collectorType}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-2 mt-1 bg-white/20 text-white placeholder-white rounded-md border border-white/30 focus:outline-none"
-                autoComplete="off"
-              >
-                <option value="" className="text-black">Select Type</option>
-                <option value="NGO" className="text-black">NGO</option>
-                <option value="Individual Volunteer" className="text-black">Individual Volunteer</option>
-                <option value="Charity Group" className="text-black">Charity Group</option>
-              </select>
-            </div>
-            <div className="w-1/2">
-              {formdata.collectorType === `NGO` && (<div>
-                <label className="block text-sm font-medium">NGO Registration Number</label>
-                <input
-                  type="text"
-                  name="ngoRegistrationNumber"
-                  value={formdata.ngoRegistrationNumber}
-                  onChange={handleChange}
-                  required
-                  placeholder='Registration Number of NGO'
-                  className="w-full px-4 py-2 mt-1 bg-white/20 text-white placeholder-white rounded-md border border-white/30 focus:outline-none"
-                  autoComplete="off"
-                />
-              </div>)}
-              {(formdata.collectorType === `Individual Volunteer` || formdata.collectorType === `Charity Group`) && (<div>
-                <label className="block text-sm font-medium">Number of members in Team</label>
-                <input
-                  type="text"
-                  name="noOfTeamMember"
-                  value={formdata.noOfTeamMember}
-                  onChange={handleChange}
-                  required
-                  placeholder='How many member in your team?'
-                  className="w-full px-4 py-2 mt-1 bg-white/20 text-white placeholder-white rounded-md border border-white/30 focus:outline-none"
-                  autoComplete="off"
-                />
-              </div>)}
-            </div>
-          </div>
-          <div className="flex gap-4">
-            <div className="w-1/2">
               <label className="block text-sm font-medium">Operating region</label>
               <input
                 type="text"
@@ -241,6 +195,24 @@ export default function Page() {
               />
             </div>
             <div className="w-1/2">
+              <div>
+                <label className="block text-sm font-medium">Organization ID Number</label>
+                <input
+                  type="text"
+                  name="organizationID"
+                  value={formdata.organizationID}
+                  onChange={handleChange}
+                  required
+                  placeholder='ID Number of your Organization'
+                  className="w-full px-4 py-2 mt-1 bg-white/20 text-white placeholder-white rounded-md border border-white/30 focus:outline-none"
+                  autoComplete="off"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex gap-4">
+            <div className="w-1/2">
               <label className="block text-sm font-medium">Address</label>
               <input
                 type="text"
@@ -249,26 +221,6 @@ export default function Page() {
                 onChange={handleChange}
                 placeholder="123 Street, City"
                 className="w-full px-4 py-2 mt-1 bg-white/20 text-white placeholder-white rounded-md border border-white/30 focus:outline-none"
-              />
-            </div>
-          </div>
-
-          <div className="flex gap-4">
-            <div className="w-1/2">
-              <label
-                htmlFor="certificateimage"
-                className="flex items-center justify-center gap-2 px-4 py-2 border border-white/30 rounded-md bg-white/20 text-white cursor-pointer hover:bg-white/30 transition mt-[23px]"
-              >
-                <Upload className="w-5 h-5" />
-                <span>Upload Certificate</span>
-              </label>
-              <input
-                type="file"
-                name="certificateimage"
-                id="certificateimage"
-                accept="image/*"
-                onChange={certificateimg}
-                className="hidden"
               />
             </div>
             <div className="w-1/2">
@@ -288,6 +240,7 @@ export default function Page() {
                 className="hidden"
               />
             </div>
+
           </div>
           <div className="text-sm text-right">
             <a href="#" className="text-white/80 hover:underline">Forgot Password?</a>

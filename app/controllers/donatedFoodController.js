@@ -48,6 +48,7 @@ export const postOfFoodDonation = async (formData, userid) => {
             }
         }
 
+        // Create the donated food
         const food = new DonatedFoodModel({
             title,
             description,
@@ -64,15 +65,40 @@ export const postOfFoodDonation = async (formData, userid) => {
             })
         });
 
+        // Save the food donation
         const donatedFood = await food.save();
-        user.donatedFoods?.push(donatedFood._id);
-        await user.save();
+
+        // Reload and update the user
+        const updatedUser = await Usermodel.findByIdAndUpdate(
+            userid,
+            {
+                $inc: { totalDonatedFoods: 1 },
+                $push: { donatedFoods: donatedFood._id }
+            },
+            { new: true } // to return updated user
+        );
+
+        // Calculate badge
+        let badge = "";
+        const count = updatedUser.totalDonatedFoods;
+        if (count > 7000) badge = "💎 Diamond";
+        else if (count > 3000) badge = "🥇 Gold";
+        else if (count > 500) badge = "🥈 Silver";
+        else if (count > 150) badge = "🥉 Bronze";
+
+        // If badge changed, update it
+        if (badge && updatedUser.donorBadge !== badge) {
+            updatedUser.donorBadge = badge;
+            updatedUser.notifications.push(`Congrates!! you have updated to ${badge}`)
+            await updatedUser.save();
+        }
 
         return NextResponse.json({
             success: true,
             message: 'Food donated successfully',
             donatedFood
         }, { status: 201 });
+
     } catch (error) {
         console.error("Donation failed:", error.message);
         return NextResponse.json({
@@ -81,6 +107,7 @@ export const postOfFoodDonation = async (formData, userid) => {
         }, { status: 500 });
     }
 };
+
 
 
 export const displayUsersDonatedFoods = async (userid) => {

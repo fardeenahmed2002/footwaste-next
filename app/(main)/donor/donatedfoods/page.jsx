@@ -109,6 +109,7 @@ const Page = () => {
                     (<p className="text-white font-bold">food is not expired</p>)
                     :
                     (<p className="text-[red] font-bold">food is expired</p>)}
+                  <p className="text-white">{food.status}</p>
                   <br />
                   <Link
                     href={`./foodDetails/${food._id}`}

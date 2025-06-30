@@ -228,10 +228,10 @@ export default function Page() {
                                 onChange={handleChange}
                                 className="text-white bg-transparent border py-2 px-4 w-full rounded-lg shadow-sm"
                             >
-                                <option value="">Select Storage Condition</option>
-                                <option value="Refrigerated">Refrigerated</option>
-                                <option value="Room Temperature">Room Temperature</option>
-                                <option value="Frozen">Frozen</option>
+                                <option value="" className='text-black'>Select Storage Condition</option>
+                                <option value="Refrigerated" className='text-black'>Refrigerated</option>
+                                <option value="Room Temperature" className='text-black'>Room Temperature</option>
+                                <option value="Frozen" className='text-black'>Frozen</option>
                             </select>
                         </div>
                     </div>

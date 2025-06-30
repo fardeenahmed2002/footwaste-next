@@ -44,27 +44,59 @@ const userSchema = new mongoose.Schema({
     noOfTeamMember: { type: String, default: "" },
     ngoRegistrationNumber: { type: String, default: "" },
     yourCollectingArea: { type: String, default: "" },
-    image: { type: String, default: '/uploads/person.png' },
+    image: { type: String },
+    organizationID: {
+        type: String
+    },
+    
     certificateimage: { type: String, default: '' },
-    donatedFoods: [{ type: mongoose.Schema.Types.ObjectId, ref: "DonatedFoods" }],
-    blogs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Blog" }],
-    starredBlogs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Blog", default: [] }],
+    donatedFoods: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "DonatedFoods",
+            default: []
+        }
+    ],
+    totalDonatedFoods: {
+        type: Number,
+        default: 0
+    },
+    blogs: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Blog",
+            default: []
+        }
+    ],
+    starredBlogs: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Blog",
+            default: []
+        }
+    ],
     chattedpersons: [
         {
             receiverId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
             name: String,
-            image: String
+            image: String,
+            default: []
         }
     ],
     chatRequest: [
         {
             senderId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
             name: String,
-            image: String
+            image: String,
+            default: []
         }
     ],
     notifications: [{ type: String, default: [] }],
     notificationcount: { type: Number, default: 0 },
+    donorBadge: {
+        type: String,
+        default: ''
+    },
     createdAt: { type: Date, default: Date.now },
 })
 
