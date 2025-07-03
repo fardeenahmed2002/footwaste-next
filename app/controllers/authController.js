@@ -232,7 +232,7 @@ export const logout = async () => {
     } catch (error) {
         console.log(error.message)
     }
-};
+}
 
 export const isLoggedIn = async (req) => {
     try {
