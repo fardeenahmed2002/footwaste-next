@@ -4,6 +4,7 @@ import { Canvas, Image, ImageData } from 'canvas';
 import { loadImage } from 'canvas';
 import * as faceapi from 'face-api.js';
 import { uploadInCloudinary } from './cloudinary';
+import checkNSFWImage from './nsfwimage';
 faceapi.env.monkeyPatch({ Canvas, Image, ImageData });
 let modelsLoaded = false;
 const loadModels = async () => {
@@ -23,8 +24,8 @@ export const uploadProfileImage = async (formData, fieldName) => {
   if (file.size > MAX_SIZE) {
     return { success: false, message: "File size exceeds 3MB limit." };
   }
-  const buffer = Buffer.from(await file.arrayBuffer());
-  await loadModels();
+  const buffer = Buffer.from(await file.arrayBuffer())
+  await loadModels()
   const img = await loadImage(buffer);
   const detections = await faceapi.detectAllFaces(img);
   if (detections.length === 0) {
@@ -85,6 +86,12 @@ export const uploadImage = async (formData, fieldName, foldername) => {
     throw new Error('File size exceeds 2MB limit');
   }
   const buffer = Buffer.from(await file.arrayBuffer())
+  const nsfwResult = await checkNSFWImage(buffer)
+
+  const nsfwDetected = nsfwResult.find(item => item.label === "nsfw" && item.score > 0.7);
+  if (nsfwDetected) {
+    throw new Error('imgs is not acceptable');
+  }
 
   if (process.env.USE_CLOUDINARY === 'true') {
     try {

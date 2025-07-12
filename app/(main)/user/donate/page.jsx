@@ -4,6 +4,7 @@ import { ImageIcon, MapPin, Calendar, PencilLine, Package, StickyNote, HandHeart
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import Loader from '@/app/loader/Loader'
+import { serverError } from '@/app/Utils/serverError'
 
 export default function Page() {
     const [imageOfDonatedFood, setImageOfDonatedFood] = useState(null)
@@ -100,12 +101,10 @@ export default function Page() {
                 setError(data.message)
             }
         } catch (error) {
-            console.log(error.message)
-            setError(error.message)
             setLoading(false)
+            toast.error(serverError(error))
         }
     }
-
     return (
         <div className="min-h-screen w-full bg-cover bg-center flex items-center justify-center relative px-2 sm:px-4"
             style={{ backgroundImage: "url('/donatebg.jpg')" }}>
