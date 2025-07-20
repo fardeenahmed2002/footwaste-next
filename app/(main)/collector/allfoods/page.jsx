@@ -9,27 +9,22 @@ import Link from 'next/link'
 const Page = () => {
     const [foods, setFoods] = useState([])
     const [loading, setLoading] = useState(true)
-
-    useEffect(() => {
-        const fetchFoodPosts = async () => {
-            try {
-                const { data } = await axios.get('/api/collector')
-                if (data.success) {
-                    setFoods(data.posts)
-                } else {
-                    console.error(data.message)
-                }
-            } catch (error) {
-                serverError(error)
-            } finally {
-                setLoading(false)
+    const fetchFoodPosts = async () => {
+        try {
+            const { data } = await axios.get('/api/collector')
+            if (data.success) {
+                setFoods(data.posts)
+            } else {
+                console.error(data.message)
             }
+        } catch (error) {
+            serverError(error)
+        } finally {
+            setLoading(false)
         }
-
-        const interval = setInterval(() => {
-            fetchFoodPosts()
-        }, 120000)
-        return () => clearInterval(interval) 
+    }
+    useEffect(() => {
+        fetchFoodPosts()
     }, [])
 
 
