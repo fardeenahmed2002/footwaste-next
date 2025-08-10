@@ -29,6 +29,7 @@ export const POST = async (req) => {
                 { status: 400 }
             )
         }
+        
         const result = await postBlog({
             title, content, image
         }, auth.userid)

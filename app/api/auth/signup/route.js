@@ -2,8 +2,9 @@ import { signup } from "@/app/controllers/authController"
 import connectToDB from "@/app/Utils/database"
 import { uploadProfileImage } from "@/app/Utils/uploadimage"
 import { NextResponse } from "next/server"
+
 export const POST = async (req) => {
-  await connectToDB();
+  await connectToDB()
   try {
     const formData = await req.formData()
     const name = formData.get('name')
@@ -17,9 +18,10 @@ export const POST = async (req) => {
       return NextResponse.json({
         success: false,
         message: imageResult?.message || 'Unknown image upload error'
-      });
+      })
     }
-    const image = imageResult.url;
+
+    const image = imageResult.url
     const result = await signup({
       name,
       email,
@@ -30,9 +32,10 @@ export const POST = async (req) => {
       image,
     })
 
-    return result;
+    return result
   } catch (error) {
     console.error("Signup error:", error)
     return new Response("Something went wrong", { status: 500 })
   }
 }
+

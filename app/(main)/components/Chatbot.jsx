@@ -31,6 +31,7 @@ const Chatbot = () => {
         setIstyping(true);
         await processMessageToBot(updatedMessages);
     };
+    
     async function processMessageToBot(chatHistory) {
         const formattedMessages = chatHistory.map(m => ({
             role: m.sender === "user" ? "user" : "model",

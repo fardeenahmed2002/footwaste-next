@@ -1,11 +1,12 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import axios from 'axios'
-import Loader from '@/app/loader/Loader'
-import { toast } from 'react-toastify'
 import { serverError } from '@/app/Utils/serverError'
+import Loader from '@/app/loader/Loader'
+import axios from 'axios'
 import Image from 'next/image'
+import { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
+import Skeleton from './Skeleton'
 
 const Page = () => {
   const [foods, setFoods] = useState([])
@@ -49,63 +50,61 @@ const Page = () => {
     }
   }
 
-  if (loading) return <Loader message="Loading received foods..." />
-
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold mb-6 text-center text-green-700">
         📦 Received Foods
       </h1>
 
-      {foods.length === 0 ? (
-        <p className="text-center text-gray-500">No received foods found.</p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {foods.map((food) => (
-            <div
-              key={food._id}
-              className="bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-lg transition overflow-hidden flex flex-col"
-            >
-              {food.imageOfDonatedFood && (
-                <Image
-                  src={food.imageOfDonatedFood}
-                  alt={food.title || 'Donated Food'}
-                  width={500}
-                  height={300}
-                  className="w-full h-48 object-cover"
-                />
-              )}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {loading
+          ? Array(foods.length || 6).fill(null).map((_, i) => <Skeleton key={i} />)
+          : foods.length === 0
+            ? <p className="text-center text-gray-500 col-span-full">No received foods found.</p>
+            : foods.map((food) => (
+              <div
+                key={food._id}
+                className="bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-lg transition overflow-hidden flex flex-col"
+              >
+                {food.imageOfDonatedFood && (
+                  <Image
+                    src={food.imageOfDonatedFood}
+                    alt={food.title || 'Donated Food'}
+                    width={500}
+                    height={300}
+                    className="w-full h-48 object-cover"
+                  />
+                )}
 
-              <div className="p-4 flex flex-col justify-between flex-grow">
-                <div>
-                  <h2 className="text-xl font-semibold text-green-800">
-                    {food.title || 'No Title'}
-                  </h2>
-                  <p className="text-sm text-gray-600 mt-2">
-                    📍 <span className="italic">{food.location || 'Unknown'}</span>
-                  </p>
-                </div>
+                <div className="p-4 flex flex-col justify-between flex-grow">
+                  <div>
+                    <h2 className="text-xl font-semibold text-green-800">
+                      {food.title || 'No Title'}
+                    </h2>
+                    <p className="text-sm text-gray-600 mt-2">
+                      📍 <span className="italic">{food.location || 'Unknown'}</span>
+                    </p>
+                  </div>
 
-                <div className="mt-4">
-                  {food.status === 'received' ? (
-                    <button className="bg-gray-400 text-white px-4 py-2 rounded-full text-sm w-full cursor-not-allowed opacity-70">
-                      ✅ Already Received
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => receivethefood(food._id)}
-                      className="bg-green-600 text-white px-4 py-2 rounded-full text-sm w-full hover:bg-green-700 transition"
-                      disabled={receivingId === food._id}
-                    >
-                      {receivingId === food._id ? <Loader /> : 'Receive Food'}
-                    </button>
-                  )}
+                  <div className="mt-4">
+                    {food.status === 'received' ? (
+                      <button className="bg-gray-400 text-white px-4 py-2 rounded-full text-sm w-full cursor-not-allowed opacity-70">
+                        ✅ Already Received
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => receivethefood(food._id)}
+                        className="bg-green-600 text-white px-4 py-2 rounded-full text-sm w-full hover:bg-green-700 transition"
+                        disabled={receivingId === food._id}
+                      >
+                        {receivingId === food._id ? <Loader /> : 'Receive Food'}
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+      </div>
     </div>
   )
 }
