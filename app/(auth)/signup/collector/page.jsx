@@ -311,7 +311,7 @@ export default function Page() {
                 <div>
                   <label className="block text-sm font-medium">NGO Registration Number</label>
                   <input
-                    type="text"
+                    type="number"
                     name="ngoRegistrationNumber"
                     value={formdata.ngoRegistrationNumber}
                     onChange={handleChange}

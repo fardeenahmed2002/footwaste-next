@@ -42,6 +42,7 @@ const donatedFoodsSchema = new mongoose.Schema({
         enum: ["pending", "approved", "rejected"],
         default: "pending"
     },
+    foodToPick: { type: Boolean, default: false },
     status: {
         type: String,
         default: 'pending....'
@@ -49,6 +50,7 @@ const donatedFoodsSchema = new mongoose.Schema({
     biter: [
         { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: [] }
     ],
+    applicantNGO: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', default: [] }],
     createdAt: {
         type: Date,
         default: Date.now

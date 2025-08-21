@@ -15,7 +15,7 @@ const Page = () => {
   const [loading, setLoading] = useState(true)
   const [input, setInput] = useState('')
   const [receiverDetails, setReceiverDetails] = useState(null)
-  const [receving, setReceiving] = useState(null)
+
   const [chg, setChg] = useState(false)
 
   useEffect(() => {
@@ -40,21 +40,6 @@ const Page = () => {
   const handleSearch = () => {
     if (input.trim() !== "") {
       setPlace(input.trim())
-    }
-  }
-
-  const handleRecive = async () => {
-    try {
-      setReceiving(true)
-      axios.defaults.withCredentials = true
-      const { data } = await axios.put('/api/collector', { foodid: id })
-      if (data.success) {
-        setReceiverDetails(data.receiversDetails?.pickedBy)
-        setReceiving(false)
-        toast.success("food recevied")
-      }
-    } catch (error) {
-      console.error("Receive error:", error)
     }
   }
 
@@ -154,26 +139,20 @@ const Page = () => {
 
           {/* Action Buttons */}
           <div className="flex flex-wrap gap-3">
-            {receving ? (
-              <button className="bg-blue-600 text-white px-4 py-2 rounded">
-                <Loader />
-              </button>
-            ) : (
-              <button
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-                onClick={() => sendReq(food._id)}
-              >
-                {chg ? `Sent` : `Send Request`}
-              </button>
-            )}
+            <button
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+              onClick={() => sendReq(food._id)}
+            >
+              Send Request
+            </button>
 
-            <Link
+            {/* <Link
               href={`/pages/chat/${food.donorOfThisFood?._id}`}
               target="_blank"
               className="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition"
             >
               Message
-            </Link>
+            </Link> */}
           </div>
         </div>
       </div>

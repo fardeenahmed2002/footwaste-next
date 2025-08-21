@@ -50,6 +50,9 @@ const NavPages = () => {
             <Link href="/collector/day" className={navLinkClass}>
               {inEng ? "Post a Day" : "একদিনের পোস্ট"}
             </Link>
+            <Link href="/collector/requestedFoods" className={navLinkClass}>
+              {inEng ? "Requested foods" : "অনুরোধকৃত খাবার"}
+            </Link>
           </>
         )}
 

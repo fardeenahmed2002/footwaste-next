@@ -44,7 +44,7 @@ const userSchema = new mongoose.Schema({
     noOfTeamMember: { type: Number, default: 0 },
     ngoRegistrationNumber: { type: String, default: "" },
     yourCollectingArea: { type: String, default: "" },
-    organizationID: { type: String, default: "" },
+    RequestToReceiveFoods: [{ type: mongoose.Schema.Types.ObjectId, ref: "DonatedFoods", default: [] }],
 
     // Donor-specific fields
     donationCapacity: { type: String, default: "" },

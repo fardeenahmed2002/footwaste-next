@@ -51,12 +51,29 @@ const FoodDetailsPage = () => {
         toast.success(`Notification sent . wait for reply of ngo`)
         setFood(prev => ({
           ...prev,
-          biter: [],
-          approvedNGO: ngoid
+          biter: []
         }))
       }
     } catch (error) {
       console.log(error)
+    }
+  }
+  const declineNGO = async (ngoid, foodid) => {
+    try {
+      const { data } = await axios.post(`/api/user/declineNGO`, { ngoID: ngoid, foodID: foodid })
+
+      if (data.success) {
+        toast.success("NGO declined successfully")
+        setFood(prev => ({
+          ...prev,
+          biter: prev.biter.filter(id => id !== ngoid)
+        }))
+      } else {
+        toast.error(data.message || "Failed to decline NGO")
+      }
+    } catch (error) {
+      console.error(error)
+      toast.error("Something went wrong")
     }
   }
 
@@ -184,8 +201,8 @@ const FoodDetailsPage = () => {
                           </div>
                           <div className="flex flex-row gap-[10px]">
                             <CheckCircle className="cursor-pointer" onClick={() => acceptNGO(b._id, food._id)} />
-                            <XCircle className="cursor-pointer" />
-                            <MessageCircle className="cursor-pointer" />
+                            <XCircle className="cursor-pointer" onClick={() => declineNGO(b._id, food._id)} />
+                            <Link href={`/pages/chat/${b._id}`} ><MessageCircle className="cursor-pointer" /></Link>
                           </div>
                         </div>
                       </div>

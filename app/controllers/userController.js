@@ -50,8 +50,11 @@ export const acceptNGO = async (userid, ngoid, foodid) => {
         const ngo = await Usermodel.findById(ngoid)
         const food = await DonatedFoodModel.findById(foodid)
         const user = await Usermodel.findById(userid)
+        
         ngo.notifications.push(`Your request for collecting ${food.title} of ${user.name} has been approved.`)
+
         food.biter = []
+        food.foodToPick = true
         food.save()
         await ngo.save()
 
@@ -61,5 +64,40 @@ export const acceptNGO = async (userid, ngoid, foodid) => {
         })
     } catch (error) {
         console.log(error.message)
+    }
+}
+
+
+export const declineNGO = async (userid, ngoid, foodid) => {
+    try {
+        if (!ngoid || !foodid) {
+            return NextResponse.json({
+                success: false,
+                message: "id not found"
+            })
+        }
+
+
+        await DonatedFoodModel.findByIdAndUpdate(
+            foodid,
+            { $pull: { biter: ngoid } },
+            { new: true }
+        )
+
+        const ngo = await Usermodel.findById(ngoid)
+        if (ngo) {
+            ngo.notifications.push(`Your request for food was declined.`)
+            await ngo.save()
+        }
+        return NextResponse.json({
+            success: true,
+            message: "NGO declined successfully"
+        })
+    } catch (error) {
+        console.error(error.message)
+        return NextResponse.json({
+            success: false,
+            message: "Internal server error"
+        }, { status: 500 })
     }
 }

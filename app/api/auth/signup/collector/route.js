@@ -47,7 +47,6 @@ export const POST = async (req) => {
       collectorType,
       cityCorp,
       area,
-      organizationID,
       noOfTeamMember: Number(noOfTeamMember),
       ngoRegistrationNumber,
       image,

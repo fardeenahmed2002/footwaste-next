@@ -21,7 +21,6 @@ export const signup = async (formData) => {
     noOfTeamMember,
     ngoRegistrationNumber,
     yourCollectingArea,
-    organizationID,
     cityCorp,
     area,
   } = formData;
@@ -81,12 +80,6 @@ export const signup = async (formData) => {
 
     // Collector signup
     else if (role === "collector") {
-      if (!organizationID) {
-        return NextResponse.json({
-          success: false,
-          message: "Your institution's ID is missing",
-        });
-      }
       user = new Usermodel({
         name,
         email,
@@ -99,7 +92,6 @@ export const signup = async (formData) => {
         collectorType,
         noOfTeamMember: Number(noOfTeamMember) || 0,
         ngoRegistrationNumber: ngoRegistrationNumber || "",
-        organizationID,
         yourCollectingArea: yourCollectingArea || "",
         cityCorp,
         area,

@@ -6,7 +6,7 @@ import { Usermodel } from "../Models/User"
 
 export const getalldonatedfoodpost = async (userID) => {
   try {
-    const posts = await DonatedFoodModel.find({ isApproved: "approved", biter: { $nin: [userID] } }).sort({ createdAt: -1 }).populate({ path: 'pickedBy', select: 'name' })
+    const posts = await DonatedFoodModel.find({ isApproved: "approved", applicantNGO: { $nin: [userID] } }).sort({ createdAt: -1 }).populate({ path: 'pickedBy', select: 'name' })
     return NextResponse.json({
       success: true,
       message: `food post found`,
@@ -61,12 +61,15 @@ export const requestToReceiveFood = async (userID, foodID) => {
       })
     }
 
-
     const food = await DonatedFoodModel.findById(foodID).populate('donorOfThisFood', '_id')
     if (!food) {
       return NextResponse.json({ success: false, message: "Food not found" })
     }
+    const user = await Usermodel.findById(userID)
 
+    user.RequestToReceiveFoods.push(foodID)
+
+    await user.save()
 
     if (food.biter.includes(userID)) {
       return NextResponse.json({
@@ -75,20 +78,20 @@ export const requestToReceiveFood = async (userID, foodID) => {
       })
     }
 
-
     const donor = await Usermodel.findById(food.donorOfThisFood._id)
+
     if (!donor) {
       return NextResponse.json({ success: false, message: "Donor not found" })
     }
 
-
     donor.notifications.push(`You have one request in post of ${food.title}.`)
-    
+
     donor.notificationcount += 1
 
     await donor.save()
 
     food.biter.push(userID)
+    food.applicantNGO.push(userID)
     await food.save()
 
     return NextResponse.json({
@@ -123,6 +126,12 @@ export const receiveAFood = async (userid, foodid) => {
         message: 'food id not found'
       });
     }
+
+
+    const senderid = await DonatedFoodModel.findById(foodid).populate('donorOfThisFood', '._id')
+    const sender = await Usermodel.findById(senderid.donorOfThisFood._id)
+    sender.notifications.push(`soon collector will receving your food`)
+    sender.save()
 
     const receiver = await Usermodel.findById(userid).select('-password');
 
@@ -276,6 +285,30 @@ export const viewDays = async () => {
       success: true,
       message: `found`,
       days
+    })
+  } catch (error) {
+    return NextResponse.json({
+      success: false,
+      message: "Internal server error"
+    }, { status: 500 })
+  }
+}
+
+
+
+export const showRequestedFoodToReveive = async (userid) => {
+  try {
+    const getfoods = await Usermodel.findById(userid).populate('RequestToReceiveFoods')
+    if (!getfoods) {
+      return NextResponse.json({
+        success: false,
+        message: `no food found`
+      })
+    }
+    return NextResponse.json({
+      success: true,
+      message: `found`,
+      foods: getfoods.RequestToReceiveFoods
     })
   } catch (error) {
     return NextResponse.json({
