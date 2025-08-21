@@ -3,19 +3,19 @@ import Link from "next/link"
 import Image from "next/image"
 const Logo = () => {
     return (
-        <div className="flex items-center gap-3 bg-[#6baed6]/10 backdrop-blur-md p-2 px-4 rounded-full border border-white/30 shadow">
+        <div className="w-[350px] flex items-center gap-3 backdrop-blur-md p-2 px-4 rounded-full ">
             <Link href="/">
                 <Image
-                    src="/sitelogo.jpeg"
+                    src="/logo.png"
                     alt="Logo"
-                    width={44}
-                    height={44}
-                    className="rounded-full shadow"
+                    width={300}
+                    height={150}
+                    className=""
                 />
             </Link>
-            <h1 className="text-2xl font-extrabold text-white drop-shadow-sm">
-                Food Waste Rescue
-            </h1>
+            {/* <h1 className="text-2xl font-extrabold text-white drop-shadow-sm">
+                খাদ্য বাঁচাও
+            </h1> */}
         </div>
     )
 }

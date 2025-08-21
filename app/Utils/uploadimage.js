@@ -1,8 +1,7 @@
+import { Canvas, Image, ImageData, loadImage } from 'canvas';
+import * as faceapi from 'face-api.js';
 import fs from 'fs';
 import path from 'path';
-import { Canvas, Image, ImageData } from 'canvas';
-import { loadImage } from 'canvas';
-import * as faceapi from 'face-api.js';
 import { uploadInCloudinary } from './cloudinary';
 import checkNSFWImage from './nsfwimage';
 faceapi.env.monkeyPatch({ Canvas, Image, ImageData });
@@ -81,26 +80,23 @@ export const uploadImage = async (formData, fieldName, foldername) => {
   const file = formData.get(fieldName)
   if (!file || !file.name) return null
 
-  const MAX_SIZE = 2 * 1024 * 1024
+  const MAX_SIZE = 20 * 1024 * 1024
+
   if (file.size > MAX_SIZE) {
     throw new Error('File size exceeds 2MB limit');
   }
-  const buffer = Buffer.from(await file.arrayBuffer())
-  const nsfwResult = await checkNSFWImage(buffer)
 
-  const nsfwDetected = nsfwResult.find(item => item.label === "nsfw" && item.score > 0.7);
-  if (nsfwDetected) {
-    throw new Error('imgs is not acceptable');
-  }
+  const buffer = Buffer.from(await file.arrayBuffer())
 
   if (process.env.USE_CLOUDINARY === 'true') {
     try {
-      const result = await uploadInCloudinary(buffer, { folder: foldername })
-      return result.secure_url
+      const result = await uploadInCloudinary(buffer, { folder: foldername });
+      return result.secure_url;
     } catch (error) {
-      console.error('Cloudinary upload error:', error)
-      return null
+      console.error('Cloudinary upload error:', error);
+      throw new Error('Failed to upload image to Cloudinary');
     }
+
   } else {
     const filename = Date.now() + '-' + file.name.replace(/\s+/g, '')
     const uploadDir = path.join(process.cwd(), 'public', foldername)

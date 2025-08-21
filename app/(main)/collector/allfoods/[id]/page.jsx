@@ -1,11 +1,12 @@
 "use client"
 
-import { useParams } from "next/navigation"
-import { useEffect, useState } from "react"
-import axios from "axios"
+
 import Loader from "@/app/loader/Loader"
+import axios from "axios"
 import Image from "next/image"
 import Link from "next/link"
+import { useParams } from "next/navigation"
+import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
 const Page = () => {
   const { id } = useParams()
@@ -15,6 +16,7 @@ const Page = () => {
   const [input, setInput] = useState('')
   const [receiverDetails, setReceiverDetails] = useState(null)
   const [receving, setReceiving] = useState(null)
+  const [chg, setChg] = useState(false)
 
   useEffect(() => {
     const fetchFood = async () => {
@@ -53,6 +55,22 @@ const Page = () => {
       }
     } catch (error) {
       console.error("Receive error:", error)
+    }
+  }
+
+  const sendReq = async (id) => {
+    setChg((prev) => !prev)
+    try {
+      axios.defaults.withCredentials = true
+      const { data } = await axios.post('/api/collector/reqToRecev', { foodID: id })
+      if (data.success) {
+        toast.success(data.message)
+      }
+      if (!data.success) {
+        toast.error(data.message)
+      }
+    } catch (error) {
+      console.log(error)
     }
   }
 
@@ -143,9 +161,9 @@ const Page = () => {
             ) : (
               <button
                 className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-                onClick={handleRecive}
+                onClick={() => sendReq(food._id)}
               >
-                Receive
+                {chg ? `Sent` : `Send Request`}
               </button>
             )}
 

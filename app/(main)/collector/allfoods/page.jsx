@@ -4,6 +4,7 @@ import axios from 'axios'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import CountDown from './CountDown'
 import Skeleton from './Skeleton'
 
 const Page = () => {
@@ -59,15 +60,19 @@ const Page = () => {
 
                                 <div className="p-5 flex flex-col justify-between flex-grow">
                                     <div>
+
                                         <h2 className="text-xl font-bold text-green-700 mb-2">
                                             {food.title || 'No Title'}
                                         </h2>
+
+
                                         <p className="text-sm text-gray-500 mb-4">
                                             📅 Posted on:{" "}
                                             <span className="italic">
                                                 {new Date(food.createdAt).toLocaleDateString()}
                                             </span>
                                         </p>
+                                        <CountDown expiryDate={food.expiryDate} />
                                     </div>
                                     <div className="flex flex-wrap justify-between items-center mt-auto">
                                         {food.pickedBy ? (

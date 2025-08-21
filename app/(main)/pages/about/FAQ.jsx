@@ -58,7 +58,7 @@ const FAQ = () => {
                 <div className="mt-12 bg-green-600 text-white p-8 rounded-lg">
                     <h3 className="text-2xl font-bold">Have Further Questions?</h3>
                     <p className="mt-4 text-lg">If you have any other questions or need more information, feel free to reach out to us. We're here to help!</p>
-                    <button className="mt-6 bg-white text-green-600 font-semibold px-6 py-2 rounded-lg hover:bg-gray-100 transition-all">
+                    <button className="mt-6 bg-[#FFC808] text-black hover:text-[#FFC808] hover:bg-[#1C2532] font-semibold px-6 py-2 rounded-lg transition-all">
                         <Link href='/pages/contactus'> Contact Us</Link>
                     </button>
                 </div>

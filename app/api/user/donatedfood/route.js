@@ -1,8 +1,8 @@
 import { displayUsersDonatedFoods, postOfFoodDonation } from "@/app/controllers/donatedFoodController"
+import { userAuth } from "@/app/middlewares/userAuth"
 import connectToDB from "@/app/Utils/database"
 import { uploadImage } from "@/app/Utils/uploadimage"
 import { NextResponse } from "next/server"
-import { userAuth } from "@/app/middlewares/userAuth"
 // /api/user/donatedfood
 export const POST = async (req) => {
     await connectToDB()
@@ -25,6 +25,7 @@ export const POST = async (req) => {
         try {
             imageOfDonatedFood = await uploadImage(formData, 'imageOfDonatedFood', 'donated-foods')
         } catch (uploadError) {
+            console.error('Upload failed:', uploadError);
             return NextResponse.json({
                 success: false,
                 message: uploadError.message
@@ -43,8 +44,12 @@ export const POST = async (req) => {
         }, auth.userid)
         return result
     } catch (error) {
+        
         console.error("donate error:", error)
-        return new Response("Something went wrong", { status: 500 })
+        return NextResponse.json(
+            { success: false, message: "Something went wrong" },
+            { status: 500 }
+        )
     }
 }
 // /api/user/donatedfood
@@ -59,6 +64,10 @@ export const GET = async (req) => {
         }
         return displayUsersDonatedFoods(auth.userid)
     } catch (error) {
-
+        console.error("donate error:", error)
+        return NextResponse.json(
+            { success: false, message: "Something went wrong" },
+            { status: 500 }
+        )
     }
 }

@@ -5,12 +5,12 @@ const notoserif = Noto_Serif({
     weight: '800',
 })
 
-const Header = ({ children }) => {
+const Header = ({ title }) => {
     return (
         <div className="mt-[10px]">
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-5 text-center px-4">
                 <h2 className={`text-2xl sm:text-4xl ${notoserif.className} text-black`}>
-                    {children}
+                    {title}
                 </h2>
             </div>
         </div>

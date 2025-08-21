@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server"
+
+import { DayModel } from "../Models/Day"
 import { DonatedFoodModel } from "../Models/DonatedFoods"
 import { Usermodel } from "../Models/User"
 
-export const getalldonatedfoodpost = async () => {
+export const getalldonatedfoodpost = async (userID) => {
   try {
-    const posts = await DonatedFoodModel.find().sort({ createdAt: -1 }).populate({ path: 'pickedBy', select: 'name' })
+    const posts = await DonatedFoodModel.find({ isApproved: "approved", biter: { $nin: [userID] } }).sort({ createdAt: -1 }).populate({ path: 'pickedBy', select: 'name' })
     return NextResponse.json({
       success: true,
       message: `food post found`,
@@ -49,6 +51,44 @@ export const getfoodDetails = async (id) => {
   }
 
 }
+
+
+export const requestToReceiveFood = async (userID, foodID) => {
+  try {
+    if (!userID || !foodID) {
+      return NextResponse.json({
+        success: false,
+        message: `id not found`
+      })
+    }
+
+    const food = await DonatedFoodModel.findById(foodID)
+
+    if (food.biter.includes(userID)) {
+      return NextResponse.json({
+        success: false,
+        message: "You have already requested this food",
+      })
+    }
+
+    food.biter.push(userID)
+    await food.save()
+    return NextResponse.json({
+      success: true,
+      message: `request sent`
+    })
+
+  } catch (error) {
+    console.error("food getting error", error.message)
+    return NextResponse.json({
+      success: false,
+      message: "Internal server error"
+    }, { status: 500 })
+  }
+}
+
+
+
 
 export const receiveAFood = async (userid, foodid) => {
   try {
@@ -159,5 +199,70 @@ export const receiveTheFoodbyCollector = async (foodid) => {
       success: false,
       message: 'Internal server error',
     }, { status: 500 });
+  }
+}
+
+
+
+export const postday = async (formdata, userid) => {
+  try {
+    const { title, content, image } = formdata
+    if (!userid) {
+      return NextResponse.json({
+        success: false,
+        message: "Not authenticated"
+      }, { status: 401 })
+    }
+
+    if (!title || !content || !image) {
+      return NextResponse.json({
+        success: false,
+        message: "All fields are required"
+      }, { status: 400 })
+    }
+
+    const user = await Usermodel.findById(userid).select('-password')
+    if (!user) {
+      return NextResponse.json({
+        success: false,
+        message: "No user found"
+      }, { status: 404 })
+    }
+
+
+    const newDay = await DayModel.create({
+      title, content, image, blogger: userid
+    })
+
+    return NextResponse.json({
+      success: true,
+      message: "day posted successfully"
+    })
+
+  } catch (error) {
+    console.error("posting failed:", error.message)
+    return NextResponse.json({
+      success: false,
+      message: "Internal server error"
+    }, { status: 500 })
+  }
+
+}
+
+
+export const viewDays = async () => {
+  try {
+    const days = await DayModel.find().populate('blogger', 'name image');
+
+    return NextResponse.json({
+      success: true,
+      message: `found`,
+      days
+    })
+  } catch (error) {
+    return NextResponse.json({
+      success: false,
+      message: "Internal server error"
+    }, { status: 500 })
   }
 }

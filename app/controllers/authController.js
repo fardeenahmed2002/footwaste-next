@@ -1,156 +1,158 @@
-import { NextResponse } from "next/server.js"
-import { Usermodel } from "../Models/User.js"
 import bcrypt from 'bcryptjs'
-import transporter from "../Utils/nodemailer.js"
-import jwt from "jsonwebtoken"
 import { format } from 'date-fns'
+import jwt from "jsonwebtoken"
+import { NextResponse } from "next/server.js"
+import { Usermodel } from '../Models/User.js'
+import transporter from "../Utils/nodemailer.js"
+
 export const signup = async (formData) => {
-    const { name, email, password, contactNumber, address, noOfTeamMember, role, yourCollectingArea, ngoRegistrationNumber, collectorType, image = '', donorof, certificateimage = '', organizationID } = formData
-    try {
-        if (!name || !email || !password || !role || !contactNumber) {
-            return NextResponse.json({
-                message: `did not get data properly`,
-                success: false
-            })
-        }
-        const existinguser = await Usermodel.findOne({ email })
-        const existingContactNumber = await Usermodel.findOne({ contactNumber })
-        if (existinguser) {
-            return NextResponse.json({
-                message: `user already exist`,
-                success: false
-            })
-        }
-        if (existingContactNumber) {
-            return NextResponse.json({
-                message: `contact number already exist`,
-                success: false
-            })
-        }
-        const hashedpassword = await bcrypt.hash(password, 10)
-        let user
-        if (role === `user`) {
-            if (!image) {
-                return NextResponse.json({
-                    message: 'upload your image',
-                    success: false
-                })
-            }
-            user = new Usermodel({
-                name,
-                email,
-                password: hashedpassword,
-                contactNumber,
-                address,
-                isUser: true,
-                role: `user`,
-                image
-            })
-        }
-        else if (role === `donor`) {
-            if (!donorof || !image) {
-                return NextResponse.json({
-                    message: `did not get data properly`,
-                    success: false
-                })
-            }
-            user = new Usermodel({
-                name,
-                email,
-                password: hashedpassword,
-                contactNumber,
-                address,
-                isDonor: true,
-                role: `donor`,
-                image,
-                donorof,
-                donorBadge: '🥉 Copper'
-            })
-        }
-        else if (role === `organization`) {
-            if (!certificateimage) {
-                return NextResponse.json({
-                    success: false,
-                    message: 'your institutions certificate is missing'
-                })
-            }
-            user = new Usermodel({
-                name,
-                email,
-                password: hashedpassword,
-                contactNumber,
-                address,
-                isCollector: true,
-                role: `organization`,
-                image,
-                certificateimage,
-                noOfTeamMember,
-                yourCollectingArea,
-                ngoRegistrationNumber,
-                collectorType
-            })
-        }
-        else if (role === `collector`) {
-            if (!organizationID) {
-                return NextResponse.json({
-                    success: false,
-                    message: 'your institutions id is missing'
-                })
-            }
-            user = new Usermodel({
-                name,
-                email,
-                password: hashedpassword,
-                contactNumber,
-                address,
-                isCollector: true,
-                role: `collector`,
-                image,
-                yourCollectingArea,
-                organizationID,
-            })
+  const {
+    name,
+    email,
+    password,
+    contactNumber,
+    address,
+    role,
+    image = "",
+    userType,
+    donationCapacity,
+    license,
+    collectorType,
+    noOfTeamMember,
+    ngoRegistrationNumber,
+    yourCollectingArea,
+    organizationID,
+    cityCorp,
+    area,
+  } = formData;
 
-            const organization = await Usermodel.findById(organizationID)
-            
-        }
-        else {
-            return NextResponse.json({
-                message: `${role} role does not exist`,
-                success: false
-            })
-        }
-        await user.save()
-        const mailOptions = {
-            from: process.env.SENDER_EMAIL,
-            to: email,
-            subject: "Welcome to Website",
-            text: `Welcome to our site! You have registered with ${email}.`
-        };
-        await transporter.sendMail(mailOptions);
+  try {
+    // Validate basic required fields
+    if (!name || !email || !password || !role || !contactNumber) {
+      return NextResponse.json({
+        message: `Did not get data properly`,
+        success: false,
+      });
+    }
 
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: `7d` })
+    // Check existing user
+    const existingUser = await Usermodel.findOne({ email });
+    const existingContactNumber = await Usermodel.findOne({ contactNumber });
+    if (existingUser) {
+      return NextResponse.json({
+        message: `User already exists`,
+        success: false,
+      });
+    }
+    if (existingContactNumber) {
+      return NextResponse.json({
+        message: `Contact number already exists`,
+        success: false,
+      });
+    }
 
-        const response = NextResponse.json({
-            message: `Login successful`,
-            success: true,
-            user,
-            token
-        })
+    const hashedPassword = await bcrypt.hash(password, 10);
+    let user;
 
-        response.cookies.set("token", token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
-            maxAge: 7 * 24 * 60 * 60,
-            path: "/",
+    // Donor signup
+    if (role === "user") {
+      if (!image) {
+        return NextResponse.json({
+          message: "Upload your image",
+          success: false,
         });
+      }
+      user = new Usermodel({
+        name,
+        email,
+        password: hashedPassword,
+        contactNumber,
+        address,
+        isUser: true,
+        role: "user",
+        image,
+        userType,
+        donationCapacity,
+        license,
+        cityCorp,
+        area,
+      });
+    }
 
-        return response;
+    // Collector signup
+    else if (role === "collector") {
+      if (!organizationID) {
+        return NextResponse.json({
+          success: false,
+          message: "Your institution's ID is missing",
+        });
+      }
+      user = new Usermodel({
+        name,
+        email,
+        password: hashedPassword,
+        contactNumber,
+        address,
+        isCollector: true,
+        role: "collector",
+        image,
+        collectorType,
+        noOfTeamMember: Number(noOfTeamMember) || 0,
+        ngoRegistrationNumber: ngoRegistrationNumber || "",
+        organizationID,
+        yourCollectingArea: yourCollectingArea || "",
+        cityCorp,
+        area,
+      });
     }
-    catch (error) {
-        return NextResponse.json({ success: false, message: error.message });
+
+    // Invalid role
+    else {
+      return NextResponse.json({
+        message: `${role} role does not exist`,
+        success: false,
+      });
     }
-}
+
+    // Save user
+    await user.save();
+
+    // Send welcome email
+    const mailOptions = {
+      from: process.env.SENDER_EMAIL,
+      to: email,
+      subject: "Welcome to Website",
+      text: `Welcome to our site! You have registered with ${email}.`,
+    };
+    await transporter.sendMail(mailOptions);
+
+    // Generate JWT token
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: `7d`,
+    });
+
+    const response = NextResponse.json({
+      message: `Signup successful`,
+      success: true,
+      user,
+      token,
+    });
+
+    // Set token cookie
+    response.cookies.set("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
+      maxAge: 7 * 24 * 60 * 60,
+      path: "/",
+    });
+
+    return response;
+  } catch (error) {
+    return NextResponse.json({ success: false, message: error.message });
+  }
+};
+
 
 export const login = async (req) => {
     const { email, password } = await req.json()

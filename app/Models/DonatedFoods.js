@@ -37,10 +37,18 @@ const donatedFoodsSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, ref: 'User',
         default: null
     },
+    isApproved: {
+        type: String,
+        enum: ["pending", "approved", "rejected"],
+        default: "pending"
+    },
     status: {
         type: String,
         default: 'pending....'
     },
+    biter: [
+        { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: [] }
+    ],
     createdAt: {
         type: Date,
         default: Date.now

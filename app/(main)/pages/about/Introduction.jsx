@@ -16,20 +16,18 @@ export default function Introduction() {
       className="relative w-full min-h-[360px] flex items-center justify-center px-4 sm:px-6 md:px-12 bg-[#6baed6]/50"
       
     >
-      {/* Background image with reduced opacity */}
       <div
         className="absolute inset-0"
         style={{
           backgroundImage: "url('/background-veggie-pattern.png')",
           backgroundRepeat: 'repeat',
           backgroundSize: 'auto',
-          opacity: 0.3,           // Adjust opacity here (0 to 1)
-          pointerEvents: 'none',  // So background div doesn’t block clicks
+          opacity: 0.3,           
+          pointerEvents: 'none',  
           zIndex: 0,
         }}
       />
-      
-      {/* Content goes here, relative with higher z-index */}
+    
       <div
         className={`
           relative z-10
@@ -47,7 +45,6 @@ export default function Introduction() {
           Our Mission
         </h1>
 
-        {/* Short text for mobile */}
         <p
           className={`
             mt-2 text-sm sm:hidden text-black
@@ -57,8 +54,6 @@ export default function Introduction() {
         >
           We are committed to reducing food waste, alleviating hunger, and fostering sustainability. We rescue surplus food to help those in need.
         </p>
-
-        {/* Full text for sm and above */}
         <p
           className={`
             mt-6 hidden sm:block text-base md:text-lg text-black
@@ -73,9 +68,9 @@ export default function Introduction() {
         <button
           className="
             mt-8
-            bg-green-600 hover:bg-green-700
+            bg-[#FFC808] text-black hover:text-[#FFC808] hover:bg-[#1C2532]
             px-8 py-3 rounded-lg
-            text-white font-semibold
+             font-semibold
             transition-all
             w-full max-w-xs sm:w-auto
           "
@@ -84,5 +79,5 @@ export default function Introduction() {
         </button>
       </div>
     </div>
-  );
+  )
 }

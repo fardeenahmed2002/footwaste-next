@@ -54,7 +54,10 @@ export const POST = async (req) => {
         return result;
     } catch (error) {
         console.error("donate error:", error)
-        return new Response("Something went wrong", { status: 500 })
+        return NextResponse.json({
+            success:false,
+            message:`server error`
+        })
     }
 };
 

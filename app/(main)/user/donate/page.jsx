@@ -1,10 +1,9 @@
 "use client"
-import { useState, useEffect } from 'react'
-import { ImageIcon, MapPin, Calendar, PencilLine, Package, StickyNote, HandHeart } from "lucide-react"
-import axios from 'axios'
-import { toast } from 'react-toastify'
 import Loader from '@/app/loader/Loader'
-import { serverError } from '@/app/Utils/serverError'
+import axios from 'axios'
+import { Calendar, HandHeart, ImageIcon, MapPin, Package, PencilLine, StickyNote } from "lucide-react"
+import { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
 
 export default function Page() {
     const [imageOfDonatedFood, setImageOfDonatedFood] = useState(null)
@@ -100,9 +99,12 @@ export default function Page() {
                 setLoading(false)
                 setError(data.message)
             }
-        } catch (error) {
-            setLoading(false)
-            toast.error(serverError(error))
+        } catch (err) {
+            if (err.response) {
+                console.log(err.response.data);
+            } else {
+                console.log(err.message);
+            }
         }
     }
     return (

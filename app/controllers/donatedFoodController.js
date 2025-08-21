@@ -1,7 +1,10 @@
-import { NextResponse } from "next/server"
-import { DonatedFoodModel } from "../Models/DonatedFoods"
-import { Usermodel } from "../Models/User"
-import { deleteImage } from "../Utils/deleteimage"
+import { NextResponse } from "next/server";
+import { DonatedFoodModel } from "../Models/DonatedFoods";
+import FreeFoodDonation from "../Models/FreeFoodDonation";
+import { Usermodel } from "../Models/User";
+import { deleteImage } from "../Utils/deleteimage";
+
+
 export const postOfFoodDonation = async (formData, userid) => {
     const {
         title,
@@ -48,7 +51,6 @@ export const postOfFoodDonation = async (formData, userid) => {
             }
         }
 
-        // Create the donated food
         const food = new DonatedFoodModel({
             title,
             description,
@@ -65,34 +67,11 @@ export const postOfFoodDonation = async (formData, userid) => {
             })
         });
 
-        // Save the food donation
-        const donatedFood = await food.save();
 
-        // Reload and update the user
-        const updatedUser = await Usermodel.findByIdAndUpdate(
-            userid,
-            {
-                $inc: { totalDonatedFoods: 1 },
-                $push: { donatedFoods: donatedFood._id }
-            },
-            { new: true } // to return updated user
-        );
+        const donatedFood = await food.save()
 
-        // Calculate badge
-        let badge = "";
-        const count = updatedUser.totalDonatedFoods;
-        if (count > 7000) badge = "💎 Diamond";
-        else if (count > 3000) badge = "🥇 Gold";
-        else if (count > 500) badge = "🥈 Silver";
-        else if (count > 150) badge = "🥉 Bronze";
-
-        // If badge changed, update it
-        if (badge && updatedUser.donorBadge !== badge) {
-            updatedUser.donorBadge = badge;
-            updatedUser.notifications.push(`Congrates!! you have updated to ${badge}`)
-            await updatedUser.save();
-        }
-
+        user.donatedFoods.push(donatedFood._id)
+        await user.save()
         return NextResponse.json({
             success: true,
             message: 'Food donated successfully',
@@ -107,7 +86,6 @@ export const postOfFoodDonation = async (formData, userid) => {
         }, { status: 500 });
     }
 };
-
 
 
 export const displayUsersDonatedFoods = async (userid) => {
@@ -159,19 +137,22 @@ export const foodDetailsById = async (userid, foodid) => {
                 message: "no food id found"
             })
         }
-        const food = await DonatedFoodModel.findById(foodid)
+
+        const food = await DonatedFoodModel.findById(foodid).populate("biter", "name email image _id")
+
         if (!food) {
             return NextResponse.json({
                 success: false,
                 message: "no food details found",
-
             })
         }
+
         return NextResponse.json({
             success: true,
             message: "food found",
             food
         })
+
     } catch (error) {
         console.error("food details fetching failed", error.message)
         return NextResponse.json({
@@ -180,6 +161,7 @@ export const foodDetailsById = async (userid, foodid) => {
         }, { status: 500 })
     }
 }
+
 
 export const editDonatedfood = async (formData, userid, foodid) => {
     try {
@@ -277,3 +259,58 @@ export const deletefoodbyid = async (userid, foodid) => {
         }, { status: 500 })
     }
 }
+
+
+export const freeDonateFood = async (data) => {
+    try {
+        const {
+            donorName,
+            address,
+            email,
+            phone,
+            pickupLocation,
+            time,
+            foodName,
+            quantity,
+        } = data;
+
+        if (
+            !donorName ||
+            !address ||
+            !email ||
+            !phone ||
+            !pickupLocation ||
+            !time ||
+            !foodName ||
+            !quantity
+        ) {
+            return NextResponse.json(
+                { success: false, message: "All fields are required!" },
+                { status: 400 }
+            );
+        }
+
+        const newDonation = await FreeFoodDonation.create({
+            donorName,
+            address,
+            email,
+            phone,
+            pickupLocation,
+            time,
+            foodName,
+            quantity,
+        });
+
+        return NextResponse.json({
+            success: true,
+            message: "Food donation submitted successfully!",
+            donation: newDonation,
+        });
+    } catch (err) {
+        console.error("Error in donateFood controller:", err);
+        return NextResponse.json(
+            { success: false, message: "Something went wrong!" },
+            { status: 500 }
+        );
+    }
+};

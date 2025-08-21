@@ -1,14 +1,15 @@
 'use client';
 
-import { useEffect, useRef, useState, useContext } from 'react';
 import { Context } from '@/app/contextapi/ContextProvider';
-import { useParams, useRouter } from 'next/navigation';
-import { io } from 'socket.io-client';
-import axios from 'axios';
 import { serverError } from '@/app/Utils/serverError';
+import axios from 'axios';
 import { Menu, X } from 'lucide-react';
+import { useParams, useRouter } from 'next/navigation';
+import { useContext, useEffect, useRef, useState } from 'react';
+import { io } from 'socket.io-client';
 
 let socket;
+let typingTimeout;
 
 export default function ChatPage() {
   const { user } = useContext(Context);
@@ -17,14 +18,17 @@ export default function ChatPage() {
 
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
   const scrollRef = useRef();
   const [isonline, setIsonline] = useState(null);
   const [showSidebar, setShowSidebar] = useState(false);
 
+  // Connect to socket API route
   useEffect(() => {
     fetch('/api/socket');
   }, []);
 
+  // Socket setup
   useEffect(() => {
     if (!user?._id || !receiverId) return;
 
@@ -50,12 +54,22 @@ export default function ChatPage() {
       ]);
     });
 
+    // ✅ Listen for typing events
+    socket.on('showTyping', (senderId) => {
+      if (senderId === receiverId) setIsTyping(true);
+    });
+
+    socket.on('hideTyping', (senderId) => {
+      if (senderId === receiverId) setIsTyping(false);
+    });
+
     return () => {
       socket.disconnect();
       setIsonline(false);
     };
   }, [user?._id, receiverId]);
 
+  // Fetch chat history
   useEffect(() => {
     const getAllMessages = async () => {
       try {
@@ -75,12 +89,28 @@ export default function ChatPage() {
     if (receiverId) getAllMessages();
   }, [receiverId]);
 
+  // Auto scroll on new message
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Handle typing
+  const handleTyping = (e) => {
+    setNewMessage(e.target.value);
+
+    socket.emit('typing', { senderId: user._id, receiverId });
+
+    clearTimeout(typingTimeout);
+    typingTimeout = setTimeout(() => {
+      socket.emit('stopTyping', { senderId: user._id, receiverId });
+    }, 2000);
+  };
+
+  // Send message
   const handleSend = () => {
     if (!newMessage.trim()) return;
+
+    socket.emit('stopTyping', { senderId: user._id, receiverId }); // stop typing on send
 
     socket.emit('sendMessage', {
       senderId: user._id,
@@ -104,6 +134,7 @@ export default function ChatPage() {
     router.push(`/pages/chat/${id}`);
     setShowSidebar(false);
   };
+
   if (!user) {
     return <div className="p-10 text-center text-gray-500">Loading chat...</div>;
   }
@@ -196,8 +227,8 @@ export default function ChatPage() {
                 })}
                 <div
                   className={`max-w-xs px-4 py-2 rounded-2xl text-sm ${msg.sender === user._id
-                      ? 'bg-blue-600 text-white rounded-br-none'
-                      : 'bg-white text-gray-800 rounded-bl-none border'
+                    ? 'bg-blue-600 text-white rounded-br-none'
+                    : 'bg-white text-gray-800 rounded-bl-none border'
                     }`}
                 >
                   {msg.message}
@@ -210,6 +241,15 @@ export default function ChatPage() {
                 </div>
               </div>
             ))}
+
+            {/* ✅ Typing indicator */}
+            {isTyping && (
+              <div className="px-4 py-1 text-gray-500 text-sm italic">
+                {user?.chattedpersons?.find(p => p.receiverId === receiverId)?.name || 'User'} is typing...
+              </div>
+            )}
+
+
           </div>
 
           {/* Input Box */}
@@ -217,7 +257,7 @@ export default function ChatPage() {
             <input
               type="text"
               value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
+              onChange={handleTyping}
               onKeyDown={(e) => e.key === 'Enter' && handleSend()}
               placeholder="Type a message..."
               className="flex-1 px-4 py-2 border rounded-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -233,5 +273,4 @@ export default function ChatPage() {
       </div>
     </div>
   );
-
 }

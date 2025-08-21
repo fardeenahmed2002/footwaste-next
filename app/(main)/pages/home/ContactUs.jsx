@@ -1,14 +1,15 @@
 "use client";
-import { useState } from "react";
-import Link from "next/link";
+import { Context } from "@/app/contextapi/ContextProvider.jsx";
 import { motion } from "framer-motion";
+import { Mail, MapPin, Phone } from "lucide-react";
+import Link from "next/link";
+import { useContext, useState } from "react";
 import Header from "../../components/Header.jsx";
-import { Phone, Mail, MapPin } from "lucide-react";
 
 export default function ContactUs() {
   const [place, setPlace] = useState("Uttara");
   const [input, setInput] = useState("");
-
+  const { inEng } = useContext(Context)
   const handleSearch = () => {
     if (input.trim() !== "") {
       setPlace(input.trim());
@@ -24,11 +25,14 @@ export default function ContactUs() {
       <div className="absolute inset-0 backdrop-blur-sm z-0" />
 
       <div className="relative z-10 w-full max-w-6xl mx-auto p-6 text-white">
-        <Header>Contact Us</Header>
+        <Header title={inEng ? "Contact Us" : "যোগাযোগ করুন"} />
 
         <p className="mt-4 max-w-3xl mx-auto text-lg leading-relaxed text-center text-black">
-          Whether you're interested in volunteering, donating, or just want to say hello — we’d love to hear from you. Our team is dedicated to building a stronger, more sustainable community by reducing food waste and fighting hunger. Reach out anytime!
+          {inEng
+            ? "Whether you're interested in volunteering, donating, or just want to say hello — we’d love to hear from you. Our team is dedicated to building a stronger, more sustainable community by reducing food waste and fighting hunger. Reach out anytime!"
+            : "আপনি যদি স্বেচ্ছাসেবক হিসেবে অংশ নিতে চান, দান করতে চান, বা কেবল হ্যালো বলতে চান — আমরা আপনার কাছ থেকে শোনা পছন্দ করব। আমাদের দল খাদ্য অপচয় কমিয়ে এবং ক্ষুধার বিরুদ্ধে লড়াই করে একটি শক্তিশালী, টেকসই কমিউনিটি গড়তে প্রতিশ্রুতিবদ্ধ। যে কোনো সময় যোগাযোগ করুন!"}
         </p>
+
 
         <div className="mt-12 flex flex-col-reverse lg:flex-row gap-12">
           {/* Info Block */}
@@ -57,7 +61,7 @@ export default function ContactUs() {
                 </div>
               </div>
               <motion.button
-                className="mt-4 bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-full transition-all duration-300"
+                className="mt-4 bg-[#FFC808] text-black hover:text-[#FFC808] hover:bg-[#1C2532] font-semibold px-6 py-3 rounded-full transition-all duration-300"
                 whileHover={{ scale: 1.05 }}
               >
                 <Link href="/contact">Get in Touch</Link>

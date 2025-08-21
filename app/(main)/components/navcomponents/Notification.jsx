@@ -1,20 +1,22 @@
 "use client"
 
 import { Context } from "@/app/contextapi/ContextProvider"
-import { useContext, useState, useEffect } from "react"
-import { Bell, Trash2 } from "lucide-react"
 import axios from "axios"
+import { Bell, Trash2 } from "lucide-react"
+import { useContext, useEffect, useState } from "react"
 import { toast } from "react-toastify"
 const Notification = () => {
     const { user, isloggedin } = useContext(Context)
     const [showNotification, setShowNotification] = useState(false)
     const [allnotifications, setAllnotifications] = useState(user?.notifications || [])
+    const [count, setCount] = useState(0)
+
     const handledelete = async (e, index) => {
         e.preventDefault()
         try {
             axios.defaults.withCredentials = true
 
-            const { data } = await axios.post('/api/notify', { index })
+            const { data } = await axios.post('/api/notification/delete', { index })
             if (data.success) {
 
                 setAllnotifications((prev) => {
@@ -22,7 +24,7 @@ const Notification = () => {
                         return i !== index
                     });
                 });
-                toast.success('Deleted successfully');
+                toast.success('Deleted successfully')
             }
             if (!data.success) {
                 toast.error(data.message)
@@ -33,16 +35,43 @@ const Notification = () => {
     }
     useEffect(() => {
         if (user?.notifications) {
-            setAllnotifications(user.notifications);
+            setAllnotifications(user.notifications)
+            setCount(user.notificationcount)
         }
-    }, [user]);
+    }, [user])
+
+    const manageNotification = async () => {
+        setShowNotification((prev) => !prev)
+        try {
+
+            axios.defaults.withCredentials = true
+            const { data } = await axios.post(`/api/notification/reset`)
+            if (data.success) {
+                console.log(``)
+            }
+            if (user) {
+                setCount(0)
+            }
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
     return (
         isloggedin && (
             <div className="relative cursor-pointer">
-                <Bell
-                    size={24}
-                    className="w-10 h-10 text-white bg-[#6baed6]/20 border border-[#6baed6] rounded-full p-2 shadow-md transition duration-300 hover:scale-105 hover:shadow-blue-400/40"
-                    onClick={() => { setShowNotification((prev) => !prev) }} />
+                <div className="relative inline-block">
+                    <Bell
+                        size={24}
+                        className="mt-[8px] w-10 h-10 text-white bg-[#6baed6]/20 border border-[#6baed6] rounded-full p-2 shadow-md transition duration-300 hover:scale-105 hover:shadow-blue-400/40"
+                        onClick={manageNotification}
+                    />
+                    {user?.notificationcount > 0 && (
+                        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
+                            {count}
+                        </span>
+                    )}
+                </div>
 
                 {showNotification && (
                     <div className=" absolute top-16 -translate-x-[7%] w-[80vw] max-w-[350px] h-[500px] bg-white border border-[#6baed6]rounded-lg shadow-xl z-[9999] p-4 backdrop-blur-md md:left-auto md:translate-x-0 md:right-[-104px] md:w-80">

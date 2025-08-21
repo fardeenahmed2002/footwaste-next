@@ -14,7 +14,7 @@ const Page = () => {
     const fetchBlogs = async () => {
         try {
             axios.defaults.withCredentials = true
-            const { data } = await axios.get("/api/user/blog")
+            const { data } = await axios.get("/api/blog")
             if (data.success) {
                 setListOfBlogs(data.blog)
             } else {

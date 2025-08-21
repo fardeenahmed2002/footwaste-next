@@ -1,9 +1,10 @@
 import mongoose from "mongoose";
 import validator from "validator";
+
 const bdPhoneRegex = /^(?:\+8801|01)[3-9]\d{8}$/;
 
 const userSchema = new mongoose.Schema({
-    name: String,
+    name: { type: String, required: true },
     email: {
         type: String,
         required: [true, "Email is required"],
@@ -15,10 +16,7 @@ const userSchema = new mongoose.Schema({
             message: "Invalid email format",
         },
     },
-    password: {
-        type: String,
-        minLength: [3, "Min password length is 3"],
-    },
+    password: { type: String, required: true, minLength: [3, "Min password length is 3"] },
     contactNumber: {
         type: String,
         required: [true, "Phone number is required"],
@@ -26,7 +24,7 @@ const userSchema = new mongoose.Schema({
         trim: true,
         match: [bdPhoneRegex, "Invalid phone number"],
     },
-    address: String,
+    address: { type: String },
     verificationOtp: { type: Number, default: 0 },
     verificationOtpExpireAt: { type: Number, default: 0 },
     isVerified: { type: Boolean, default: false },
@@ -36,51 +34,39 @@ const userSchema = new mongoose.Schema({
     isUser: { type: Boolean, default: false },
     isCollector: { type: Boolean, default: false },
     isDonor: { type: Boolean, default: false },
-    donorof: { type: String, default: '' },
+    userType: { type: String, default: '' },
     isBanned: { type: Boolean, default: false },
     banCount: { type: Number, default: 0 },
     role: { type: String, default: "" },
+
+    // Collector-specific fields
     collectorType: { type: String, default: "" },
-    noOfTeamMember: { type: String, default: "" },
+    noOfTeamMember: { type: Number, default: 0 },
     ngoRegistrationNumber: { type: String, default: "" },
     yourCollectingArea: { type: String, default: "" },
-    image: { type: String },
-    organizationID: {
-        type: String
-    },
+    organizationID: { type: String, default: "" },
 
-    certificateimage: { type: String, default: '' },
-    donatedFoods: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "DonatedFoods",
-            default: []
-        }
-    ],
-    totalDonatedFoods: {
-        type: Number,
-        default: 0
-    },
-    blogs: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Blog",
-            default: []
-        }
-    ],
-    starredBlogs: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Blog",
-            default: []
-        }
-    ],
+    // Donor-specific fields
+    donationCapacity: { type: String, default: "" },
+    license: { type: String, default: "" },
+    userType: { type: String, default: "" },
+
+    // Common fields
+    image: { type: String, default: "" },
+    certificateimage: { type: String, default: "" },
+    cityCorp: { type: String, default: "" },
+    area: { type: String, default: "" },
+
+    donatedFoods: [{ type: mongoose.Schema.Types.ObjectId, ref: "DonatedFoods", default: [] }],
+    totalDonatedFoods: { type: Number, default: 0 },
+    blogs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Blog", default: [] }],
+    starredBlogs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Blog", default: [] }],
+
     chattedpersons: [
         {
             receiverId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
             name: String,
             image: String,
-            default: []
         }
     ],
     chatRequest: [
@@ -88,17 +74,12 @@ const userSchema = new mongoose.Schema({
             senderId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
             name: String,
             image: String,
-            default: []
         }
     ],
     receivedfoods: [{ type: mongoose.Schema.Types.ObjectId, ref: "DonatedFoods" }],
     notifications: [{ type: String, default: [] }],
     notificationcount: { type: Number, default: 0 },
-    donorBadge: {
-        type: String,
-        default: ''
-    },
     createdAt: { type: Date, default: Date.now },
-})
+});
 
 export const Usermodel = mongoose.models.User || mongoose.model("User", userSchema);

@@ -1,55 +1,87 @@
-"use client"
+"use client";
 
 import { Context } from "@/app/contextapi/ContextProvider";
-import { useContext } from "react";
 import Link from "next/link";
-import {
-  Home, Info, Phone, HandHelping, FileText, Hamburger
-} from "lucide-react";
+import { useContext } from "react";
 
 const NavPages = () => {
-  const navLinkClass =
-    "flex items-center gap-2 text-white hover:text-green-950 font-semibold px-4 py-2 rounded-full transition-all bg-[#6baed6]/10 backdrop-blur-md border border-white/30 shadow-sm w-full md:w-auto";
+  const { user, inEng } = useContext(Context);
 
-  const { user } = useContext(Context);
+  const navLinkClass =
+    "px-3 py-2 text-sm font-bold text-gray-800 hover:text-black transition whitespace-nowrap";
 
   return (
-    <div className="flex flex-col md:flex-row flex-wrap items-start md:items-center gap-3 md:gap-4 w-full md:w-auto">
-      {user?.role !== 'collector' && (
-        <>
-          <Link href="/" className={navLinkClass}>
-            <Home size={18} /> Home
+    <div className="w-full flex justify-center">
+      <nav className="flex flex-nowrap px-6 py-3 rounded-full bg-white shadow-md overflow-x-auto">
+        
+        {/* Public routes */}
+        {user?.role !== "collector" &&
+          user?.role !== "user" &&
+          user?.role !== "admin" &&
+          user?.role !== "donor" && (
+            <>
+              <Link href="/" className={navLinkClass}>
+                {inEng ? "Home" : "প্রধান পাতা"}
+              </Link>
+              <Link href="/pages/about" className={navLinkClass}>
+                {inEng ? "About Us" : "আমাদের সম্পর্কে"}
+              </Link>
+              <Link href="/pages/day" className={navLinkClass}>
+                {inEng ? "Our NGOs" : "আমাদের এনজিও"}
+              </Link>
+              <Link href="/pages/contactus" className={navLinkClass}>
+                {inEng ? "Contact" : "যোগাযোগ"}
+              </Link>
+              <Link href="/pages/allblogs" className={navLinkClass}>
+                {inEng ? "Blogs" : "ব্লগ"}
+              </Link>
+              <Link href="/pages/partner-organizations" className={navLinkClass}>
+                {inEng ? "Partner Organizations" : "সহযাত্রী সংগঠন"}
+              </Link>
+            </>
+          )}
+
+        {/* Collector routes */}
+        {user?.role === "collector" && user?.isVerified && (
+          <>
+            <Link href="/collector/allfoods" className={navLinkClass}>
+              {inEng ? "Donated Foods" : "দানকৃত খাবার"}
+            </Link>
+            <Link href="/collector/day" className={navLinkClass}>
+              {inEng ? "Post a Day" : "একদিনের পোস্ট"}
+            </Link>
+          </>
+        )}
+
+        {/* User routes */}
+        {user?.isVerified && user?.role === "user" && (
+          <>
+            <Link href="/user/donate" className={navLinkClass}>
+              {inEng ? "Donate" : "দান করুন"}
+            </Link>
+            <Link href="/pages/day" className={navLinkClass}>
+              {inEng ? "Our NGOs" : "আমাদের এনজিও"}
+            </Link>
+          </>
+        )}
+
+        {/* Donor routes */}
+        {user?.isVerified && user?.role === "donor" && (
+          <Link href="/donor" className={navLinkClass}>
+            {inEng ? "Donate" : "দান করুন"}
           </Link>
-          <Link href="/pages/about" className={navLinkClass}>
-            <Info size={18} /> About
+        )}
+
+        {/* Admin routes */}
+        {user?.isVerified && user?.role === "admin" && (
+          <Link href="/admin" className={navLinkClass}>
+            {inEng ? "Home" : "প্রধান পাতা"}
           </Link>
-          <Link href="/pages/contactus" className={navLinkClass}>
-            <Phone size={18} /> Contact
-          </Link>
-        </>
-      )}
+        )}
 
-      {user?.role === "collector" && user?.isVerified && (<Link href="/collector/allfoods" className={navLinkClass}>
-        <Hamburger size={18} /> Donated Foods
-      </Link>)}
-
-      <Link href="/pages/allblogs" className={navLinkClass}>
-        <FileText size={18} /> Blogs
-      </Link>
-
-      {user?.isVerified && user?.role === "user" && (
-        <Link href="/user/donate" className={navLinkClass}>
-          <HandHelping size={18} /> Donate
-        </Link>
-      )}
-
-      {user?.isVerified && user?.role === "donor" && (
-        <Link href="/donor" className={navLinkClass}>
-          <HandHelping size={18} /> Donate
-        </Link>
-      )}
+      </nav>
     </div>
-  )
-}
+  );
+};
 
 export default NavPages;

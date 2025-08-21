@@ -3,7 +3,6 @@ import { Context } from "@/app/contextapi/ContextProvider"
 import Image from "next/image"
 import Link from "next/link"
 import { useContext } from "react"
-import { Info } from "lucide-react"
 export default function ProfileCard() {
   const { user, loading } = useContext(Context)
 
@@ -42,12 +41,6 @@ export default function ProfileCard() {
                 <div>
                   <h2 className="text-2xl sm:text-3xl font-bold text-cyan-300">{user.name}</h2>
                   <p className="text-gray-200">({user.role})</p> <br />
-                  {user.role === 'donor' && (
-                    <div className="flex items-center gap-1 text-sm font-medium text-yellow-600 bg-yellow-100 px-3 py-1 rounded-full w-fit shadow-sm">
-                      <span>{user.donorBadge}</span>
-                      <Link href={'/pages/badgeinfo'}> <Info size={16} className="text-yellow-700 cursor-pointer hover:scale-110 transition-transform" /></Link>
-                    </div>
-                  )}
 
                 </div>
                 <span className="text-green-400 font-semibold">● Online</span>
@@ -103,7 +96,7 @@ export default function ProfileCard() {
                   </li>
                   <li>
                     <Link
-                      href="/user/blog/myblogs"
+                      href="/pages/blog/myblogs"
                       className="text-cyan-300 hover:text-cyan-100 hover:underline"
                     >
                       📝 My Blogs
@@ -122,6 +115,14 @@ export default function ProfileCard() {
                     )
                   }
 
+                  {user.role === `admin` && (
+                    <li>
+                      <Link href={"/admin/history"}
+                        className="text-cyan-300 hover:text-cyan-100 hover:underline">
+                        🍕 Food history
+                      </Link>
+                    </li>
+                  )}
 
                 </ul>
               </div>

@@ -1,28 +1,29 @@
 'use client'
-import { useContext, useState } from 'react'
+import { Context } from '@/app/contextapi/ContextProvider'
 import axios from 'axios'
-import Link from 'next/link'
-import Image from 'next/image'
 import {
-  UserCircle,
-  Settings,
-  LogOut,
   LogIn,
+  LogOut,
   Menu,
+  Settings,
+  UserCircle,
   X,
 } from 'lucide-react'
-import { Context } from '@/app/contextapi/ContextProvider'
+import Image from 'next/image'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import Verify from './navcomponents/Verify'
+import { useContext, useState } from 'react'
+import Chat from './navcomponents/Chat'
 import Logo from './navcomponents/Logo'
 import NavPages from './navcomponents/NavPages'
 import Notification from './navcomponents/Notification'
-import Chat from './navcomponents/Chat'
+import Verify from './navcomponents/Verify'
 
 const Navbar = () => {
-  const { isloggedin, setUser, setIsloggedin, user } = useContext(Context)
+  const { isloggedin, setUser, setIsloggedin, user, inEng, toggleLanguage } = useContext(Context)
   const router = useRouter()
   const [mobileMenu, setMobileMenu] = useState(false)
+
 
   const handlelogout = async () => {
     try {
@@ -39,12 +40,12 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="bg-[#2171b5]/70 border-b border-[#6baed6] shadow-md px-4 py-3 sticky top-0 z-50 backdrop-blur-md">
-      <div className="absolute inset-0 bg-black/10 backdrop-blur-md z-0" />
+    <nav className="bg-[#1F2937] border-b px-4 py-3 sticky top-0 z-50 backdrop-blur-md">
+      <div className="absolute inset-0 bg-black/10 backdrop-blur-md z-0 " />
       {isloggedin && !user?.isVerified && <Verify />}
 
       <div className="relative z-10 flex items-center justify-between md:justify-between">
-        {/* Left side: Logo */}
+        
         <Logo />
 
         {/* Mobile Hamburger Toggle */}
@@ -55,60 +56,103 @@ const Navbar = () => {
         </div>
 
         {/* Desktop Menu */}
-        <div className="hidden md:flex items-center gap-6">
-          <NavPages />
-          <Notification />
-          <Chat />
-          {isloggedin ? (
-            <div className="dropdown dropdown-end">
-              <button tabIndex={0} className="btn btn-ghost btn-circle avatar">
-                {user?.image ? (
-                  <Image
-                    src={user.image}
-                    alt="profile img"
-                    width={40}
-                    height={40}
-                    className="rounded-full object-cover"
-                  />
-                ) : (
-                  <UserCircle size={30} />
-                )}
-              </button>
-              <ul
-                tabIndex={0}
-                className="menu menu-sm dropdown-content mt-3 p-2 shadow backdrop-blur-md border border-white/30 rounded-box w-52 z-10"
-              >
-                <li>
-                  <Link href="/pages/profile" className="flex items-center gap-2 bg-white mb-2">
-                    <UserCircle size={18} /> Profile
-                  </Link>
-                </li>
-                <li>
-                  <button className="flex items-center gap-2 w-full text-left bg-white mb-2">
-                    <Settings size={18} /> Settings
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={handlelogout}
-                    className="flex items-center gap-2 text-red-500 hover:text-red-700 w-full text-left bg-white"
-                    type="button"
-                  >
-                    <LogOut size={18} /> Logout
-                  </button>
-                </li>
-              </ul>
-            </div>
-          ) : (
-            <button
-              onClick={() => router.push('/login')}
-              className="group flex items-center gap-2 bg-white/30 backdrop-blur-md border border-white/30 text-white px-5 py-2 rounded-full font-semibold shadow hover:scale-105 transition-all"
+
+        <div className="hidden md:flex items-center justify-between w-full">
+         
+
+          {/* Middle: NavPages centered */}
+          <div className="flex-1 flex justify-center">
+            <NavPages />
+          </div>
+
+          {/* Right: Notification, Chat, User/Login, Language Switch */}
+          <div className="flex items-center gap-6">
+            <Notification />
+            <Chat />
+            {isloggedin ? (
+              <div className="dropdown dropdown-end">
+                <button tabIndex={0} className="btn btn-ghost btn-circle avatar">
+                  {user?.image ? (
+                    <Image
+                      src={user.image}
+                      alt="profile img"
+                      width={40}
+                      height={40}
+                      className="rounded-full object-cover"
+                    />
+                  ) : (
+                    <UserCircle size={30} />
+                  )}
+                </button>
+                <ul
+                  tabIndex={0}
+                  className="menu menu-sm dropdown-content mt-3 p-2 shadow backdrop-blur-md border border-white/30 rounded-box w-52 z-10"
+                >
+                  <li>
+                    <Link href="/pages/profile" className="flex items-center gap-2 bg-white mb-2">
+                      <UserCircle size={18} /> Profile
+                    </Link>
+                  </li>
+                  <li>
+                    <button className="flex items-center gap-2 w-full text-left bg-white mb-2">
+                      <Settings size={18} /> Settings
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={handlelogout}
+                      className="flex items-center gap-2 text-red-500 hover:text-red-700 w-full text-left bg-white"
+                      type="button"
+                    >
+                      <LogOut size={18} /> Logout
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 bg-[#FFC808] backdrop-blur-md rounded-full px-1 py-1 shadow-inner text-sm">
+                <button
+                  onClick={() => router.push('/login')}
+                  className="px-3 py-1 rounded-full font-semibold text-[#1F2937] hover:text-[#FFC808] hover:bg-[#1F2937] transition-colors duration-300"
+                >
+                  {inEng ? "Login" : "লগ ইন"}
+                </button>
+
+                <span className="text-[#1F2937]">|</span>
+
+                <button
+                  onClick={() => router.push('/signup')}
+                  className="px-3 py-1 rounded-full font-semibold text-[#1F2937] hover:text-[#FFC808] hover:bg-[#1F2937] transition-colors duration-300"
+                >
+                  {inEng ? "Signup" : "সাইন আপ"}
+                </button>
+              </div>
+            )}
+
+            {/* Language Switch */}
+            <div
+              onClick={toggleLanguage}
+              className={`relative w-24 h-10 rounded-full cursor-pointer transition-colors duration-300 ${inEng ? "bg-purple-600" : "bg-green-600"
+                }`}
             >
-              <LogIn size={20} className="group-hover:translate-x-1 transition-transform" />
-              Login
-            </button>
-          )}
+              <span className="absolute left-2 top-1/2 -translate-y-1/2 text-white font-semibold text-sm">
+                EN
+              </span>
+              <span className="absolute right-2 top-1/2 -translate-y-1/2 text-white font-semibold text-sm">
+                BN
+              </span>
+              <div
+                className={`absolute top-1 w-8 h-8 bg-white rounded-full shadow-md transition-transform duration-300 flex items-center justify-center font-bold text-black ${inEng ? "left-1" : "right-1"
+                  }`}
+              >
+                {inEng ? "E" : "B"}
+              </div>
+            </div>
+          </div>
         </div>
+
+
+
       </div>
 
       {/* Mobile Menu (Dropdown Style) */}

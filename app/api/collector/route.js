@@ -1,10 +1,18 @@
 import { getalldonatedfoodpost, receiveAFood } from "@/app/controllers/collectorController"
 import connectToDB from "@/app/Utils/database"
 import { userAuth } from "@/app/middlewares/userAuth"
-export const GET = async () => {
+import { NextResponse } from "next/server"
+export const GET = async (req) => {
     try {
         await connectToDB()
-        return await getalldonatedfoodpost()
+        const auth= await userAuth(req)
+        if(!auth.authorized){
+            return NextResponse.json({
+                success:false,
+                message:`not authorized`
+            })
+        }
+        return await getalldonatedfoodpost(auth.userid)
     } catch (error) {
         console.log(error)
     }

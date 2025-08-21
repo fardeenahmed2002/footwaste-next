@@ -1,5 +1,5 @@
 "use client"
-import axios from "axios"
+import axios from "axios";
 import { createContext, useEffect, useState } from "react";
 export const Context = createContext()
 
@@ -8,7 +8,10 @@ const ContextProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [isloggedin, setIsloggedin] = useState(false)
-
+  const [inEng, setInEng] = useState(true)
+  const toggleLanguage = () => {
+    setInEng(prev => !prev)
+  }
   const getuserdata = async () => {
     try {
       const { data } = await axios.get('/api/user/userdata', { withCredentials: true })
@@ -43,7 +46,9 @@ const ContextProvider = ({ children }) => {
     loading,
     getuserdata,
     setIsloggedin,
-    setUser
+    setUser,
+    inEng,
+    toggleLanguage
   }
   return (
     <Context.Provider value={value}>

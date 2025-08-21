@@ -1,9 +1,10 @@
-import "../globals.css"
-import Navbar from "./components/Navbar"
-import ChatWidget from "./components/ChatWidget"
-import ContextProvider from "../contextapi/ContextProvider"
 import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
+import ContextProvider from "../contextapi/ContextProvider"
+import "../globals.css"
+import ChatWidget from "./components/ChatWidget"
+import Navbar from "./components/Navbar"
+import ScrollProgress from "./components/ScrollProgress"
 export const metadata = {
   title: "Food Waste Rescue",
   description: "Help reduce food waste and support local communities.",
@@ -18,6 +19,7 @@ export default function RootLayout({ children }) {
       <body cz-shortcut-listen="true">
         <ContextProvider>
           <Navbar />
+          <ScrollProgress />
           <ChatWidget />
           {children}
           <ToastContainer position="top-center" />
@@ -26,4 +28,3 @@ export default function RootLayout({ children }) {
     </html>
   )
 }
- 

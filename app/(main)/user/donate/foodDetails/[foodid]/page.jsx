@@ -1,19 +1,29 @@
 'use client'
 
-import { useEffect, useState } from "react"
-import { useParams } from "next/navigation"
-import axios from "axios"
 import Loader from "@/app/loader/Loader"
-import Link from "next/link"
+import axios from "axios"
 import {
-  Edit, MapPin, CalendarDays,
-  ClipboardList, Package, Info
+  CalendarDays,
+  CheckCircle,
+  ClipboardList,
+  Edit,
+  Eye,
+  Info,
+  MapPin,
+  MessageCircle,
+  Package,
+  XCircle
 } from "lucide-react"
+import Link from "next/link"
+import { useParams } from "next/navigation"
+import { useEffect, useState } from "react"
+import { toast } from "react-toastify"
 
 const FoodDetailsPage = () => {
   const { foodid } = useParams()
   const [food, setFood] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [showBitersModal, setShowBitersModal] = useState(false)
 
   const fetchFood = async () => {
     try {
@@ -32,6 +42,18 @@ const FoodDetailsPage = () => {
   useEffect(() => {
     if (foodid) fetchFood()
   }, [foodid])
+
+  const acceptNGO = async (ngoid, foodid) => {
+    try {
+
+      const { data } = await axios.post(`/api/user/acceptNGO`, { ngoID: ngoid, foodID: foodid })
+      if (data.success) {
+        toast.success(`Notification sent . wait for reply of ngo`)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const statusColor = {
     "received": "bg-green-600",
@@ -117,6 +139,57 @@ const FoodDetailsPage = () => {
               </div>
             </div>
           </div>
+
+          {/* Eye icon */}
+          {food.biter?.length > 0 && (
+            <button
+              onClick={() => setShowBitersModal(true)}
+              className="absolute bottom-4 right-4 bg-white/20 hover:bg-white/40 p-3 rounded-full backdrop-blur-md transition"
+              title="View Biters"
+            >
+              <Eye className="w-6 h-6 text-white" />
+            </button>
+          )}
+
+          {/* Biters Modal */}
+          {showBitersModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+              <div className="bg-white rounded-xl max-w-md w-full p-6 relative">
+                <h2 className="text-lg font-bold mb-4">Biters</h2>
+                <button
+                  onClick={() => setShowBitersModal(false)}
+                  className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 font-bold"
+                >
+                  ✕
+                </button>
+                <div className="space-y-4 max-h-80 overflow-y-auto">
+                  {food.biter.length === 0 ? (
+                    <p className="text-gray-500">No biters yet.</p>
+                  ) : (
+                    food.biter.map((b) => (
+                      <div key={b._id} className="flex items-center gap-3">
+                        <img
+                          src={b.image || "/default-user.png"}
+                          alt={b.name}
+                          className="w-10 h-10 rounded-full object-cover"
+                        />
+                        <div className="flex flex-row gap-[20px]">
+                          <div>
+                            <span className="font-medium text-gray-700 mr-[100px]">{b.name}</span>
+                          </div>
+                          <div className="flex flex-row gap-[10px]">
+                            <CheckCircle className="cursor-pointer" onClick={() => acceptNGO(b._id, food._id)} />
+                            <XCircle className="cursor-pointer" />
+                            <MessageCircle className="cursor-pointer" />
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

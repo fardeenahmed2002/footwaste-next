@@ -1,13 +1,13 @@
 "use client"
-import axios from "axios";
-import Link from "next/link";
-import { motion } from 'framer-motion'
-import { useContext, useState } from "react";
 import { Context } from "@/app/contextapi/ContextProvider";
+import axios from "axios";
+import { motion } from 'framer-motion';
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useContext, useEffect, useState } from "react";
 import Loader from "../Loader";
 export default function page() {
-  const { getuserdata, setIsloggedin } = useContext(Context)
+  const { getuserdata, setIsloggedin, user } = useContext(Context)
   const [loading, setLoading] = useState(false)
   const [formdata, setFormdata] = useState({
     email: '',
@@ -36,7 +36,6 @@ export default function page() {
         setLoading(true)
         setIsloggedin(true)
         await getuserdata()
-        navigate.push("/")
       }
       else {
         setError(data.message)
@@ -45,6 +44,20 @@ export default function page() {
       console.log(error.message)
     }
   }
+  useEffect(() => {
+    if (user?.role === `admin`) {
+      navigate.push('/admin')
+    }
+    if (user?.role === `user`) {
+      navigate.push('/user/donate')
+    }
+    if (user?.role === `collector`) {
+      navigate.push('/collector/allfoods')
+    }
+    if (user?.role === `donor`) {
+      navigate.push('/donor')
+    }
+  }, [user, navigate])
   return (
 
     <div
@@ -61,9 +74,9 @@ export default function page() {
         <div className="mb-6">
           <Link href={'/'}>
             <img
-              src="/logo.jpeg"
+              src="/logo.png"
               alt="Logo"
-              className="w-[70px] h-[70px] rounded-full mx-auto"
+              className="w-[170px] h-[70px] mx-auto"
             />
           </Link>
         </div>
@@ -75,7 +88,7 @@ export default function page() {
           transition={{ yoyo: Infinity, duration: 0.2 }}
         >
           {error}
-          </motion.p>
+        </motion.p>
         <form className="space-y-4 w-full" onSubmit={handleSubmit}>
           <div>
             <label className="block text-sm font-medium">Email</label>
