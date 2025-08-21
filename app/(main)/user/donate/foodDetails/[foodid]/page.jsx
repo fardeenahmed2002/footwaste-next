@@ -49,6 +49,11 @@ const FoodDetailsPage = () => {
       const { data } = await axios.post(`/api/user/acceptNGO`, { ngoID: ngoid, foodID: foodid })
       if (data.success) {
         toast.success(`Notification sent . wait for reply of ngo`)
+        setFood(prev => ({
+          ...prev,
+          biter: [],
+          approvedNGO: ngoid
+        }))
       }
     } catch (error) {
       console.log(error)

@@ -72,7 +72,6 @@ export default function Page() {
       return;
     }
 
-    // 2. Conditional validation for collector types
     if (formdata.collectorType === "NGO" && !formdata.ngoRegistrationNumber) {
       setError("NGO Registration Number is required");
       return;
@@ -86,7 +85,6 @@ export default function Page() {
       return;
     }
 
-    // 3. Prepare FormData for API
     try {
       setError("");
       setLoading(true);
@@ -119,9 +117,9 @@ export default function Page() {
 
       // 5. Handle response
       if (data.success) {
-        setIsloggedin(true); // Update login state
-        await getuserdata(); // Fetch user data
-        router.push("/"); // Redirect to homepage
+        setIsloggedin(true);
+        await getuserdata();
+        router.push("/"); 
       } else {
         setError(data.message || "Signup failed");
         setLoading(false);
@@ -291,30 +289,40 @@ export default function Page() {
 
           <div className="flex gap-4">
             <div className="w-1/2">
-              <label className="block text-sm font-medium">Organization ID Number</label>
-              <input
-                type="text"
-                name="organizationID"
-                value={formdata.organizationID}
+              <label className="block text-sm font-medium">Type of Registrant</label>
+              <select
+                name="collectorType"
+                value={formdata.collectorType}
                 onChange={handleChange}
-                placeholder='ID Number of your Organization'
+                required
                 className="w-full px-4 py-2 mt-1 bg-white/20 text-white placeholder-white rounded-md border border-white/30 focus:outline-none"
-              />
+                autoComplete="off"
+              >
+                <option value="" className="text-black">Select Type</option>
+                <option value="NGO" className="text-black">NGO</option>
+                <option value="Individual Volunteer" className="text-black">Individual Volunteer</option>
+                <option value="Charity Group" className="text-black">Charity Group</option>
+                <option value="Organization" className="text-black">Organization</option>
+              </select>
             </div>
             <div className="w-1/2">
-              {formdata.collectorType === `NGO` && (<div>
-                <label className="block text-sm font-medium">NGO Registration Number</label>
-                <input
-                  type="text"
-                  name="ngoRegistrationNumber"
-                  value={formdata.ngoRegistrationNumber}
-                  onChange={handleChange}
-                  required
-                  placeholder='Registration Number of NGO'
-                  className="w-full px-4 py-2 mt-1 bg-white/20 text-white placeholder-white rounded-md border border-white/30 focus:outline-none"
-                  autoComplete="off"
-                />
-              </div>)}
+              {formdata.collectorType === `NGO` && (
+
+                <div>
+                  <label className="block text-sm font-medium">NGO Registration Number</label>
+                  <input
+                    type="text"
+                    name="ngoRegistrationNumber"
+                    value={formdata.ngoRegistrationNumber}
+                    onChange={handleChange}
+                    required
+                    placeholder='Registration Number of NGO'
+                    className="w-full px-4 py-2 mt-1 bg-white/20 text-white placeholder-white rounded-md border border-white/30 focus:outline-none"
+                    autoComplete="off"
+                  />
+                </div>
+
+              )}
               {(formdata.collectorType === `Individual Volunteer` || formdata.collectorType === `Charity Group`) && (<div>
                 <label className="block text-sm font-medium">Number of members in Team</label>
                 <input
@@ -330,25 +338,7 @@ export default function Page() {
               </div>)}
             </div>
           </div>
-          <div className="flex gap-4">
-            <div className="w-1/2">
-              <label className="block text-sm font-medium">Type of Registrant</label>
-              <select
-                name="collectorType"
-                value={formdata.collectorType}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-2 mt-1 bg-white/20 text-white placeholder-white rounded-md border border-white/30 focus:outline-none"
-                autoComplete="off"
-              >
-                <option value="" className="text-black">Select Type</option>
-                <option value="NGO" className="text-black">NGO</option>
-                <option value="Individual Volunteer" className="text-black">Individual Volunteer</option>
-                <option value="Charity Group" className="text-black">Charity Group</option>
-              </select>
-            </div>
 
-          </div>
           {loading ? (
             <button type="submit" className="w-full bg-white/20 text-white py-2 rounded-md">
               <Loader />

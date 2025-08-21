@@ -51,6 +51,8 @@ export const acceptNGO = async (userid, ngoid, foodid) => {
         const food = await DonatedFoodModel.findById(foodid)
         const user = await Usermodel.findById(userid)
         ngo.notifications.push(`Your request for collecting ${food.title} of ${user.name} has been approved.`)
+        food.biter = []
+        food.save()
         await ngo.save()
 
         return NextResponse.json({
