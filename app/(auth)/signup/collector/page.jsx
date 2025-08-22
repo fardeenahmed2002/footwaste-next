@@ -23,7 +23,7 @@ export default function Page() {
     organizationID: '',
   })
 
-  const [cityData, setCityData] = useState([]) // all areas
+  const [cityData, setCityData] = useState([])
   const [filteredAreas, setFilteredAreas] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -32,7 +32,7 @@ export default function Page() {
   const router = useRouter()
   const { getuserdata, setIsloggedin } = useContext(Context)
 
-  // Load city/area data from public folder
+
   useEffect(() => {
     fetch("/city_corp.json")
       .then(res => res.json())
@@ -40,7 +40,7 @@ export default function Page() {
       .catch(err => console.log(err))
   }, [])
 
-  // Update filtered areas when cityCorp changes
+
   useEffect(() => {
     const areas = cityData.filter(item => item.city_corporation === formdata.cityCorp)
     setFilteredAreas(areas)
@@ -56,9 +56,9 @@ export default function Page() {
   }
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault();
 
-    // 1. Basic validation
+
     if (
       !formdata.name ||
       !formdata.contactNumber ||
@@ -109,17 +109,17 @@ export default function Page() {
 
       if (avatar) form.append("avatar", avatar);
 
-      // 4. Axios request
+
       axios.defaults.withCredentials = true;
       const { data } = await axios.post("/api/auth/signup/collector", form, {
         headers: { "Content-Type": "multipart/form-data" }
       });
 
-      // 5. Handle response
+
       if (data.success) {
         setIsloggedin(true);
         await getuserdata();
-        router.push("/"); 
+        router.push("/");
       } else {
         setError(data.message || "Signup failed");
         setLoading(false);
@@ -128,6 +128,7 @@ export default function Page() {
       console.error(err);
       setError(err.response?.data?.message || err.message || "Something went wrong");
       setLoading(false);
+      console.log(err)
     }
   };
 

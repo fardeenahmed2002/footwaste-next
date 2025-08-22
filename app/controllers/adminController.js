@@ -3,6 +3,8 @@ import { NextResponse } from "next/server"
 import { DonatedFoodModel } from "../Models/DonatedFoods"
 import Organization from "../Models/Organization"
 import { Usermodel } from "../Models/User"
+import transporter from "../Utils/nodemailer"
+import { sentVerifyOTPtoMail } from "./authController"
 
 export const getStatus = async () => {
     try {
@@ -158,6 +160,128 @@ export const getNGOs = async () => {
     }
 }
 
+
+
+export const detailsOFNGO = async (id) => {
+    try {
+        const ngo = await Usermodel.findById(id)
+        if (!ngo) {
+            return NextResponse.json({
+                success: false,
+                message: `no ngo found`
+            })
+        }
+        return NextResponse.json({
+            success: true,
+            message: `ngo found`,
+            ngo
+        })
+    } catch (error) {
+        console.error(error)
+        return NextResponse.json(
+            { success: false, message: "Server error" },
+            { status: 500 }
+        )
+    }
+}
+
+export const acceptngo = async (id) => {
+    try {
+        if (!id) {
+            return NextResponse.json({
+                success: false,
+                message: `no id found`
+            })
+        }
+        const ngo = await Usermodel.findById(id)
+        if (!ngo) {
+            return NextResponse.json({
+                success: false,
+                message: `no ngo found`
+            })
+        }
+        return sentVerifyOTPtoMail(id)
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const rejectngo = async (id, reason) => {
+    try {
+        const ngo = await Usermodel.findById(id)
+        if (!ngo) {
+            return NextResponse.json({
+                success: false,
+                message: `no ngo found`
+            })
+        }
+        const mailOptions = {
+            from: process.env.SENDER_EMAIL,
+            to: ngo.email,
+            subject: "এনজিও নিবন্ধন বাতিল হয়েছে",
+            text: `প্রিয় ${ngo.name},
+
+                        আমরা দুঃখের সঙ্গে জানাচ্ছি যে আপনার এনজিও যাচাইকরণ আবেদন এই মুহূর্তে অনুমোদিত হয়নি।
+                        কারণ: ${reason || "আপনার আবেদন আমাদের প্রয়োজনীয় মানদণ্ড পূরণ করেনি।"}
+
+                        আপনি প্রয়োজনীয় সংশোধন করে পুনরায় আবেদন করতে পারেন।
+
+                        ধন্যবাদান্তে,
+                        খাদ্য বাঁচাও দল`,
+                                    html: `
+                        <!DOCTYPE html>
+                        <html lang="bn">
+                        <body style="margin:0;padding:0;background:#f6f7fb;font-family:Arial,Helvetica,sans-serif;">
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td align="center" style="padding:24px;">
+                                <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:12px;overflow:hidden;">
+                                    <tr>
+                                    <td style="background:#BB71FF;color:#fff;padding:20px 24px;text-align:center;font-size:18px;font-weight:700;">
+                                        এনজিও যাচাইকরণ — সিদ্ধান্ত
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td style="padding:24px;color:#0f172a;font-size:15px;line-height:22px;">
+                                        <p style="margin:0 0 12px 0;">প্রিয় <strong>${ngo.name}</strong>,</p>
+                                        <p style="margin:0 0 12px 0;">
+                                        আমরা দুঃখের সঙ্গে জানাচ্ছি যে আপনার এনজিও যাচাইকরণ আবেদন এই মুহূর্তে অনুমোদিত হয়নি।
+                                        </p>
+                                        <div style="margin:12px 0 16px 0;padding:12px 14px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;">
+                                        <strong>কারণ:</strong><br/>
+                                        ${reason || "আপনার আবেদন আমাদের প্রয়োজনীয় মানদণ্ড পূরণ করেনি।"}
+                                        </div>
+                                        <p style="margin:0 0 16px 0;">
+                                        আপনি প্রয়োজনীয় সংশোধন করে পুনরায় আবেদন করতে পারেন।
+                                        </p>
+                                        <p style="margin:0;color:#64748b;font-size:13px;">
+                                        — খাদ্য বাঁচাও দল
+                                        </p>
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td style="padding:16px 24px;border-top:1px solid #eef2f7;color:#94a3b8;font-size:12px;text-align:center;">
+                                        © ${new Date().getFullYear()} খাদ্য বাঁচাও। সর্বস্বত্ব সংরক্ষিত।
+                                    </td>
+                                    </tr>
+                                </table>
+                                </td>
+                            </tr>
+                            </table>
+                        </body>
+                        </html>`
+        }
+
+        await transporter.sendMail(mailOptions)
+        return NextResponse.json({
+            success: true,
+            message: `rejection message has sent to email`
+        })
+    } catch (error) {
+
+    }
+}
 
 export const showFoods = async () => {
     try {

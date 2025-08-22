@@ -109,7 +109,7 @@ export const signup = async (formData) => {
     // Save user
     await user.save();
 
-    // Send welcome email
+   
     const mailOptions = {
       from: process.env.SENDER_EMAIL,
       to: email,
@@ -118,7 +118,7 @@ export const signup = async (formData) => {
     };
     await transporter.sendMail(mailOptions);
 
-    // Generate JWT token
+  
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: `7d`,
     });
@@ -242,7 +242,7 @@ export const isLoggedIn = async (req) => {
 export const sentVerifyOTPtoMail = async (userid) => {
     try {
         const user = await Usermodel.findById(userid)
-        if (user.isVarified) {
+        if (user.isVerified) {
             return NextResponse.json({
                 success: false,
                 message: 'user is already verified'
@@ -257,7 +257,7 @@ export const sentVerifyOTPtoMail = async (userid) => {
         const mailOptions = {
             from: process.env.SENDER_EMAIL,
             to: user.email,
-            subject: `accout varification otp`,
+            subject: `account varification otp`,
             text: `Your OTP is ${otp}. It is valid from ${currentTime} to ${expiryTime}.`
         }
         await transporter.sendMail(mailOptions)

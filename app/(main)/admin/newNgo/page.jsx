@@ -1,6 +1,8 @@
 "use client"
 import axios from 'axios'
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
+
 
 const Page = () => {
     const [allngos, setAllngos] = useState([])
@@ -44,12 +46,12 @@ const Page = () => {
                                     <td className="py-3 px-6 border-b">{ngo.email}</td>
                                     <td className="py-3 px-6 border-b">{ngo.contactNumber}</td>
                                     <td className="py-3 px-6 border-b">
-                                        <button
+                                        <Link href={`/admin/newNgo/${ngo._id}`}
                                             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                                            onClick={() => alert(ngo._id)}
+
                                         >
                                             Show Details
-                                        </button>
+                                        </Link>
                                     </td>
                                 </tr>
                             ))}
