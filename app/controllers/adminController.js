@@ -229,7 +229,7 @@ export const rejectngo = async (id, reason) => {
 
                         ধন্যবাদান্তে,
                         খাদ্য বাঁচাও দল`,
-                                    html: `
+            html: `
                         <!DOCTYPE html>
                         <html lang="bn">
                         <body style="margin:0;padding:0;background:#f6f7fb;font-family:Arial,Helvetica,sans-serif;">
@@ -490,3 +490,23 @@ export const addOrganization = async (data) => {
         );
     }
 };
+
+
+export const getAllorgs = async () => {
+    try {
+        const organizations = await Organization.find().sort({ createdAt: -1 })
+        return NextResponse.json({
+            success: true,
+            message: `orgs got`,
+            organizations
+        })
+    }
+    catch (error) {
+        console.error("Error in addOrganization controller:", err)
+        return NextResponse.json({
+            success: false,
+            message: "Something went wrong"
+        },
+            { status: 500 });
+    }
+}

@@ -13,7 +13,7 @@ const daysSchema = new mongoose.Schema({
     blogger: {
         type: mongoose.Schema.Types.ObjectId, ref: "User"
     },
-    stars: {
+    likes: {
         type: Number,
         default: 0
     },
@@ -24,7 +24,14 @@ const daysSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
-    }
+    },
+    comments: [{
+        comment: { type: String },
+        commenter: { type: String },
+        image: { type: String }
+    }],
+
+    commentCount: { type: Number, default: 0 }
 })
 
 export const DayModel = mongoose.models.Day || mongoose.model('Day', daysSchema)

@@ -113,9 +113,9 @@ export default function page() {
             />
           </div>
           <div className="text-sm text-right">
-            <a href="#" className="text-white/80 hover:underline">
+            <Link href="/forget-password" className="text-white/80 hover:underline">
               Forgot Password?
-            </a>
+            </Link>
           </div>
           {loading ? (<button
             type="submit"

@@ -284,7 +284,8 @@ export const viewDays = async () => {
     return NextResponse.json({
       success: true,
       message: `found`,
-      days
+      days,
+
     })
   } catch (error) {
     return NextResponse.json({
@@ -317,3 +318,25 @@ export const showRequestedFoodToReveive = async (userid) => {
     }, { status: 500 })
   }
 }
+
+
+export const getAllDayPost = async (userid) => {
+  try {
+ 
+    const posts = await DayModel.find({ blogger: userid }).populate('blogger', 'name image');
+
+    return NextResponse.json({
+      success: true,
+      message: posts.length > 0 ? "Posts found" : "No posts found",
+      post: posts
+    });
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json({
+      success: false,
+      message: "Internal server error"
+    }, { status: 500 });
+  }
+}
+
+

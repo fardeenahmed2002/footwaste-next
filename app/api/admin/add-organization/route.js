@@ -1,6 +1,6 @@
+import { addOrganization, getAllorgs } from "@/app/controllers/adminController";
 import connectToDB from "@/app/Utils/database";
 import { uploadImage } from "@/app/Utils/uploadimage";
-import { addOrganization } from "@/app/controllers/adminController";
 import { NextResponse } from "next/server";
 
 export const POST = async (req) => {
@@ -33,7 +33,7 @@ export const POST = async (req) => {
           message: "Logo upload failed",
         });
       }
-      logo = logoResult; 
+      logo = logoResult;
     }
 
     const result = await addOrganization({
@@ -54,3 +54,15 @@ export const POST = async (req) => {
     );
   }
 };
+
+
+
+export const GET = async () => {
+  try {
+    await connectToDB()
+    return await getAllorgs()
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
