@@ -119,7 +119,7 @@ export default function Page() {
       if (data.success) {
         setIsloggedin(true);
         await getuserdata();
-        router.push("/");
+        router.push("/pages/verification/otp");
       } else {
         setError(data.message || "Signup failed");
         setLoading(false);

@@ -2,12 +2,9 @@
 import { Context } from '@/app/contextapi/ContextProvider'
 import axios from 'axios'
 import {
-  LogIn,
   LogOut,
-  Menu,
   MessageCircle,
-  UserCircle,
-  X,
+  UserCircle
 } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -41,9 +38,9 @@ const Navbar = () => {
   return (
     <nav className="bg-[#1F2937] border-b px-4 py-3 sticky top-0 z-50 backdrop-blur-md">
       <div className="absolute inset-0 bg-black/10 backdrop-blur-md z-0 " />
-      
+
       <div className="relative z-10 flex items-center justify-between md:justify-between">
-        
+
         <Logo />
 
         <div className="hidden md:flex items-center justify-between w-full">
@@ -53,9 +50,10 @@ const Navbar = () => {
           </div>
 
           <div className="flex items-center gap-6">
-            <Notification />
-            <Chat />
-
+            {user?.isVerified && <>
+              <Notification />
+              <Chat />
+            </>}
 
             {isloggedin ? (
               <div className="dropdown dropdown-end">
@@ -81,11 +79,13 @@ const Navbar = () => {
                       <UserCircle size={18} /> Profile
                     </Link>
                   </li>
-                  <li>
+                  
+                  {user?.isVerified && (<li>
                     <Link href={'/pages/chat'} className="flex items-center gap-2 w-full text-left bg-white mb-2">
                       <MessageCircle size={18} /> Chats
                     </Link>
-                  </li>
+                  </li>)}
+
                   <li>
                     <button
                       onClick={handlelogout}

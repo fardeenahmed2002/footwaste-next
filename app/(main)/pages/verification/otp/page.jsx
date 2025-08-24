@@ -1,15 +1,17 @@
 'use client'
+import { Context } from "@/app/contextapi/ContextProvider";
 import { serverError } from "@/app/Utils/serverError";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import Loader from "../Loader";
 export default function OTPPage() {
     const navigate = useRouter();
     const [input, setInput] = useState({ input1: "", input2: "", input3: "", input4: "", input5: "", input6: "" });
     const [loading, setLoading] = useState(false)
+    const { user } = useContext(Context)
     const refs = {
         input1: useRef(),
         input2: useRef(),
@@ -57,13 +59,29 @@ export default function OTPPage() {
             <div className="absolute inset-0 bg-[url('/verify.jpg')] bg-cover bg-center z-0" />
             <div className="absolute inset-0 bg-white/30 backdrop-blur-md z-0" />
             <div className="relative z-10 bg-white/40 backdrop-blur-md border border-white/40 shadow-lg rounded-2xl p-6 w-full max-w-sm flex flex-col items-center">
-                <p className="text-sm text-center mb-4 text-black">
-                    An OTP has been sent to your email. Please check your{" "}
-                    <Link target="_blank" href="https://mail.google.com/mail/u/0/#inbox" className="font-semibold underline">
-                        inbox
-                    </Link>{" "}
-                    and enter the code below to verify your email address.
-                </p>
+
+                {user?.role === `collector` ? (
+                    <p className="text-black text-sm">
+                        Your account is being verified by our admin. Once verification is complete, an OTP will be sent to your email.
+                        Please check your{" "}
+                        <Link target="_blank" href="https://mail.google.com/mail/u/0/#inbox" className="font-semibold underline">
+                            inbox
+                        </Link>{" "}
+                        to log in.
+                    </p>
+                )
+                    :
+                    (
+                        <p className="text-sm text-center mb-4 text-black">
+                            An OTP has been sent to your email. Please check your{" "}
+                            <Link target="_blank" href="https://mail.google.com/mail/u/0/#inbox" className="font-semibold underline">
+                                inbox
+                            </Link>{" "}
+                            and enter the code below to verify your email address.
+                        </p>
+                    )}
+
+
                 <h1 className="text-2xl font-bold mb-4 text-black text-center">Enter Your OTP</h1>
                 <form onSubmit={handleSubmit} className="w-full flex flex-col items-center">
                     <div className="flex gap-2 mb-4">

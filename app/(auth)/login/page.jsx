@@ -57,7 +57,12 @@ export default function page() {
       } else if (user.role === 'donor') {
         navigate.push('/donor')
       } else {
-        navigate.push('/pages/verification')
+        if (user.role === 'collector') {
+          navigate.push('/pages/verification/otp')
+        }
+        else {
+          navigate.push('/pages/verification')
+        }
       }
     }
   }, [user, navigate])

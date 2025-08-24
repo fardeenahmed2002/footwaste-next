@@ -1,8 +1,9 @@
 // app/user/add-food-donation/page.jsx
 "use client";
 
+import { Context } from "@/app/contextapi/ContextProvider";
 import axios from "axios";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { toast } from "react-toastify";
 import Spinner from "../../components/Spinner";
 
@@ -18,6 +19,7 @@ const FreeFoodDonation = () => {
     quantity: ""
   });
   const [loading, setLoading] = useState(false)
+  const { inEng } = useContext(Context)
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -66,72 +68,74 @@ const FreeFoodDonation = () => {
 
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white rounded-md shadow-md mt-10">
-      <h1 className="text-2xl font-bold mb-6 text-center">Food Donation </h1>
+      <h1 className="text-2xl font-bold mb-6 text-center">
+        {inEng ? "Food Donation" : "খাদ্য দান"}
+      </h1>
+
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
         <div>
-          <label className="block mb-1 font-medium">Donor Name</label>
+          <label className="block mb-1 font-medium">{inEng ? "Donor Name" : "দানকারীর নাম"}</label>
           <input
             type="text"
             name="donorName"
             value={formData.donorName}
             onChange={handleChange}
             className="border border-gray-300 rounded-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
-            placeholder="Donor Name"
+            placeholder={inEng ? "Donor Name" : "দানকারীর নাম"}
           />
         </div>
 
-
         <div>
-          <label className="block mb-1 font-medium">Address</label>
+          <label className="block mb-1 font-medium">{inEng ? "Address" : "ঠিকানা"}</label>
           <input
             type="text"
             name="address"
             value={formData.address}
             onChange={handleChange}
             className="border border-gray-300 rounded-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
-            placeholder="Address"
+            placeholder={inEng ? "Address" : "ঠিকানা"}
           />
         </div>
 
         <div>
-          <label className="block mb-1 font-medium">Email</label>
+          <label className="block mb-1 font-medium">{inEng ? "Email" : "ইমেইল"}</label>
           <input
             type="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
             className="border border-gray-300 rounded-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
-            placeholder="Email"
+            placeholder={inEng ? "Email" : "ইমেইল"}
           />
         </div>
 
         <div>
-          <label className="block mb-1 font-medium">Phone</label>
+          <label className="block mb-1 font-medium">{inEng ? "Phone" : "ফোন"}</label>
           <input
             type="tel"
             name="phone"
             value={formData.phone}
             onChange={handleChange}
             className="border border-gray-300 rounded-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
-            placeholder="Phone Number"
+            placeholder={inEng ? "Phone Number" : "ফোন নম্বর"}
           />
         </div>
 
         <div>
-          <label className="block mb-1 font-medium">Pickup Location</label>
+          <label className="block mb-1 font-medium">{inEng ? "Pickup Location" : "উত্তোলনের স্থান"}</label>
           <input
             type="text"
             name="pickupLocation"
             value={formData.pickupLocation}
             onChange={handleChange}
             className="border border-gray-300 rounded-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
-            placeholder="Pickup Location"
+            placeholder={inEng ? "Pickup Location" : "উত্তোলনের স্থান"}
           />
         </div>
 
         <div>
-          <label className="block mb-1 font-medium">Pickup Time</label>
+          <label className="block mb-1 font-medium">{inEng ? "Pickup Time" : "উত্তোলনের সময়"}</label>
           <input
             type="time"
             name="time"
@@ -142,43 +146,48 @@ const FreeFoodDonation = () => {
         </div>
 
         <div>
-          <label className="block mb-1 font-medium">Food Name</label>
+          <label className="block mb-1 font-medium">{inEng ? "Food Name" : "খাবারের নাম"}</label>
           <input
             type="text"
             name="foodName"
             value={formData.foodName}
             onChange={handleChange}
             className="border border-gray-300 rounded-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
-            placeholder="Food Name"
+            placeholder={inEng ? "Food Name" : "খাবারের নাম"}
           />
         </div>
 
         <div>
-          <label className="block mb-1 font-medium">Quantity</label>
+          <label className="block mb-1 font-medium">{inEng ? "Quantity" : "পরিমাণ"}</label>
           <input
             type="text"
             name="quantity"
             value={formData.quantity}
             onChange={handleChange}
             className="border border-gray-300 rounded-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-green-500"
-            placeholder="Quantity"
+            placeholder={inEng ? "Quantity" : "পরিমাণ"}
           />
         </div>
 
         <div className="md:col-span-2">
-          {loading ? (<button
-            type="submit"
-            className="bg-[#FFC808] text-[#1F2937] hover:text-[#FFC808] hover:bg-[#1C2532]  font-semibold px-4 py-2 rounded-md  transition-colors w-full"
-          >
-            <Spinner />
-          </button>) : (<button
-            type="submit"
-            className="bg-[#FFC808] text-[#1F2937] hover:text-[#FFC808] hover:bg-[#1C2532]  font-semibold px-4 py-2 rounded-md  transition-colors w-full"
-          >
-            Submit
-          </button>)}
+          {loading ? (
+            <button
+              type="submit"
+              className="bg-[#FFC808] text-[#1F2937] hover:text-[#FFC808] hover:bg-[#1C2532] font-semibold px-4 py-2 rounded-md transition-colors w-full"
+            >
+              <Spinner />
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="bg-[#FFC808] text-[#1F2937] hover:text-[#FFC808] hover:bg-[#1C2532] font-semibold px-4 py-2 rounded-md transition-colors w-full"
+            >
+              {inEng ? "Submit" : "জমা দিন"}
+            </button>
+          )}
         </div>
       </form>
+
     </div>
   );
 };
