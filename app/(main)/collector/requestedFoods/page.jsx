@@ -1,12 +1,15 @@
 "use client"
 
+import { Context } from "@/app/contextapi/ContextProvider"
 import axios from "axios"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
+import FoodSkeleton from "./FoodSkeleton"
 import Link from "next/link"
 
 const Page = () => {
     const [foods, setFoods] = useState([])
     const [loading, setLoading] = useState(true)
+    const { user } = useContext(Context)
 
     useEffect(() => {
         const fetchFoods = async () => {
@@ -26,7 +29,18 @@ const Page = () => {
         fetchFoods()
     }, [])
 
-    if (loading) return <p className="text-white">Loading...</p>
+    if (loading) {
+        return (
+            <div className="p-6">
+                <h1 className="text-2xl font-bold text-white mb-4">Requested Foods</h1>
+                <div className="grid grid-cols-3 gap-6">
+                    {[...Array(6)].map((_, i) => (
+                        <FoodSkeleton key={i} />
+                    ))}
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div className="p-6">
@@ -41,7 +55,6 @@ const Page = () => {
                             className="bg-[#1c2333] rounded-lg shadow overflow-hidden flex flex-col"
                             style={{ width: "300px", height: "300px" }}
                         >
-
                             <div className="h-[40%] w-full overflow-hidden">
                                 <img
                                     src={food.imageOfDonatedFood || "/placeholder.png"}
@@ -63,11 +76,9 @@ const Page = () => {
                                     </p> <br />
                                     <p className="font-bold text-xl">
                                         {
-                                            food.foodToPick ?
-                                                (
-                                                    <Link href={`/collector/foodToReceive/${food._id}`}>Collect Now!!</Link>)
-                                                :
-                                                `Wait...`
+                                            food.collector === null ? `wait`
+                                                : food.collector.includes(user?._id) ? <Link href={`/collector/foodToReceive/${food._id}`}>collect</Link>
+                                                    : `declined`
                                         }
                                     </p>
                                 </div>

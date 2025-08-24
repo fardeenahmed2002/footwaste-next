@@ -143,7 +143,7 @@ export default function Page() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="relative z-10 w-[90%] my-[20px] max-w-2xl bg-white/10 backdrop-blur-md rounded-2xl p-8 shadow-xl text-white flex flex-col items-center"
+        className="relative z-10 w-[90%] my-[20px] max-w-2xl bg-black/50  rounded-2xl p-8 shadow-xl text-white flex flex-col items-center"
       >
         <div className="mb-6">
           <Link href={'/'}>
@@ -157,7 +157,7 @@ export default function Page() {
         <h1 className="text-3xl font-bold text-white text-center">Create an Account</h1>
         <br />
         <div className='flex flex-col justify-center items-center'>
-          <label className="block text-black font-semibold">Register as</label>
+          <label className="block text-white font-semibold">Register as</label>
           <div className="flex space-x-4">
             <label className="flex items-center gap-1" onClick={() => router.push('/signup')}>
               <input type="radio" name="role" />
@@ -248,10 +248,10 @@ export default function Page() {
                 name="area"
                 value={formdata.area}
                 onChange={handleChange}
-                className="w-full px-4 py-2 mt-1 bg-white/20 text-black rounded-md border border-white/30 focus:outline-none"
+                className="w-full px-4 py-2 mt-1 bg-white/20 text-white rounded-md border border-white/30 focus:outline-none"
               >
                 {filteredAreas.map(area => (
-                  <option key={area.id} value={area.area_name.en}>{area.area_name.en}</option>
+                  <option key={area.id} className="text-black" value={area.area_name.en}>{area.area_name.en}</option>
                 ))}
               </select>
             </div>
@@ -353,7 +353,6 @@ export default function Page() {
 
         <p className="text-xs text-white/70 mt-3 text-center">
           By signing up, you agree to our{" "}
-          <Link href="/privacy" className="underline">Privacy Policy</Link> and{" "}
           <Link href="/terms" className="underline">Terms of Service</Link>.
         </p>
 

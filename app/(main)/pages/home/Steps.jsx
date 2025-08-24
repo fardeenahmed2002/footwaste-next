@@ -33,7 +33,7 @@ export default function Steps() {
   ];
 
   return (
-    <div className="relative border-x-[10px] border-[#2171b5] py-16 px-4 overflow-hidden bg-[url('/stepsbg.jpg')] bg-cover">
+    <div className="relative border-x-[10px] border-[#1C2532] py-16 px-4 overflow-hidden bg-[url('/stepsbg.jpg')] bg-cover">
       <div className="absolute inset-0 backdrop-blur-sm z-0" />
       <div className="relative z-10">
         <Header title={inEng ? `Our Approach to Tackling Food Waste` : `খাদ্য অপচয় প্রতিরোধে আমাদের দৃষ্টিভঙ্গি`} />
@@ -41,11 +41,11 @@ export default function Steps() {
           {steps.map((step, i) => (
             <motion.div
               key={i}
-              className="relative bg-[#6baed6]/50 backdrop-blur-md w-[350px] rounded-2xl overflow-hidden shadow-2xl hover:shadow-[#2171b5] transition-all"
+              className="relative bg-[#1C2532] w-[350px] rounded-2xl overflow-hidden shadow-2xl hover:shadow-[#FFC808] transition-all"
               whileInView={{ opacity: [0, 1], y: [-50, 0] }}
               transition={{ delay: step.delay, duration: 1 }}
             >
-              <div className="absolute inset-0 bg-[url('/background-veggie-pattern.png')] bg-repeat bg-cover bg-center opacity-[30%] pointer-events-none z-0" />
+             
               <motion.img
                 src={step.img}
                 alt={step.title}
@@ -55,8 +55,8 @@ export default function Steps() {
                 transition={{ delay: step.delay, duration: 1 }}
               />
               <div className="p-5">
-                <h2 className="text-xl font-bold text-black mb-3">{inEng ? step.title : step.titleInBng}</h2>
-                <p className="text-black text-justify text-sm">{inEng ? step.text : step.textInBng}</p>
+                <h2 className="text-xl font-bold text-white mb-3">{inEng ? step.title : step.titleInBng}</h2>
+                <p className="text-white text-justify text-sm">{inEng ? step.text : step.textInBng}</p>
               </div>
             </motion.div>
           ))}

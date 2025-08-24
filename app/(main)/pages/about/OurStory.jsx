@@ -1,61 +1,102 @@
+'use client'
+import { Context } from "@/app/contextapi/ContextProvider";
+import { useContext } from "react";
 import Header from "../../components/Header";
-import { Dancing_Script } from "next/font/google";
-
-const dancingscirpt = Dancing_Script({
-  subsets: ['latin'],
-  weight: '400',
-});
-
 const OurStory = () => {
+  const { inEng } = useContext(Context);
   return (
     <section
       className="
         bg-[url('/story.png')] bg-cover bg-center bg-no-repeat
         mt-[-25px] sm:mt-0
-        py-8 px-4 sm:px-6
-        bg-gray-50
+        py-12 px-4 sm:px-6
         border-x-[10px] border-t-[10px]
-        border-[#2171b5]
+        border-[#1C2532]
       "
     >
-      <div className="backdrop-blur-sm max-w-5xl mx-auto shadow-2xl p-4 sm:p-5 rounded-3xl glow-blue-border">
-        <Header children="Our story" />
-
-        {/* Paragraphs */}
-        {[ 
-          `Our story begins with a simple idea: to combat food waste while providing for those in need.
-          In the early days, we were just a small group of passionate individuals who were shocked by the amount
-          of perfectly good food being discarded in our communities while families and individuals went hungry. We
-          decided to take action, and that's how our mission was born—rescue surplus food and get it to those who need it the most. What started as a small local initiative quickly gained momentum as more people joined our cause, bringing with them
-          not only their passion for making a difference but also their expertise. Soon, we were collaborating with local farms,
-          food producers, businesses, and even other non-profits to expand our reach. We began to realize that food waste was a much
-          larger problem than we initially thought, and the need for action was greater than ever.`,
-          
-          `With each meal saved and each person fed, our vision grew. We knew that food waste and hunger weren't isolated problems—they
-          were interconnected, and the solution needed to be comprehensive. As we continued to grow, we embraced innovation, focusing
-          on sustainability and environmental responsibility. Our team expanded, and so did our partnerships with local organizations,
-          schools, and businesses, all of whom became key players in our mission to reduce food waste and feed communities.`,
-          
-          `Today, we are proud of what we've achieved, but we know the work is far from over. Our commitment remains unwavering as we strive
-          to rescue even more food, support even more communities, and reduce our environmental footprint. Every day, we are inspired by the
-          people we meet—whether they're the volunteers sorting food, the businesses donating their surplus, or the individuals whose lives
-          are changed because of our efforts. Together, we are making a lasting impact, and together, we can create a future where food waste
-          is no longer a problem, and everyone has access to the food they need to thrive.`
-        ].map((text, i) => (
-          <p
-            key={i}
-            className={`
-              text-base sm:text-2xl text-justify text-black
-              ${dancingscirpt.className}
-              mb-6
-              leading-relaxed
-              px-2 sm:px-5
-            `}
-          >
-            {text}
-          </p>
-        ))}
-
+      <div className="backdrop-blur-sm max-w-5xl mx-auto shadow-2xl p-6 sm:p-8 rounded-3xl glow-blue-border bg-white/20">
+        <Header title={inEng ? "How We Work" : "আমরা কীভাবে কাজ করি"} />
+        <div className="mt-6 space-y-8 text-gray-800 dark:text-gray-200">
+          <div>
+            <h2 className="text-2xl font-semibold mb-3">
+              {inEng ? "Donor Options" : "ডোনারের বিকল্পসমূহ"}
+            </h2>
+            <p className="mb-2">
+              {inEng
+                ? "Anyone can easily donate through money or food via our platform. There are three options for donors:"
+                : "আমাদের প্ল্যাটফর্মের মাধ্যমে যে কেউ সহজেই টাকা বা খাবার দান করতে পারেন। ডোনারদের জন্য তিনটি বিকল্প রয়েছে:"}
+            </p>
+            <ul className="list-disc pl-6 space-y-1">
+              <li>
+                {inEng
+                  ? "Anonymous Donation: Contribute online without revealing identity."
+                  : "অজ্ঞাতনামা দান: পরিচয় প্রকাশ না করে অনলাইনে দান করতে পারেন।"}
+              </li>
+              <li>
+                {inEng
+                  ? "Detail-based Donation: Provide name, phone, or other details for one-time or recurring donations."
+                  : "বিস্তারিত ভিত্তিক দান: এককালীন বা নিয়মিত দানের জন্য নাম, ফোন বা অন্যান্য তথ্য প্রদান করতে পারেন।"}
+              </li>
+              <li>
+                {inEng
+                  ? "Account-based Donation: Create an account to make regular monetary or food contributions."
+                  : "অ্যাকাউন্ট-ভিত্তিক দান: নিয়মিত অর্থ বা খাবারের দানের জন্য একটি অ্যাকাউন্ট তৈরি করুন।"}
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h2 className="text-2xl font-semibold mb-3">
+              {inEng ? "Direct Food Contribution" : "সরাসরি খাবার প্রদান"}
+            </h2>
+            <p>
+              {inEng
+                ? "Donors or volunteers can deliver food or money directly to beneficiaries through our registered NGOs like BRAC, ASA, and others. Donors can choose where or to whom their assistance will go, ensuring their support has real impact."
+                : "ডোনার বা স্বেচ্ছাসেবকরা আমাদের নিবন্ধিত এনজিওগুলির মাধ্যমে (যেমন BRAC, ASA, এবং অন্যান্য) সরাসরি উপকারভোগীদের কাছে খাবার বা অর্থ পৌঁছে দিতে পারেন। ডোনাররা নির্ধারণ করতে পারেন তাদের সাহায্য কার কাছে বা কোন এলাকায় যাবে।"}
+            </p>
+          </div>
+          <div>
+            <h2 className="text-2xl font-semibold mb-3">
+              {inEng ? "Beneficiaries and Target Groups" : "উপকারভোগী এবং লক্ষ্য গোষ্ঠী"}
+            </h2>
+            <ul className="list-disc pl-6 space-y-1">
+              <li>{inEng ? "Street children and underprivileged children" : "রাস্তার শিশু এবং অনগ্রসর শিশু"}</li>
+              <li>{inEng ? "Day laborers and worker families" : "দিনমজুর এবং শ্রমিক পরিবারের সদস্যরা"}</li>
+              <li>{inEng ? "Homeless families" : "বেকার পরিবার"}</li>
+              <li>{inEng ? "Elderly people in old-age homes" : "প্রবীণরা বৃদ্ধাশ্রমে"}</li>
+              <li>{inEng ? "Any hungry or impoverished individual" : "যে কোনো ক্ষুধার্ত বা দরিদ্র ব্যক্তি"}</li>
+            </ul>
+          </div>
+          <div>
+            <h2 className="text-2xl font-semibold mb-3">
+              {inEng ? "Future Plans" : "ভবিষ্যৎ পরিকল্পনা"}
+            </h2>
+            <p>
+              {inEng
+                ? "Currently our operations are Dhaka-centric, but we plan to expand gradually. In the future, we aim not just to distribute food but also create skill-development programs for the needy, helping them become self-reliant."
+                : "বর্তমানে আমাদের কার্যক্রম ঢাকায় কেন্দ্রিত, তবে ধীরে ধীরে আমরা সম্প্রসারণের পরিকল্পনা করছি। ভবিষ্যতে আমরা শুধুমাত্র খাবার বিতরণ নয়, দরিদ্রদের জন্য দক্ষতা উন্নয়নমূলক প্রোগ্রাম তৈরি করার লক্ষ্য রাখি, যাতে তারা স্বনির্ভর হতে পারে।"}
+            </p>
+          </div>
+          <div>
+            <h2 className="text-2xl font-semibold mb-3">
+              {inEng ? "Collaboration and Volunteer Work" : "সহযোগিতা ও স্বেচ্ছাসেবক কাজ"}
+            </h2>
+            <p>
+              {inEng
+                ? "Anyone can participate as a volunteer through our platform. Volunteers can help distribute food or assist with local initiatives, becoming true partners in success."
+                : "যে কেউ আমাদের প্ল্যাটফর্মের মাধ্যমে স্বেচ্ছাসেবক হিসাবে অংশগ্রহণ করতে পারেন। স্বেচ্ছাসেবকরা খাবার বিতরণ বা স্থানীয় উদ্যোগে সহায়তা করতে পারেন, সত্যিকারভাবে সফলতার অংশীদার হয়ে উঠতে।"}
+            </p>
+          </div>
+          <div>
+            <h2 className="text-2xl font-semibold mb-3">
+              {inEng ? "Concluding Remarks" : "উপসংহার"}
+            </h2>
+            <p>
+              {inEng
+                ? "Our initiative is not just about delivering food; it also raises awareness that food waste is a human responsibility. With donors, volunteers, and NGOs, we aim to build a strong foundation for food security across Bangladesh."
+                : "আমাদের উদ্যোগ শুধুমাত্র খাবার পৌঁছে দেওয়ার জন্য নয়; এটি সচেতনতা বৃদ্ধি করে যে খাবার নষ্ট হওয়া মানুষের দায়িত্ব। ডোনার, স্বেচ্ছাসেবক এবং এনজিওদের সহযোগিতায় আমরা বাংলাদেশে খাদ্য নিরাপত্তার জন্য দৃঢ় ভিত্তি গড়ার লক্ষ্য রাখি।"}
+            </p>
+          </div>
+        </div>
       </div>
     </section>
   );

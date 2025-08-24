@@ -4,6 +4,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import Spinner from "../../components/Spinner";
 
 const FreeFoodDonation = () => {
   const [formData, setFormData] = useState({
@@ -16,7 +17,7 @@ const FreeFoodDonation = () => {
     foodName: "",
     quantity: ""
   });
-
+  const [loading, setLoading] = useState(false)
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -24,11 +25,12 @@ const FreeFoodDonation = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setLoading(true)
     const requiredFields = ["donorName", "address", "email", "phone", "pickupLocation", "time", "foodName", "quantity"];
     for (let field of requiredFields) {
       if (!formData[field]) {
         toast.error("Please fill all required fields!");
+        setLoading(false)
         return;
       }
     }
@@ -36,7 +38,7 @@ const FreeFoodDonation = () => {
     try {
       const res = await axios.post("/api/free-food-donate", formData)
       if (res.data.success) {
-        alert("Donation submitted successfully!");
+        toast.success("Donation submitted successfully!");
         setFormData({
           donorName: "",
           address: "",
@@ -47,12 +49,18 @@ const FreeFoodDonation = () => {
           foodName: "",
           quantity: "",
         });
+        setLoading(false)
       } else {
-        alert("Something went wrong!");
+        toast.error("Something went wrong!");
+        setLoading(false)
       }
     } catch (err) {
       console.error(err);
-      alert("Error submitting form!");
+      toast.error("Error submitting form!");
+      setLoading(false)
+    }
+    finally {
+      setLoading(false)
     }
   };
 
@@ -60,7 +68,7 @@ const FreeFoodDonation = () => {
     <div className="max-w-3xl mx-auto p-6 bg-white rounded-md shadow-md mt-10">
       <h1 className="text-2xl font-bold mb-6 text-center">Food Donation </h1>
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-   
+
         <div>
           <label className="block mb-1 font-medium">Donor Name</label>
           <input
@@ -158,12 +166,17 @@ const FreeFoodDonation = () => {
         </div>
 
         <div className="md:col-span-2">
-          <button
+          {loading ? (<button
             type="submit"
-            className="bg-green-600 text-white font-semibold px-4 py-2 rounded-md hover:bg-green-700 transition-colors w-full"
+            className="bg-[#FFC808] text-[#1F2937] hover:text-[#FFC808] hover:bg-[#1C2532]  font-semibold px-4 py-2 rounded-md  transition-colors w-full"
+          >
+            <Spinner />
+          </button>) : (<button
+            type="submit"
+            className="bg-[#FFC808] text-[#1F2937] hover:text-[#FFC808] hover:bg-[#1C2532]  font-semibold px-4 py-2 rounded-md  transition-colors w-full"
           >
             Submit
-          </button>
+          </button>)}
         </div>
       </form>
     </div>

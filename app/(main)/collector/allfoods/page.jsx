@@ -62,7 +62,7 @@ const Page = () => {
                                     <div>
 
                                         <h2 className="text-xl font-bold text-green-700 mb-2">
-                                            {food.title || 'No Title'}
+                                            {food.title.toUpperCase() || 'No Title'}
                                         </h2>
 
 
@@ -90,14 +90,7 @@ const Page = () => {
                                                 View Details
                                             </Link>
                                         )}
-                                        <span
-                                            className={`text-xs font-medium px-3 py-1 rounded-full mt-2 md:mt-0 ${food.pickedBy?.name
-                                                ? 'bg-blue-100 text-blue-800'
-                                                : 'bg-yellow-100 text-yellow-800'
-                                                }`}
-                                        >
-                                            {food.pickedBy?.name || 'Not picked yet'}
-                                        </span>
+                                        
                                     </div>
                                 </div>
                             </div>

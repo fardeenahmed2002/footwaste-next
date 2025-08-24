@@ -37,15 +37,22 @@ const donatedFoodsSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, ref: 'User',
         default: null
     },
-    isApproved: {
+    isApprovedByAdmin: {
         type: String,
         enum: ["pending", "approved", "rejected"],
         default: "pending"
     },
-    foodToPick: { type: Boolean, default: false },
+    foodPickingStatus: {
+        type: String,
+        enum: ["pending", "requested", "approved", "rejected"],
+        default: "pending"
+    },
+    collector: {
+        type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null
+    },
     status: {
         type: String,
-        default: 'pending....'
+        default: 'pending'
     },
     biter: [
         { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: [] }

@@ -78,7 +78,7 @@ const Chat = () => {
 
         {/* Dropdown Panel */}
         {showRequestPanel && (
-          <div className="absolute top-14 left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-0 w-[92vw] max-w-[350px] md:w-80 bg-white border border-[#6baed6] rounded-lg shadow-xl z-50 p-4 backdrop-blur-md">
+          <div className="absolute top-14 left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-0 w-[92vw] max-w-[350px] md:w-80 bg-white border border-[#6baed6] rounded-lg shadow-xl z-10000 p-4 backdrop-blur-md">
             <div className="flex items-center justify-between mb-4 px-2">
               <h3 className="text-lg font-bold text-[#2171b5] tracking-wide">
                 Message Requests

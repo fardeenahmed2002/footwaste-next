@@ -38,6 +38,7 @@ const DonationPage = () => {
             ? "Please fill all required fields!"
             : "সব ফিল্ড পূরণ করুন!"
         );
+        setisloading(false)
         return;
       }
     } else if (donorType === "AnonymousDonor") {
@@ -47,6 +48,7 @@ const DonationPage = () => {
             ? "Please enter the amount!"
             : "অনুদানের পরিমাণ লিখুন!"
         );
+        setisloading(false)
         return;
       }
     } else {
@@ -55,6 +57,7 @@ const DonationPage = () => {
           ? "Please select a donor type!"
           : "অনুদানের ধরন নির্বাচন করুন!"
       );
+      setisloading(false)
       return;
     }
 
@@ -73,9 +76,11 @@ const DonationPage = () => {
       });
       if (saveResponse.data.success) {
         toast.success(`donation done redirecting to donate page`)
+        setisloading(false)
       }
       if (!saveResponse.data.success) {
         toast.error(inEng ? "Failed to save donation!" : "দান সংরক্ষণ ব্যর্থ হয়েছে!");
+        setisloading(false)
         return;
       }
 
@@ -87,11 +92,16 @@ const DonationPage = () => {
         window.location.href = paymentResponse.data.url;
       } else {
         toast.error(inEng ? "Payment URL not found!" : "পেমেন্ট URL পাওয়া যায়নি!");
+        setisloading(false)
       }
 
     } catch (err) {
       console.error(err);
       toast.error(inEng ? "Something went wrong!" : "কিছু ভুল হয়েছে!");
+      setisloading(false)
+    }
+    finally {
+      setisloading(false)
     }
   };
 
@@ -278,14 +288,14 @@ const DonationPage = () => {
         {isloading ? (
           <button
             type="submit"
-            className="bg-green-600 text-white font-semibold px-4 py-2 rounded-md hover:bg-green-700 transition-colors md:col-span-4"
+            className="bg-[#FFC808] text-[#1F2937] hover:text-[#FFC808] hover:bg-[#1C2532] font-semibold px-4 py-2 rounded-md transition-colors md:col-span-4"
           >
             <Spinner />
           </button>
         ) : (
           <button
             type="submit"
-            className="bg-green-600 text-white font-semibold px-4 py-2 rounded-md hover:bg-green-700 transition-colors md:col-span-4"
+            className="bg-[#FFC808] text-[#1F2937] hover:text-[#FFC808] hover:bg-[#1C2532]  font-semibold px-4 py-2 rounded-md  transition-colors md:col-span-4"
           >
             {inEng ? "Donate" : "দান করুন"}
           </button>

@@ -1,8 +1,9 @@
 'use client';
 
-import React from 'react';
-import { Roboto_Condensed, Parkinsans } from "next/font/google";
-
+import { Context } from '@/app/contextapi/ContextProvider';
+import { Parkinsans, Roboto_Condensed } from "next/font/google";
+import { useContext } from 'react';
+import Link from 'next/link';
 const robotoCondensed = Roboto_Condensed({
   subsets: ['latin'],
 });
@@ -11,23 +12,13 @@ const parkinsans = Parkinsans({
 });
 
 export default function Introduction() {
+  const { inEng } = useContext(Context)
   return (
     <div
-      className="relative w-full min-h-[360px] flex items-center justify-center px-4 sm:px-6 md:px-12 bg-[#6baed6]/50"
-      
+      className="relative w-full min-h-[360px] flex items-center justify-center px-4 sm:px-6 md:px-12 bg-[#1C2532]"
+
     >
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage: "url('/background-veggie-pattern.png')",
-          backgroundRepeat: 'repeat',
-          backgroundSize: 'auto',
-          opacity: 0.3,           
-          pointerEvents: 'none',  
-          zIndex: 0,
-        }}
-      />
-    
+      
       <div
         className={`
           relative z-10
@@ -39,44 +30,35 @@ export default function Introduction() {
         <h1
           className={`
             text-3xl sm:text-4xl md:text-6xl font-bold animate-heading
-            ${robotoCondensed.className} mb-6 text-black
+            ${robotoCondensed.className} mb-6 text-white
           `}
         >
-          Our Mission
+          {inEng ? `Our Mission` : `আমাদের লক্ষ্য `}
         </h1>
 
         <p
           className={`
-            mt-2 text-sm sm:hidden text-black
+            mt-6 hidden sm:block text-base md:text-lg text-white
             ${parkinsans.className}
             leading-relaxed
           `}
         >
-          We are committed to reducing food waste, alleviating hunger, and fostering sustainability. We rescue surplus food to help those in need.
-        </p>
-        <p
-          className={`
-            mt-6 hidden sm:block text-base md:text-lg text-black
-            ${parkinsans.className}
-            leading-relaxed
-          `}
-        >
-          At our core, we are committed to reducing food waste, alleviating hunger, and fostering sustainability.
-          Every year, billions of pounds of edible food are discarded while millions of people go without. Our mission is to change that. We rescue surplus food from farms, grocery stores, restaurants, manufacturers, and even from individual households—preventing it from ending up in landfills and causing unnecessary greenhouse gas emissions. This food is then repurposed and redistributed to individuals and families in need, offering them access to fresh, healthy, and nutritious meals.
+          {inEng ? `Every year, Bangladesh wastes millions of Taka worth of food, while many people struggle to get daily meals. Our primary goal is to prevent this waste and, at the same time, support the poor and hungry. We focus not only on saving food but also on ensuring it reaches those who need it most. Our operations mainly work on two levels—collecting and distributing food, and expanding support through donors and volunteers.` : `বাংলাদেশে প্রতি বছর কোটি কোটি টাকার খাবার অপচয় হয়, যখন দেশের বহু মানুষ প্রতিদিনের খাবারের জন্য সংগ্রাম করছেন। আমাদের মূল উদ্দেশ্য হল এই অপচয় রোধ করা এবং সেই সঙ্গে দরিদ্র ও ক্ষুধার্ত মানুষদের সহায়তা করা। আমরা শুধু খাবার বাঁচানোর দিকে মনোনিবেশ করি না; আমরা চাই সেই খাবার সঠিকভাবে পৌঁছাক যেখানে এর সবচেয়ে বেশি প্রয়োজন। আমাদের কার্যক্রম মূলত দুইটি স্তরে কাজ করে—খাবার সংগ্রহ এবং বিতরণ, এবং দাতা ও স্বেচ্ছাসেবকদের মাধ্যমে সহায়তা সম্প্রসারণ।`}
         </p>
 
-        <button
+        <Link
+        href={`/signup`}
           className="
             mt-8
-            bg-[#FFC808] text-black hover:text-[#FFC808] hover:bg-[#1C2532]
+            bg-[#FFC808] text-black hover:text-[#FFC808] border-1 border-[#FFC808] hover:bg-[#1C2532]
             px-8 py-3 rounded-lg
              font-semibold
             transition-all
             w-full max-w-xs sm:w-auto
           "
         >
-          Join With Us
-        </button>
+          {inEng ? `Join With Us` : `আমাদের সাথে যোগ দিন`}
+        </Link>
       </div>
     </div>
   )

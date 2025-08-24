@@ -20,10 +20,9 @@ export default function ContactUs() {
     <motion.div
       whileInView={{ y: [200, 0] }}
       transition={{ delay: 0.25, duration: 1 }}
-      className="relative border-x-[10px] border-[#2171b5] py-16 px-4 bg-[url('/contactusbg.jpg')] bg-cover bg-no-repeat bg-center"
+      className="relative border-x-[10px] border-[#1C2532] py-16 px-4"
     >
-      <div className="absolute inset-0 backdrop-blur-sm z-0" />
-
+    
       <div className="relative z-10 w-full max-w-6xl mx-auto p-6 text-white">
         <Header title={inEng ? "Contact Us" : "যোগাযোগ করুন"} />
 
@@ -36,14 +35,14 @@ export default function ContactUs() {
 
         <div className="mt-12 flex flex-col-reverse lg:flex-row gap-12">
           {/* Info Block */}
-          <div className="relative flex-1 space-y-6 bg-[#6baed6]/50 backdrop-blur-xl p-6 rounded-xl shadow-xl border border-white/20 text-black">
-            <div className="absolute inset-0 bg-[url('/background-veggie-pattern.png')] bg-repeat bg-cover bg-center opacity-[30%] pointer-events-none z-0" />
+          <div className="relative flex-1 space-y-6 p-6 rounded-xl shadow-xl bg-[#1C2532] text-white">
+            <div className="absolute inset-0 pointer-events-none z-0" />
             <div className="relative z-10 space-y-6">
               <div className="flex items-start gap-4">
                 <Phone className="w-6 h-6 text-green-400 mt-1" />
                 <div>
                   <p className="text-lg font-semibold">Phone</p>
-                  <p className="text-base">+880 1234 567890</p>
+                  <p className="text-base">+880 1933378486</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
@@ -57,11 +56,11 @@ export default function ContactUs() {
                 <MapPin className="w-6 h-6 text-yellow-300 mt-1" />
                 <div>
                   <p className="text-lg font-semibold">Address</p>
-                  <p className="text-base">House #12, Road #3, Sector #4, Uttara, Dhaka, Bangladesh</p>
+                  <p className="text-base">House #129, Road #39, Sector #40, Uttara, Dhaka, Bangladesh</p>
                 </div>
               </div>
               <motion.button
-                className="mt-4 bg-[#FFC808] text-black hover:text-[#FFC808] hover:bg-[#1C2532] font-semibold px-6 py-3 rounded-full transition-all duration-300"
+                className="mt-4 hover:border-1 border-[#FFC808] bg-[#FFC808] text-black hover:text-[#FFC808] hover:bg-[#1C2532] font-semibold px-6 py-3 rounded-full transition-all duration-300"
                 whileHover={{ scale: 1.05 }}
               >
                 <Link href="/contact">Get in Touch</Link>
@@ -70,8 +69,7 @@ export default function ContactUs() {
           </div>
 
           {/* Map Block */}
-          <div className="relative flex-1 space-y-4 bg-[#6baed6]/50 backdrop-blur-xl p-6 rounded-xl shadow-xl border border-white/20 text-black">
-            <div className="absolute inset-0 bg-[url('/background-veggie-pattern.png')] bg-repeat bg-cover bg-center opacity-[30%] pointer-events-none z-0" />
+          <div className="relative flex-1 space-y-4 bg-[#1C2532]  p-6 rounded-xl shadow-xl border border-white/20 text-black">
             <div className="relative z-10 space-y-4">
               <div className="flex gap-2">
                 <input
@@ -79,11 +77,11 @@ export default function ContactUs() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Search location..."
-                  className="w-full px-4 py-2 rounded-lg border border-black outline-none"
+                  className="w-full px-4 py-2 rounded-lg border border-white text-white outline-none"
                 />
                 <button
                   onClick={handleSearch}
-                  className="bg-white text-blue-600 px-4 py-2 rounded-lg font-semibold"
+                  className="bg-[#FFC808] text-[#1F2937] hover:text-[#FFC808] hover:bg-[#1C2532] border-1 hover:border-[#FFC808] px-4 py-2 rounded-lg font-semibold"
                 >
                   Search
                 </button>

@@ -50,11 +50,12 @@ export const acceptNGO = async (userid, ngoid, foodid) => {
         const ngo = await Usermodel.findById(ngoid)
         const food = await DonatedFoodModel.findById(foodid)
         const user = await Usermodel.findById(userid)
-        
+
         ngo.notifications.push(`Your request for collecting ${food.title} of ${user.name} has been approved.`)
 
         food.biter = []
-        food.foodToPick = true
+        food.collector = ngoid
+        food.foodPickingStatus = "approved"
         food.save()
         await ngo.save()
 
@@ -84,11 +85,11 @@ export const declineNGO = async (userid, ngoid, foodid) => {
             { new: true }
         )
 
-        const ngo = await Usermodel.findById(ngoid)
-        if (ngo) {
-            ngo.notifications.push(`Your request for food was declined.`)
-            await ngo.save()
-        }
+        // const ngo = await Usermodel.findById(ngoid)
+        // if (ngo) {
+        //     ngo.notifications.push(`Your request for food was declined.`)
+        //     await ngo.save()
+        // }
         return NextResponse.json({
             success: true,
             message: "NGO declined successfully"

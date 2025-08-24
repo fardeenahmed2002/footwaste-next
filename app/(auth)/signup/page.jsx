@@ -13,7 +13,6 @@ export default function Page() {
     name: '',
     email: '',
     password: '',
-    
     contactNumber: '',
     role: 'user',
     userType: '',
@@ -27,13 +26,13 @@ export default function Page() {
   const [error, setError] = useState(null)
   const [avatar, setAvatar] = useState(null)
   const [preview, setPreview] = useState(null)
-  const [cityData, setCityData] = useState([]) // area data
+  const [cityData, setCityData] = useState([]) 
   const [filteredAreas, setFilteredAreas] = useState([])
 
   const { getuserdata, setIsloggedin } = useContext(Context)
   const navigate = useRouter()
 
-  // Load city data from public JSON
+
   useEffect(() => {
     fetch("/city_corp.json")
       .then(res => res.json())
@@ -41,11 +40,11 @@ export default function Page() {
       .catch(err => console.log(err))
   }, [])
 
-  // Update filtered areas whenever cityCorp changes
+
   useEffect(() => {
     const areas = cityData.filter(area => area.city_corporation === formdata.cityCorp)
     setFilteredAreas(areas)
-    setFormdata(prev => ({ ...prev, area: areas[0]?.area_name.en || '' })) // default first area
+    setFormdata(prev => ({ ...prev, area: areas[0]?.area_name.en || '' }))
   }, [formdata.cityCorp, cityData])
 
   const profileimg = (e) => {
@@ -62,17 +61,16 @@ export default function Page() {
   }
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault();
 
-    // 1. Basic validation
     if (!formdata.name || !formdata.email || !formdata.password || !formdata.contactNumber) {
       setError("All fields are required!");
       return;
     }
 
-    // 2. Conditional validation for restaurant
+
     if (formdata.userType === "restaurant") {
-      const licenseRegex = /^[A-Za-z0-9]{8,12}$/; // Alphanumeric 8-12 characters
+      const licenseRegex = /^[A-Za-z0-9]{8,12}$/;
       if (!formdata.license || !licenseRegex.test(formdata.license)) {
         setError("License must be 8-12 characters and contain letters and numbers only");
         return;
@@ -83,7 +81,7 @@ export default function Page() {
       }
     }
 
-    // 3. Prepare FormData for file upload
+
     try {
       setError("");
       setLoading(true);
@@ -107,17 +105,16 @@ export default function Page() {
 
       if (avatar) form.append("avatar", avatar);
 
-      // 4. Axios request
       axios.defaults.withCredentials = true;
       const { data } = await axios.post("/api/auth/signup", form, {
         headers: { "Content-Type": "multipart/form-data" }
       });
 
-      // 5. Handle response
+
       if (data.success) {
-        setIsloggedin(true); // Update global login state
-        await getuserdata();  // Fetch user data after signup
-        navigate.push("/");   // Redirect to home page
+        setIsloggedin(true); 
+        await getuserdata();  
+        navigate.push("/");   
       } else {
         setError(data.message || "Signup failed");
         setLoading(false);
@@ -140,7 +137,7 @@ export default function Page() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="relative z-10 w-[90%] my-[20px] max-w-2xl bg-white/10 backdrop-blur-md rounded-2xl p-8 shadow-xl text-white flex flex-col items-center"
+        className="relative z-10 w-[90%] my-[20px] max-w-2xl bg-black/50 rounded-2xl p-8 shadow-xl text-white flex flex-col items-center"
       >
         <div className="mb-6">
           <Link href={'/'}>
@@ -154,7 +151,7 @@ export default function Page() {
         <h1 className="text-3xl font-bold text-white text-center">Create an Account</h1>
         <br />
         <div className='flex flex-col justify-center items-center'>
-          <label className="block text-black font-semibold">Register as</label>
+          <label className="block text-white font-semibold">Register as</label>
           <div className="flex space-x-4">
             <label className="flex items-center gap-1">
               <input type="radio" name="role" defaultChecked />
@@ -258,10 +255,10 @@ export default function Page() {
                 name="area"
                 value={formdata.area}
                 onChange={handleChange}
-                className="w-full px-4 py-2 mt-1 bg-white/20 text-black rounded-md border border-white/30 focus:outline-none"
+                className="w-full px-4 py-2 mt-1 bg-white/20 text-white rounded-md border border-white/30 focus:outline-none"
               >
                 {filteredAreas.map(area => (
-                  <option key={area.id} value={area.area_name.en}>
+                  <option key={area.id} value={area.area_name.en} className="text-black">
                     {area.area_name.en}
                   </option>
                 ))}
@@ -358,7 +355,6 @@ export default function Page() {
 
         <p className="text-xs text-white/70 mt-3 text-center">
           By signing up, you agree to our{" "}
-          <Link href="/privacy" className="underline">Privacy Policy</Link> and{" "}
           <Link href="/terms" className="underline">Terms of Service</Link>.
         </p>
 

@@ -43,7 +43,7 @@ const Page = () => {
     <div className="min-h-screen bg-gray-100 flex flex-col items-center p-6">
 
       {/* Title Bar */}
-      <div className="w-full max-w-2xl bg-teal-600 text-white rounded-t-lg p-4 shadow-md text-center">
+      <div className="w-full max-w-2xl bg-[#1C2532] text-white rounded-t-lg p-4 shadow-md text-center">
         <h1 className="text-2xl font-bold">Create a day</h1>
         <p className="text-sm mt-1">Fill the form below to publish a new day</p>
       </div>
@@ -98,7 +98,7 @@ const Page = () => {
 
         <button
           type="submit"
-          className="bg-teal-600 text-white py-2 px-4 rounded-md hover:bg-teal-700 transition"
+          className="bg-[#FFC808] text-[#1F2937] hover:text-[#FFC808] hover:bg-[#1C2532] py-2 px-4 rounded-md  transition"
         >
           Submit
         </button>

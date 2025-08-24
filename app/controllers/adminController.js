@@ -14,7 +14,7 @@ export const getStatus = async () => {
         const totalOrgs = await Usermodel.countDocuments({ role: `organization` })
         const newNgos = await Usermodel.countDocuments({ role: `collector`, isVerified: false })
         const totalBannedUsers = await Usermodel.countDocuments({ isBanned: true })
-        const totalFoods = await DonatedFoodModel.countDocuments({ isApproved: "pending" })
+        const totalFoods = await DonatedFoodModel.countDocuments({ isApprovedByAdmin: "pending" })
         return NextResponse.json({
             success: true,
             message: `data found`,
@@ -285,7 +285,7 @@ export const rejectngo = async (id, reason) => {
 
 export const showFoods = async () => {
     try {
-        const foods = await DonatedFoodModel.find({ isApproved: "pending" })
+        const foods = await DonatedFoodModel.find({ isApprovedByAdmin: "pending" })
         return NextResponse.json({
             success: true,
             message: `food got`,
@@ -304,7 +304,7 @@ export const showFoods = async () => {
 export const getFoodDetails = async (foodid) => {
     try {
         const getDetails = await DonatedFoodModel.findById(foodid)
-            .populate("donorOfThisFood", "name email contactNumber address")
+            .populate("donorOfThisFood", "name email contactNumber area")
 
         if (!getDetails) {
             return NextResponse.json({
@@ -334,8 +334,8 @@ export const accecptTheFood = async (id) => {
         const acceptedFood = await DonatedFoodModel.findByIdAndUpdate(
             id,
             {
-                isApproved: "approved",
-                status: "APPROVED"
+                isApprovedByAdmin: "approved",
+                status: "approved by Admin"
             },
             { new: true }
         )
@@ -379,7 +379,7 @@ export const rejectTheFood = async (id, reason) => {
     try {
         const food = await DonatedFoodModel.findByIdAndUpdate(
             id,
-            { isApproved: "rejected" },
+            { isApprovedByAdmin: "rejected" },
             { new: true }
         ).populate("donorOfThisFood")
 
@@ -417,7 +417,7 @@ export const rejectTheFood = async (id, reason) => {
 
 export const getAccecptedFood = async () => {
     try {
-        const foods = await DonatedFoodModel.find({ isApproved: "approved" })
+        const foods = await DonatedFoodModel.find({ isApprovedByAdmin: "approved" })
         return NextResponse.json({
             success: true,
             message: `food got`,
@@ -437,7 +437,7 @@ export const getAccecptedFood = async () => {
 }
 export const getRejectedFood = async () => {
     try {
-        const foods = await DonatedFoodModel.find({ isApproved: "rejected" })
+        const foods = await DonatedFoodModel.find({ isApprovedByAdmin: "rejected" })
         return NextResponse.json({
             success: true,
             message: `food got`,

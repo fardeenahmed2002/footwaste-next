@@ -63,7 +63,7 @@ const NavPages = () => {
               {inEng ? "Donate" : "দান করুন"}
             </Link>
             <Link href="/pages/day" className={navLinkClass}>
-              {inEng ? "Our NGOs" : "আমাদের এনজিও"}
+              {inEng ? "Posts" : "পোস্টস"}
             </Link>
           </>
         )}

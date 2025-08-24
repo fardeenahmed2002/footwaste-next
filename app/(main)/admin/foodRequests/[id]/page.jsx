@@ -83,7 +83,7 @@ const FoodDetailsPage = () => {
                 <p><strong>Name:</strong> {food.donorOfThisFood?.name}</p>
                 <p><strong>Email:</strong> {food.donorOfThisFood?.email}</p>
                 <p><strong>Contact:</strong> {food.donorOfThisFood?.contactNumber}</p>
-                <p><strong>Address:</strong> {food.donorOfThisFood?.address}</p>
+                <p><strong>Address:</strong> {food.donorOfThisFood?.area}</p>
             </div>
 
             <div className="flex gap-4 mt-4">

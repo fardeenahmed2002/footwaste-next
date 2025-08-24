@@ -70,7 +70,7 @@ export default function page() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="relative z-10 w-[90%] max-w-md bg-white/10 backdrop-blur-md rounded-2xl p-8 shadow-xl text-white flex flex-col items-center">
+        className="relative z-10 w-[90%] max-w-md bg-black/50 rounded-2xl p-8 shadow-xl text-white flex flex-col items-center">
         <div className="mb-6">
           <Link href={'/'}>
             <img

@@ -211,14 +211,14 @@ export default function Page() {
                     {loading ? (
                         <button
                             type="submit"
-                            className="w-full flex items-center justify-center gap-2 bg-green-600 text-white py-2 rounded-xl font-semibold hover:bg-green-700 active:scale-95 transition-all shadow-md"
+                            className="w-full flex items-center justify-center gap-2 bg-[#FFC808] text-[#1F2937] hover:text-[#FFC808] hover:bg-[#1C2532] py-2 rounded-xl font-semibold active:scale-95 transition-all shadow-md"
                         >
                             <Loader message={'Posting food. Please wait....'} />
                         </button>
                     ) : (
                         <button
                             type="submit"
-                            className="w-full flex items-center justify-center gap-2 bg-green-600 text-white py-2 rounded-xl font-semibold hover:bg-green-700 active:scale-95 transition-all shadow-md"
+                            className="w-full flex items-center justify-center gap-2 bg-[#FFC808] text-[#1F2937] hover:text-[#FFC808] hover:bg-[#1C2532] py-2 rounded-xl font-semibold active:scale-95 transition-all shadow-md"
                         >
                             <HandHeart size={18} />
                             Post Food For Donation

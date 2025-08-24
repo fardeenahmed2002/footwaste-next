@@ -13,14 +13,7 @@ export default function Footer() {
   const [showResources, setShowResources] = useState(false)
 
   return (
-    <div className="relative border-x-[10px] border-b-[10px] border-[#2171b5] rounded-b-3xl overflow-hidden">
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: "url('/footer.png')" }}
-        aria-hidden="true"
-      />
-      <div className="absolute inset-0 bg-black opacity-60" />
-
+    <div className="relative border-x-[10px] border-b-[10px] bg-[#1C2532] border-[#1C2532] rounded-b-3xl overflow-hidden">
       <footer className="relative z-10 text-white pt-8 pb-6 px-4 md:px-12 rounded-b-3xl max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-10">
           <div>
@@ -30,7 +23,6 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Quick Links - collapsible on mobile */}
           <div>
             <h3
               className="text-lg font-semibold mb-3 cursor-pointer md:cursor-auto flex justify-between items-center md:block"
@@ -51,7 +43,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Resources - collapsible on mobile */}
+    
           <div>
             <h3
               className="text-lg font-semibold mb-3 cursor-pointer md:cursor-auto flex justify-between items-center md:block"
@@ -67,12 +59,10 @@ export default function Footer() {
             >
               <li><Link href="/faq"><p className="hover:underline">FAQ</p></Link></li>
               <li><Link href="/blog"><p className="hover:underline">Blog</p></Link></li>
-              <li><Link href="/terms"><p className="hover:underline">Terms & Conditions</p></Link></li>
-              <li><Link href="/privacy"><p className="hover:underline">Privacy Policy</p></Link></li>
+              <li><Link href="/pages/policy"><p className="hover:underline">Policy</p></Link></li>
             </ul>
           </div>
 
-          {/* Follow Us */}
           <div>
             <h3 className="text-lg font-semibold mb-3">Follow Us</h3>
             <div className="flex space-x-4 text-xl text-gray-300">

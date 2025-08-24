@@ -4,17 +4,16 @@
 import Loader from "@/app/loader/Loader"
 import axios from "axios"
 import Image from "next/image"
-import Link from "next/link"
 import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
+import FoodSkeleton from "./FoodSkeleton"
 const Page = () => {
   const { id } = useParams()
   const [food, setFood] = useState(null)
   const [place, setPlace] = useState('')
   const [loading, setLoading] = useState(true)
   const [input, setInput] = useState('')
-  const [receiverDetails, setReceiverDetails] = useState(null)
 
   const [chg, setChg] = useState(false)
 
@@ -59,7 +58,7 @@ const Page = () => {
     }
   }
 
-  if (loading) return <Loader />
+  if (loading) return <FoodSkeleton />
 
   if (!food) return <div className="text-center text-red-500">Food not found</div>
 
@@ -113,14 +112,6 @@ const Page = () => {
               )}
             </div>
 
-            {/* Receiver Info */}
-            {receiverDetails && (
-              <div className="md:w-1/2 bg-green-100 text-green-900 p-4 rounded-xl shadow h-fit">
-                <h2 className="font-bold text-lg mb-2">Receiver Information:</h2>
-                <p><span className="font-semibold">Name:</span> {receiverDetails.name}</p>
-                <p><span className="font-semibold">Email:</span> {receiverDetails.email || "Not available"}</p>
-              </div>
-            )}
           </div>
 
           {/* Food Text Details */}
@@ -145,14 +136,6 @@ const Page = () => {
             >
               Send Request
             </button>
-
-            {/* <Link
-              href={`/pages/chat/${food.donorOfThisFood?._id}`}
-              target="_blank"
-              className="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition"
-            >
-              Message
-            </Link> */}
           </div>
         </div>
       </div>

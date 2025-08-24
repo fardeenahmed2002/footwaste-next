@@ -6,7 +6,12 @@ import { Usermodel } from "../Models/User"
 
 export const getalldonatedfoodpost = async (userID) => {
   try {
-    const posts = await DonatedFoodModel.find({ isApproved: "approved", applicantNGO: { $nin: [userID] } }).sort({ createdAt: -1 }).populate({ path: 'pickedBy', select: 'name' })
+    const posts = await DonatedFoodModel.find({
+      isApprovedByAdmin: "approved",
+      applicantNGO: { $nin: [userID] },
+      foodPickingStatus: { $ne: "approved" }
+    }).sort({ createdAt: -1 }).populate({ path: 'pickedBy', select: 'name' })
+
     return NextResponse.json({
       success: true,
       message: `food post found`,
@@ -112,6 +117,7 @@ export const requestToReceiveFood = async (userID, foodID) => {
 
 
 export const receiveAFood = async (userid, foodid) => {
+
   try {
     if (!userid) {
       return NextResponse.json({
@@ -128,21 +134,26 @@ export const receiveAFood = async (userid, foodid) => {
     }
 
 
-    const senderid = await DonatedFoodModel.findById(foodid).populate('donorOfThisFood', '._id')
+    const senderid = await DonatedFoodModel.findById(foodid).populate('donorOfThisFood', '_id')
     const sender = await Usermodel.findById(senderid.donorOfThisFood._id)
     sender.notifications.push(`soon collector will receving your food`)
-    sender.save()
+    await sender.save()
 
-    const receiver = await Usermodel.findById(userid).select('-password');
-
-    receiver.receivedfoods?.push(foodid)
-    await receiver.save();
+    const receiver = await Usermodel.findByIdAndUpdate(
+      userid,
+      {
+        $push: { receivedfoods: foodid },
+        $pull: { RequestToReceiveFoods: foodid }
+      },
+      { new: true, select: "-password" }
+    );
 
     const newfood = await DonatedFoodModel.findByIdAndUpdate(
       foodid,
       {
-        status: "receiving...",
-        pickedBy: receiver._id
+        status: `Receiving by ${receiver.name}`,
+        pickedBy: receiver._id,
+        applicantNGO: []
       },
       { new: true }
     );
@@ -152,6 +163,7 @@ export const receiveAFood = async (userid, foodid) => {
       path: 'pickedBy',
       select: 'name email'
     });
+
     return NextResponse.json({
       success: true,
       message: 'receiving.......',
@@ -213,7 +225,7 @@ export const receiveTheFoodbyCollector = async (foodid) => {
     if (!food) {
       return NextResponse.json({
         success: false,
-        message: "could no received"
+        message: "could not received"
       })
     }
     return NextResponse.json({
@@ -322,7 +334,7 @@ export const showRequestedFoodToReveive = async (userid) => {
 
 export const getAllDayPost = async (userid) => {
   try {
- 
+
     const posts = await DayModel.find({ blogger: userid }).populate('blogger', 'name image');
 
     return NextResponse.json({

@@ -10,12 +10,9 @@ const Logo = () => {
                     alt="Logo"
                     width={300}
                     height={150}
-                    className=""
                 />
             </Link>
-            {/* <h1 className="text-2xl font-extrabold text-white drop-shadow-sm">
-                খাদ্য বাঁচাও
-            </h1> */}
+           
         </div>
     )
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import Loader from "@/app/loader/Loader"
+import FoodDetailsSkeleton from "./FoodDetailsSkeleton"
 import axios from "axios"
 import {
   CalendarDays,
@@ -45,10 +45,9 @@ const FoodDetailsPage = () => {
 
   const acceptNGO = async (ngoid, foodid) => {
     try {
-
       const { data } = await axios.post(`/api/user/acceptNGO`, { ngoID: ngoid, foodID: foodid })
       if (data.success) {
-        toast.success(`Notification sent . wait for reply of ngo`)
+        toast.success(`Notification sent. Wait for NGO reply.`)
         setFood(prev => ({
           ...prev,
           biter: []
@@ -58,10 +57,10 @@ const FoodDetailsPage = () => {
       console.log(error)
     }
   }
+
   const declineNGO = async (ngoid, foodid) => {
     try {
       const { data } = await axios.post(`/api/user/declineNGO`, { ngoID: ngoid, foodID: foodid })
-
       if (data.success) {
         toast.success("NGO declined successfully")
         setFood(prev => ({
@@ -83,22 +82,12 @@ const FoodDetailsPage = () => {
     "pending...": "bg-gray-500"
   }
 
-  const statusStyle = statusColor[food?.status] || statusColor.default
+  const statusStyle = statusColor[food?.status] || "bg-gray-500"
 
   return (
     <div className="relative min-h-[calc(100vh-87px)] overflow-hidden">
-      {/* Background layers */}
-      <div
-        className="absolute inset-0 bg-repeted filter bg-[#FFF7E6]"
-        style={{ backgroundImage: `url('/background-veggie-pattern.png')` }}
-      />
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
-
-      {/* Content */}
       {loading ? (
-        <div className="flex justify-center items-center min-h-screen">
-          <Loader message="Loading food details..." />
-        </div>
+        <FoodDetailsSkeleton />
       ) : !food ? (
         <p className="text-center mt-10 text-gray-500">Food not found.</p>
       ) : (
@@ -116,14 +105,13 @@ const FoodDetailsPage = () => {
             {/* Food Info */}
             <div className="sm:w-1/2 w-full p-6 flex flex-col justify-between text-white">
               <div className="space-y-4">
-                {/* Title and Edit */}
                 <div className="flex justify-between items-start">
-                  <h1 className="text-2xl font-bold uppercase flex items-center gap-2 text-green-100">
-                    <ClipboardList className="w-5 h-5 text-green-300" />
+                  <h1 className="text-2xl font-bold uppercase flex items-center gap-2 text-black">
+                    <ClipboardList className="w-5 h-5 text-[black]" />
                     {food.title}
                   </h1>
                   <Link href={`../editfood/${food._id}`}>
-                    <Edit className="text-green-300 hover:text-green-500 w-5 h-5 cursor-pointer" />
+                    <Edit className="text-[black] hover:text-green-500 w-5 h-5 cursor-pointer" />
                   </Link>
                 </div>
 
@@ -134,27 +122,27 @@ const FoodDetailsPage = () => {
 
                 {/* Info List */}
                 <ul className="space-y-3 text-sm">
-                  <li className="flex gap-2 items-center">
-                    <Package className="w-4 h-4 text-green-200" />
+                  <li className="flex gap-2 items-center text-black">
+                    <Package className="w-4 h-4 text-black" />
                     <span><strong>Quantity:</strong> {food.quantity}</span>
                   </li>
-                  <li className="flex gap-2 items-center">
-                    <MapPin className="w-4 h-4 text-green-200" />
+                  <li className="flex gap-2 items-center text-black">
+                    <MapPin className="w-4 h-4 text-black" />
                     <span><strong>Location:</strong> {food.location}</span>
                   </li>
-                  <li className="flex gap-2 items-center">
-                    <CalendarDays className="w-4 h-4 text-green-200" />
+                  <li className="flex gap-2 items-center text-black">
+                    <CalendarDays className="w-4 h-4 text-black" />
                     <span><strong>Expires on:</strong> {new Date(food.expiryDate).toLocaleDateString()}</span>
                   </li>
-                  <li className="flex gap-2 items-center">
-                    <CalendarDays className="w-4 h-4 text-green-200" />
+                  <li className="flex gap-2 items-center text-black">
+                    <CalendarDays className="w-4 h-4 text-black" />
                     <span><strong>Donated on:</strong> {new Date(food.createdAt).toLocaleDateString()}</span>
                   </li>
-                  <li className="flex gap-2 items-start">
-                    <Info className="w-4 h-4 text-green-200 mt-1" />
+                  <li className="flex gap-2 items-start text-black">
+                    <Info className="w-4 h-4 text-black mt-1" />
                     <div>
                       <strong>Description:</strong>
-                      <p className="text-sm mt-1 leading-relaxed text-gray-100">{food.description}</p>
+                      <p className="text-sm mt-1 leading-relaxed text-black">{food.description}</p>
                     </div>
                   </li>
                 </ul>
@@ -169,7 +157,7 @@ const FoodDetailsPage = () => {
               className="absolute bottom-4 right-4 bg-white/20 hover:bg-white/40 p-3 rounded-full backdrop-blur-md transition"
               title="View Biters"
             >
-              <Eye className="w-6 h-6 text-white" />
+              <Eye className="w-6 h-6 text-black" />
             </button>
           )}
 

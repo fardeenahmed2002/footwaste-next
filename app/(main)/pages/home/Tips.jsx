@@ -103,10 +103,10 @@ const Tips = () => {
   const currentTip = tipsData[currentTipIndex]
 
   return (
-    <div className="relative bg-[url('/tipsbg.jpg')] bg-cover border-x-[10px] border-[#2171b5] min-h-screen pb-10 overflow-hidden">
+    <div className="relative bg-[url('/tipsbg.jpg')] bg-cover border-x-[10px] border-[#1C2532] min-h-screen pb-10 overflow-hidden">
       <div className="absolute inset-0 backdrop-blur-[5px] z-0" />
       <div className="relative z-10">
-        <Header title={inEng ? "Food Waste Reduction Tips" : "খাদ্য অপচয় কমানোর পরামর্শ"} />
+        <Header title={inEng ? "Food Waste Reduction Tips" : "খাদ্য অপচয় কমানোর পরামর্শ"}/>
 
 
         <div className="flex justify-center px-4">

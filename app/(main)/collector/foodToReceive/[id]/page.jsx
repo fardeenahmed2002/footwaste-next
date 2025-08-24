@@ -1,6 +1,5 @@
 "use client"
 
-
 import Loader from "@/app/loader/Loader"
 import axios from "axios"
 import Image from "next/image"
@@ -8,6 +7,7 @@ import Link from "next/link"
 import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
+import FoodDetailsSkeleton from "./FoodDetailsSkeleton"
 
 const Page = () => {
     const { id } = useParams()
@@ -56,9 +56,12 @@ const Page = () => {
         } catch (error) {
             console.error("Receive error:", error)
         }
+        finally{
+            setReceiving(false)
+        }
     }
 
-    if (loading) return <Loader />
+    if (loading) return <FoodDetailsSkeleton />
 
     if (!food) return <div className="text-center text-red-500">Food not found</div>
 
@@ -73,11 +76,11 @@ const Page = () => {
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             placeholder="Search location..."
-                            className="w-full px-4 py-2 rounded-t-lg border border-black outline-none"
+                            className="mb-[5px] w-full px-4 py-2 rounded-t-lg border border-black outline-none"
                         />
                         <button
                             onClick={handleSearch}
-                            className="bg-white text-blue-600 px-4 py-2 w-full font-semibold"
+                            className="mb-[10px] bg-[#FFC808] text-[#1F2937] hover:text-[#FFC808] hover:bg-[#1C2532] px-4 py-2 w-full font-semibold"
                         >
                             Search
                         </button>

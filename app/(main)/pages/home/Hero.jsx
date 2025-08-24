@@ -32,7 +32,7 @@ export default function Hero() {
           <h1 className="text-3xl sm:text-4xl md:text-4xl font-bold leading-snug mt-2">
             <span className="text-[#FFF7E6]"> {inEng ? (`Reuse`) : (`পুনঃব্যবহার `)}</span>
             <span className="text-[#FFF7E6]"> {inEng ? (`Revive`) : (`পুনর্জাগরণ `)}</span>
-            <span className="text-[#2171b5]"> {inEng ? (`Rescue`) : (`উদ্ধার`)}</span>
+            <span className="text-[#FFC808]"> {inEng ? (`Rescue`) : (`উদ্ধার`)}</span>
           </h1>
           
             <p className={`mt-4 text-white text-sm sm:text-base text-justify ${parkinsans.className}`}>
@@ -57,7 +57,7 @@ export default function Hero() {
           
 
           <motion.button
-            className="mt-6 ml-[480px] bg-[#FFC808] text-black hover:text-[#FFC808] hover:bg-[#1C2532] font-semibold px-5 py-2 rounded-full transition-all duration-300 text-sm sm:text-base"
+            className="mt-6 bg-[#FFC808] text-[#1F2937] hover:text-[#FFC808] hover:bg-[#1C2532] font-semibold px-5 py-2 rounded-full transition-all duration-300 text-sm sm:text-base"
             onClick={register}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -66,19 +66,6 @@ export default function Hero() {
             {inEng ? "Join us" : "আমাদের সাথে যোগ দিন"}
           </motion.button>
         </motion.div>
-
-        {/* <motion.div
-          className="mb-8 md:mb-0 w-full md:w-1/2 flex justify-center"
-          initial={{ x: 100, opacity: 0 }}
-          whileInView={{ x: 0, opacity: 1 }}
-          transition={{ duration: 1, ease: 'easeOut' }}
-        >
-          <img
-            src="/veggies.png"
-            alt="Organic Vegetables"
-            className="w-3/4 sm:w-2/3 md:w-full max-w-md object-contain"
-          />
-        </motion.div> */}
       </div>
     </section>
   )
