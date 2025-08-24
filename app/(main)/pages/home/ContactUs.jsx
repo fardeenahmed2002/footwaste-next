@@ -22,7 +22,7 @@ export default function ContactUs() {
       transition={{ delay: 0.25, duration: 1 }}
       className="relative border-x-[10px] border-[#1C2532] py-16 px-4"
     >
-    
+
       <div className="relative z-10 w-full max-w-6xl mx-auto p-6 text-white">
         <Header title={inEng ? "Contact Us" : "যোগাযোগ করুন"} />
 
@@ -63,7 +63,7 @@ export default function ContactUs() {
                 className="mt-4 hover:border-1 border-[#FFC808] bg-[#FFC808] text-black hover:text-[#FFC808] hover:bg-[#1C2532] font-semibold px-6 py-3 rounded-full transition-all duration-300"
                 whileHover={{ scale: 1.05 }}
               >
-                <Link href="/contact">Get in Touch</Link>
+                <Link href="/contact"> {inEng ? `Get in Touch` : `যোগাযোগ করুন`}</Link>
               </motion.button>
             </div>
           </div>

@@ -9,7 +9,7 @@ const NavPages = () => {
   const router = useRouter();
 
   const navLinkClass =
-    "px-3 py-2 text-sm font-bold text-gray-800 hover:text-black transition whitespace-nowrap";
+    "px-3 py-2 text-sm font-bold text-gray-800 hover:text-black transition whitespace-nowrap cursor-pointer";
 
   // handle navigation based on verification
   const handleNavClick = (href) => {
@@ -75,6 +75,9 @@ const NavPages = () => {
             </button>
             <button onClick={() => handleNavClick("/pages/day")} className={navLinkClass}>
               {inEng ? "Posts" : "পোস্টস"}
+            </button>
+            <button onClick={() => handleNavClick("/user/donate/donatedfoods")} className={navLinkClass}>
+              {inEng ? "Donated foods" : "দানকৃত খাবার"}
             </button>
           </>
         )}

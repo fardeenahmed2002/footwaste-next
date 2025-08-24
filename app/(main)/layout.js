@@ -6,7 +6,7 @@ import ChatWidget from "./components/ChatWidget"
 import Navbar from "./components/Navbar"
 import ScrollProgress from "./components/ScrollProgress"
 export const metadata = {
-  title: "Food Waste Rescue",
+  title: "খাদ্য বাঁচাও",
   description: "Help reduce food waste and support local communities.",
   icons: {
     icon: "/favicon.ico",

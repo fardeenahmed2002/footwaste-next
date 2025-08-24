@@ -7,6 +7,8 @@ import { Menu, X } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
+import Link from 'next/link';
+
 
 let socket;
 let typingTimeout;
@@ -23,12 +25,10 @@ export default function ChatPage() {
   const [isonline, setIsonline] = useState(null);
   const [showSidebar, setShowSidebar] = useState(false);
 
-  // Connect to socket API route
   useEffect(() => {
     fetch('/api/socket');
   }, []);
 
-  // Socket setup
   useEffect(() => {
     if (!user?._id || !receiverId) return;
 
@@ -54,7 +54,6 @@ export default function ChatPage() {
       ]);
     });
 
-    // ✅ Listen for typing events
     socket.on('showTyping', (senderId) => {
       if (senderId === receiverId) setIsTyping(true);
     });
@@ -69,7 +68,6 @@ export default function ChatPage() {
     };
   }, [user?._id, receiverId]);
 
-  // Fetch chat history
   useEffect(() => {
     const getAllMessages = async () => {
       try {
@@ -89,12 +87,10 @@ export default function ChatPage() {
     if (receiverId) getAllMessages();
   }, [receiverId]);
 
-  // Auto scroll on new message
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Handle typing
   const handleTyping = (e) => {
     setNewMessage(e.target.value);
 
@@ -139,23 +135,37 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="h-[445px] w-full flex justify-center bg-gray-50 mt-6">
-      <div className="w-full max-w-6xl flex md:flex-row flex-col relative h-full border-1 border-black rounded-md">
-        {/* Desktop Sidebar */}
-        <div className="hidden md:block w-1/4 bg-gray-100 border-r p-5 overflow-y-auto">
-          <h2 className="text-xl font-semibold text-gray-700 mb-4">Chats</h2>
+    <div className="h-[450px] w-full flex justify-center mt-6">
+      <div className="w-full max-w-6xl flex md:flex-row flex-col relative h-full rounded-2xl overflow-hidden shadow-lg bg-white">
+        {/* Sidebar */}
+        <div className="hidden md:block w-1/4 bg-gradient-to-b from-gray-100 to-gray-200 border-r overflow-y-auto">
+          <Link href={`/pages/chat`}>
+            <h2 className="text-xl font-semibold text-gray-700 mb-4 p-4">Chats</h2>
+          </Link>
           {user?.chattedpersons?.map((id) => (
             <div
               key={id.receiverId}
               onClick={() => handleChatClick(id.receiverId)}
-              className={`p-3 mb-2 rounded-lg cursor-pointer hover:bg-blue-200 transition-colors ${receiverId === id.receiverId ? 'bg-blue-300 text-white' : 'bg-white text-gray-800'
+              className={`flex items-center gap-3 p-3 mb-2 rounded-lg cursor-pointer transition-colors ${receiverId === id.receiverId
+                ? 'bg-blue-500 text-white'
+                : 'bg-white hover:bg-gray-100'
                 }`}
             >
-              <img src={id.image} alt="" />
-              {id.name}
+              <img
+                src={id.image}
+                alt=""
+                className="w-10 h-10 rounded-full border object-cover"
+              />
+              <div>
+                <p className="font-semibold">{id.name}</p>
+                <p className="text-xs text-gray-500 truncate">
+                  {id.lastMessage || 'Start chatting...'}
+                </p>
+              </div>
             </div>
           ))}
         </div>
+
         {/* Mobile Sidebar */}
         <div
           className={`fixed top-0 left-0 z-50 h-full w-64 bg-white shadow-lg border-r transform transition-transform duration-300 md:hidden ${showSidebar ? 'translate-x-0' : '-translate-x-full'
@@ -172,7 +182,9 @@ export default function ChatPage() {
               <div
                 key={id.receiverId}
                 onClick={() => handleChatClick(id.receiverId)}
-                className={`p-3 mb-2 rounded-lg cursor-pointer hover:bg-blue-200 transition-colors ${receiverId === id.receiverId ? 'bg-blue-300 text-white' : 'bg-white text-gray-800'
+                className={`p-3 mb-2 rounded-lg cursor-pointer hover:bg-blue-100 ${receiverId === id.receiverId
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-white text-gray-800'
                   }`}
               >
                 {id.name}
@@ -192,15 +204,29 @@ export default function ChatPage() {
         {/* Chat Section */}
         <div className="flex flex-col flex-1 h-full">
           {/* Header */}
-          <div className="border-b px-4 py-3 bg-gray-100 flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-gray-700 pl-12 md:pl-0">
-              {user?.chattedpersons?.find((id) => id.receiverId === receiverId)?.name || 'Chat'}
-            </h3>
-            {isonline ? (
-              <span className="text-sm text-green-500">● Online</span>
-            ) : (
-              <span className="text-sm text-red-500">● Offline</span>
-            )}
+          <div className="border-b px-4 py-3 bg-gray-50 flex items-center justify-between shadow-sm">
+            <div className="flex items-center gap-3">
+              <img
+                src={
+                  user?.chattedpersons?.find((id) => id.receiverId === receiverId)?.image ||
+                  '/default.png'
+                }
+                alt="avatar"
+                className="w-10 h-10 rounded-full border object-cover"
+              />
+              <div>
+                <h3 className="text-lg font-semibold text-gray-700">
+                  {user?.chattedpersons?.find((id) => id.receiverId === receiverId)?.name ||
+                    'Chat'}
+                </h3>
+                <span
+                  className={`text-sm ${isonline ? 'text-green-500' : 'text-red-400'
+                    }`}
+                >
+                  ● {isonline ? 'Online' : 'Offline'}
+                </span>
+              </div>
+            </div>
           </div>
 
           {/* Messages */}
@@ -209,24 +235,21 @@ export default function ChatPage() {
               <div
                 key={idx}
                 ref={idx === messages.length - 1 ? scrollRef : null}
-                className={`flex items-end space-x-2 ${msg.sender === user._id ? 'justify-end' : 'justify-start'
+                className={`flex items-end ${msg.sender === user._id ? 'justify-end' : 'justify-start'
                   }`}
               >
-                {user?.chattedpersons?.map((person, index) => {
-                  if (msg.sender === person.receiverId) {
-                    return (
-                      <img
-                        src={person?.image}
-                        key={index}
-                        className="w-[40px] h-[40px] rounded-full border"
-                      />
-                    );
-                  }
-                  return null;
-                })}
+                {msg.sender !== user._id && (
+                  <img
+                    src={
+                      user?.chattedpersons?.find((p) => p.receiverId === msg.sender)?.image ||
+                      '/default.png'
+                    }
+                    className="w-8 h-8 rounded-full border mr-2"
+                  />
+                )}
                 <div
-                  className={`max-w-xs px-4 py-2 rounded-2xl text-sm ${msg.sender === user._id
-                    ? 'bg-blue-600 text-white rounded-br-none'
+                  className={`max-w-xs px-4 py-2 rounded-2xl text-sm shadow ${msg.sender === user._id
+                    ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-br-none'
                     : 'bg-white text-gray-800 rounded-bl-none border'
                     }`}
                 >
@@ -241,18 +264,17 @@ export default function ChatPage() {
               </div>
             ))}
 
-            {/* ✅ Typing indicator */}
             {isTyping && (
-              <div className="px-4 py-1 text-gray-500 text-sm italic">
-                {user?.chattedpersons?.find(p => p.receiverId === receiverId)?.name || 'User'} is typing...
+              <div className="px-4 py-1 text-gray-500 text-sm italic animate-pulse">
+                {user?.chattedpersons?.find((p) => p.receiverId === receiverId)?.name ||
+                  'User'}{' '}
+                is typing...
               </div>
             )}
-
-
           </div>
 
           {/* Input Box */}
-          <div className="border-t p-4 bg-white flex items-center gap-2">
+          <div className="border-t p-3 bg-white flex items-center gap-2 shadow-md">
             <input
               type="text"
               value={newMessage}
@@ -263,7 +285,7 @@ export default function ChatPage() {
             />
             <button
               onClick={handleSend}
-              className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition"
+              className="px-5 py-2 bg-blue-600 text-white rounded-full shadow hover:bg-blue-700 transition"
             >
               Send
             </button>

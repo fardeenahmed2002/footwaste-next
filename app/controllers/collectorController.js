@@ -70,29 +70,26 @@ export const requestToReceiveFood = async (userID, foodID) => {
     if (!food) {
       return NextResponse.json({ success: false, message: "Food not found" })
     }
+
     const user = await Usermodel.findById(userID)
 
-    user.RequestToReceiveFoods.push(foodID)
-
-    await user.save()
-
-    if (food.biter.includes(userID)) {
+    if (food.biter.includes(userID) || user.RequestToReceiveFoods.includes(foodID)) {
       return NextResponse.json({
         success: false,
         message: "You have already requested this food",
       })
     }
 
-    const donor = await Usermodel.findById(food.donorOfThisFood._id)
+    user.RequestToReceiveFoods.push(foodID)
+    await user.save()
 
+    const donor = await Usermodel.findById(food.donorOfThisFood._id)
     if (!donor) {
       return NextResponse.json({ success: false, message: "Donor not found" })
     }
 
     donor.notifications.push(`You have one request in post of ${food.title}.`)
-
     donor.notificationcount += 1
-
     await donor.save()
 
     food.biter.push(userID)
@@ -112,6 +109,7 @@ export const requestToReceiveFood = async (userID, foodID) => {
     }, { status: 500 })
   }
 }
+
 
 
 

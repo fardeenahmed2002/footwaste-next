@@ -128,10 +128,9 @@ export default function JoinUs() {
         </div>
 
         <div className="mt-12 text-center md:text-left">
-          <Link href="/signup" passHref>
+          <Link href="/pages/add-volunteer" passHref>
             <button
-              aria-label="Join us signup page"
-              className="bg-[#FFC808] text-[#1F2937] hover:text-[#FFC808] hover:bg-[#1C2532] font-semibold px-10 py-4 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-75"
+              className="bg-[#FFC808] text-[#1F2937] hover:text-[#FFC808] hover:bg-[#1C2532] font-semibold px-10 py-4 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               {inEng ? "Join Us" : "আমাদের সাথে যোগ দিন"}
             </button>
