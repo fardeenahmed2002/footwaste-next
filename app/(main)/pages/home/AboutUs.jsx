@@ -1,6 +1,5 @@
 "use client";
 import { Context } from "@/app/contextapi/ContextProvider.jsx";
-import { motion } from "framer-motion";
 import Link from "next/link";
 import { useContext } from "react";
 import Header from "../../components/Header.jsx";
@@ -8,16 +7,16 @@ import Header from "../../components/Header.jsx";
 const AboutUs = () => {
   const { inEng } = useContext(Context)
   return (
-    <div className="relative bg-[url('/aboutusbg.jpg')] bg-cover bg-center bg-no-repeat border-x-[10px] border-[#1C2532] py-20 px-4">
+    <div className="relative border-x-[10px] border-[#1C2532] py-20 px-4">
       <div className="relative z-10 bg-black/30 backdrop-blur-md rounded-xl p-10 mx-auto shadow-2xl max-w-6xl">
         <Header title={inEng ? `About us` : `আমাদের সম্পর্কে`} />
-
+        <br />
         <div className="flex flex-col md:flex-row items-center gap-10">
 
-          <div className="flex-1 text-center md:text-left">
-            {inEng ? (<p className="text-base sm:text-lg text-[#FFF7E6] text-left sm:text-justify px-2 sm:px-0 md:pl-10">
+          <div className="flex-1 text-center md:text-left mb-[10px]">
+            {inEng ? (<p className="text-base sm:text-lg text-[black] text-left sm:text-justify px-2 sm:px-0 md:pl-10">
               Every year, Bangladesh wastes millions of Taka worth of food, while many people struggle to get daily meals. Our primary goal is to prevent this waste and, at the same time, support the poor and hungry. We focus not only on saving food but also on ensuring it reaches those who need it most. Our operations mainly work on two levels—collecting and distributing food, and expanding support through donors and volunteers....
-            </p>) : (<p className="text-base sm:text-lg text-[#FFF7E6] text-left sm:text-justify px-2 sm:px-0 md:pl-10">
+            </p>) : (<p className="text-base sm:text-lg text-[black] text-left sm:text-justify px-2 sm:px-0 md:pl-10">
               বাংলাদেশে প্রতি বছর কোটি কোটি টাকার খাবার অপচয় হয়, যখন দেশের বহু মানুষ প্রতিদিনের খাবারের জন্য সংগ্রাম করছেন। আমাদের মূল উদ্দেশ্য হল এই অপচয় রোধ করা এবং সেই সঙ্গে দরিদ্র ও ক্ষুধার্ত মানুষদের সহায়তা করা। আমরা শুধু খাবার বাঁচানোর দিকে মনোনিবেশ করি না; আমরা চাই সেই খাবার সঠিকভাবে পৌঁছাক যেখানে এর সবচেয়ে বেশি প্রয়োজন। আমাদের কার্যক্রম মূলত দুইটি স্তরে কাজ করে—খাবার সংগ্রহ এবং বিতরণ, এবং দাতা ও স্বেচ্ছাসেবকদের মাধ্যমে সহায়তা সম্প্রসারণ।
             </p>
             )}
@@ -31,19 +30,6 @@ const AboutUs = () => {
             </div>
           </div>
 
-
-          <motion.div
-            initial={{ y: -100, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            transition={{ duration: 1 }}
-            className="flex-1 flex justify-center px-2 sm:px-0"
-          >
-            <img
-              src="/aboutus.png"
-              alt="About Us"
-              className="w-full max-w-[300px] sm:max-w-full rounded-lg sm:ml-[80px] sm:mb-[-40px]"
-            />
-          </motion.div>
         </div>
       </div>
     </div>

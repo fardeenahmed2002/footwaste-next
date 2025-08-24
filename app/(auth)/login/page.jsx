@@ -45,21 +45,24 @@ export default function page() {
     }
   }
   useEffect(() => {
-    if (user?.role === `admin`) {
-      navigate.push('/admin')
-    }
-    if (user?.role === `user`) {
-      navigate.push('/user/donate')
-    }
-    if (user?.role === `collector`) {
-      navigate.push('/collector/allfoods')
-    }
-    if (user?.role === `donor`) {
-      navigate.push('/donor')
+    if (user) {
+      if (!user.isVerified) {
+        navigate.push('/pages/verification')
+      } else if (user.role === 'admin') {
+        navigate.push('/admin')
+      } else if (user.role === 'user') {
+        navigate.push('/user/donate')
+      } else if (user.role === 'collector') {
+        navigate.push('/collector/allfoods')
+      } else if (user.role === 'donor') {
+        navigate.push('/donor')
+      } else {
+        navigate.push('/pages/verification')
+      }
     }
   }, [user, navigate])
-  return (
 
+  return (
     <div
       className="min-h-screen w-full bg-cover bg-center flex items-center justify-center relative"
       style={{ backgroundImage: "url('/loginbg.jpg')" }}

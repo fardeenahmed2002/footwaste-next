@@ -106,11 +106,10 @@ export default function ChatPage() {
     }, 2000);
   };
 
-  // Send message
   const handleSend = () => {
     if (!newMessage.trim()) return;
 
-    socket.emit('stopTyping', { senderId: user._id, receiverId }); // stop typing on send
+    socket.emit('stopTyping', { senderId: user._id, receiverId });
 
     socket.emit('sendMessage', {
       senderId: user._id,
@@ -140,8 +139,8 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="h-[80vh] w-full flex justify-center bg-gray-50 mt-6">
-      <div className="w-full max-w-6xl flex md:flex-row flex-col relative h-full border-2 border-black rounded-md">
+    <div className="h-[445px] w-full flex justify-center bg-gray-50 mt-6">
+      <div className="w-full max-w-6xl flex md:flex-row flex-col relative h-full border-1 border-black rounded-md">
         {/* Desktop Sidebar */}
         <div className="hidden md:block w-1/4 bg-gray-100 border-r p-5 overflow-y-auto">
           <h2 className="text-xl font-semibold text-gray-700 mb-4">Chats</h2>
@@ -152,11 +151,11 @@ export default function ChatPage() {
               className={`p-3 mb-2 rounded-lg cursor-pointer hover:bg-blue-200 transition-colors ${receiverId === id.receiverId ? 'bg-blue-300 text-white' : 'bg-white text-gray-800'
                 }`}
             >
+              <img src={id.image} alt="" />
               {id.name}
             </div>
           ))}
         </div>
-
         {/* Mobile Sidebar */}
         <div
           className={`fixed top-0 left-0 z-50 h-full w-64 bg-white shadow-lg border-r transform transition-transform duration-300 md:hidden ${showSidebar ? 'translate-x-0' : '-translate-x-full'

@@ -103,7 +103,7 @@ const Tips = () => {
   const currentTip = tipsData[currentTipIndex]
 
   return (
-    <div className="relative bg-[url('/tipsbg.jpg')] bg-cover border-x-[10px] border-[#1C2532] min-h-screen pb-10 overflow-hidden">
+    <div className="relative border-x-[10px] border-[#1C2532] min-h-screen pb-10 overflow-hidden">
       <div className="absolute inset-0 backdrop-blur-[5px] z-0" />
       <div className="relative z-10">
         <Header title={inEng ? "Food Waste Reduction Tips" : "খাদ্য অপচয় কমানোর পরামর্শ"}/>
@@ -128,7 +128,7 @@ const Tips = () => {
                 exit={{ x: 60, opacity: 0 }}
                 transition={{ duration: 0.6 }}
               />
-              <div className="flex flex-col text-[#FFF7E6] w-full sm:w-[420px]">
+              <div className="flex flex-col text-[black] w-full sm:w-[420px]">
                 <motion.h3
                   className="text-xl sm:text-2xl font-bold mb-2 text-center sm:text-left"
                   initial={{ y: 20, opacity: 0 }}

@@ -1,11 +1,11 @@
 'use client'
-import axios from "axios";
-import React, { useState, useRef } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import Loader from "../Loader";
-import { toast } from "react-toastify";
 import { serverError } from "@/app/Utils/serverError";
+import axios from "axios";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
+import { toast } from "react-toastify";
+import Loader from "../Loader";
 export default function OTPPage() {
     const navigate = useRouter();
     const [input, setInput] = useState({ input1: "", input2: "", input3: "", input4: "", input5: "", input6: "" });
@@ -37,10 +37,11 @@ export default function OTPPage() {
             const { data } = await axios.post("/api/auth/accountverification/receiveOTP", { otp })
             if (data.success) {
                 setLoading(false)
+                toast.success('account verified successfully. please login your account')
                 setTimeout(() => {
                     window.location.reload()
                 }, 1000)
-                navigate.push('/')
+                navigate.push('/login')
             }
             if (!data.success) {
                 setLoading(false)

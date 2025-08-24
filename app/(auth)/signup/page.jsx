@@ -114,7 +114,7 @@ export default function Page() {
       if (data.success) {
         setIsloggedin(true); 
         await getuserdata();  
-        navigate.push("/");   
+        navigate.push("/pages/verification")
       } else {
         setError(data.message || "Signup failed");
         setLoading(false);

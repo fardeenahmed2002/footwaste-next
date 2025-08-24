@@ -17,7 +17,6 @@ import Chat from './navcomponents/Chat'
 import Logo from './navcomponents/Logo'
 import NavPages from './navcomponents/NavPages'
 import Notification from './navcomponents/Notification'
-import Verify from './navcomponents/Verify'
 
 const Navbar = () => {
   const { isloggedin, setUser, setIsloggedin, user, inEng, toggleLanguage } = useContext(Context)
@@ -42,8 +41,7 @@ const Navbar = () => {
   return (
     <nav className="bg-[#1F2937] border-b px-4 py-3 sticky top-0 z-50 backdrop-blur-md">
       <div className="absolute inset-0 bg-black/10 backdrop-blur-md z-0 " />
-      {isloggedin && !user?.isVerified && <Verify />}
-
+      
       <div className="relative z-10 flex items-center justify-between md:justify-between">
         
         <Logo />

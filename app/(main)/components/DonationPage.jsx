@@ -107,6 +107,7 @@ const DonationPage = () => {
 
   return (
     <div className="max-w-3xl mx-auto p-4 bg-white rounded-md shadow-md mt-10">
+      <h1 className="text-center mb-[20px] font-bold text-2xl"> {inEng ? `Donate money` : `টাকা দান করুন`}</h1>
       <form
         onSubmit={handleSubmit}
         className="grid grid-cols-1 md:grid-cols-4 gap-3 items-center"
@@ -128,7 +129,6 @@ const DonationPage = () => {
             {inEng ? "Anonymous Donor" : "গোপন দানকারী"}
           </option>
         </select>
-
 
         <select
           name="selectedNgo"
