@@ -1,6 +1,7 @@
 
 import { NextResponse } from "next/server"
 import { DonatedFoodModel } from "../Models/DonatedFoods"
+import FreeFoodDonation from "../Models/FreeFoodDonation"
 import Organization from "../Models/Organization"
 import { Usermodel } from "../Models/User"
 import transporter from "../Utils/nodemailer"
@@ -14,6 +15,7 @@ export const getStatus = async () => {
         const newNgos = await Usermodel.countDocuments({ role: `collector`, isVerified: false })
         const totalBannedUsers = await Usermodel.countDocuments({ isBanned: true })
         const totalFoods = await DonatedFoodModel.countDocuments({ isApprovedByAdmin: "pending" })
+        const freeDonatedfoods = await FreeFoodDonation.countDocuments({ tag: "non-user" })
         return NextResponse.json({
             success: true,
             message: `data found`,
@@ -22,13 +24,14 @@ export const getStatus = async () => {
             totalOrgs,
             newNgos,
             totalBannedUsers,
-            totalFoods
+            totalFoods,
+            freeDonatedfoods
         })
     } catch (error) {
         return NextResponse.json({
             success: false,
             message: `server error`
-        }, { statur: 500 })
+        }, { status: 500 })
     }
 }
 
@@ -508,3 +511,23 @@ export const getAllorgs = async () => {
             { status: 500 });
     }
 }
+
+
+
+
+
+export const getNonAuthDonation = async () => {
+    try {
+        const donations = await FreeFoodDonation.find({ tag: "non-user" }).sort({ createdAt: -1 });
+        return new Response(JSON.stringify(donations), {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+        });
+    } catch (error) {
+        console.error(error);
+        return new Response(JSON.stringify({ error: "Failed to fetch donations" }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+        });
+    }
+};

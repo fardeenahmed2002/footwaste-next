@@ -1,5 +1,5 @@
-import connectToDB from "@/app/Utils/database";
 import { freeDonateFood } from "@/app/controllers/donatedFoodController";
+import connectToDB from "@/app/Utils/database";
 import { uploadImage } from "@/app/Utils/uploadimage";
 import { NextResponse } from "next/server";
 
@@ -24,15 +24,17 @@ export const POST = async (req) => {
     const storageCondition = formData.get("storageCondition");
     const cookedTime = formData.get("cookedTime");
 
-    const imageResult = await uploadImage(formData, "imageOfDonatedFood");
-    const imageOfDonatedFood = imageResult?.success ? imageResult.url : null;
-
-    if (!imageOfDonatedFood && formData.has("imageOfDonatedFood")) {
-      return NextResponse.json({
-        success: false,
-        message: imageResult?.message || "Image upload failed",
-      });
-    }
+    let imageOfDonatedFood
+            try {
+                imageOfDonatedFood = await uploadImage(formData, "imageOfDonatedFood", 'donated-foods');
+            } catch (uploadError) {
+                return NextResponse.json({
+                    success: false,
+                    message: uploadError.message
+                },
+                    { status: 400 }
+                )
+            }
 
     const result = await freeDonateFood({
       donorName,
@@ -52,7 +54,7 @@ export const POST = async (req) => {
       imageOfDonatedFood,
     });
 
-    return NextResponse.json(result);
+    return result;
 
   } catch (error) {
     console.error("Donate food error:", error);

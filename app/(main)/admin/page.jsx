@@ -10,7 +10,8 @@ export default function AdminDashboard() {
         totalNgos: 0,
         newNgos: 0,
         totalBannedUsers: 0,
-        totalFoods: 0
+        totalFoods: 0,
+        freeDonatedfoods:0
     })
 
     useEffect(() => {
@@ -22,7 +23,8 @@ export default function AdminDashboard() {
                     totalNgos: data.totalNgos,
                     newNgos: data.newNgos,
                     totalBannedUsers: data.totalBannedUsers,
-                    totalFoods: data.totalFoods
+                    totalFoods: data.totalFoods,
+                    freeDonatedfoods:data.freeDonatedfoods
                 })
             } catch (error) {
                 console.error("Error fetching stats", error)
@@ -48,6 +50,9 @@ export default function AdminDashboard() {
                 break
             case "New NGO Requests":
                 navigate.push('/admin/newNgo')
+                break
+            case "Outsiders Donated Foods":
+                navigate.push('/admin/non-auth-donation')
                 break
 
             case "Submitted Food Requests":
@@ -84,6 +89,10 @@ export default function AdminDashboard() {
         {
             title: "Submitted Food Requests",
             value: stats.totalFoods, icon: <Sandwich size={28} />, color: "bg-yellow-100 text-yellow-700"
+        },
+        {
+            title: "Outsiders Donated Foods",
+            value: stats.freeDonatedfoods, icon: <Sandwich size={28} />, color: "bg-yellow-100 text-yellow-700"
         },
         { title: "Post A Ngo", icon: <PenIcon size={28} />, color: "bg-yellow-100 text-yellow-700" },
         { title: "Post Blog", icon: <BookOpen size={28} />, color: "bg-yellow-100 text-yellow-700" },

@@ -3,7 +3,7 @@ import * as faceapi from 'face-api.js';
 import fs from 'fs';
 import path from 'path';
 import { uploadInCloudinary } from './cloudinary';
-import checkNSFWImage from './nsfwimage';
+
 faceapi.env.monkeyPatch({ Canvas, Image, ImageData });
 let modelsLoaded = false;
 const loadModels = async () => {

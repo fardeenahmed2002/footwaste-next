@@ -79,7 +79,7 @@ const Page = () => {
         className="bg-white p-6 rounded-lg shadow-lg w-[400px] space-y-4"
       >
         <h2 className="text-xl font-semibold text-center">
-          {inEng ? "Add Volunteer" : "স্বেচ্ছাসেবক যোগ করুন"}
+          {inEng ? "Join as Volunteer" : "স্বেচ্ছাসেবক যোগ করুন"}
         </h2>
 
         <input
@@ -156,7 +156,7 @@ const Page = () => {
         >
           {loading
             ? (inEng ? "Adding..." : "যোগ করা হচ্ছে...")
-            : (inEng ? "Add Volunteer" : "স্বেচ্ছাসেবক যোগ করুন")}
+            : (inEng ? "Join" : "স্বেচ্ছাসেবক যোগ করুন")}
         </button>
 
         {message && <p className="text-center text-sm mt-2">{message}</p>}

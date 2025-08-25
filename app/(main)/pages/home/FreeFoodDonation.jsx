@@ -1,10 +1,10 @@
 "use client"
-import { useState, useEffect, useContext } from "react"
-import axios from "axios"
-import { toast } from "react-toastify"
-import Loader from "@/app/loader/Loader"
 import { Context } from "@/app/contextapi/ContextProvider"
+import Loader from "@/app/loader/Loader"
+import axios from "axios"
 import { Calendar, HandHeart, ImageIcon, MapPin, Package, PencilLine, StickyNote } from "lucide-react"
+import { useContext, useEffect, useState } from "react"
+import { toast } from "react-toastify"
 
 export default function FreeFoodDonation() {
   const [imageOfDonatedFood, setImageOfDonatedFood] = useState(null)
@@ -77,8 +77,8 @@ export default function FreeFoodDonation() {
 
     const requiredFields = [
       "donorName", "address", "email", "phone",
-      "title", "description", "quantity", "location", 
-      "expiryDate", "pickupTime", "foodType", "foodCategory", 
+      "title", "description", "quantity", "location",
+      "expiryDate", "pickupTime", "foodType", "foodCategory",
       "storageCondition", "cookedTime"
     ]
 
@@ -97,11 +97,14 @@ export default function FreeFoodDonation() {
       form.append("imageOfDonatedFood", imageOfDonatedFood)
 
       axios.defaults.withCredentials = true
-      const { data } = await axios.post("/api/user/donatedfood", form, {
+      const res = await axios.post("/api/free-food-donate", form, {
         headers: { "Content-Type": "multipart/form-data" }
       })
 
-      if (data.success) {
+      if (res.data.success) {
+
+        const resetAddress = inEng ? "Searching location..." : "অবস্থান খোঁজা হচ্ছে..."
+
         setFormData({
           donorName: "",
           address: "",
@@ -110,7 +113,7 @@ export default function FreeFoodDonation() {
           title: "",
           description: "",
           quantity: "",
-          location: address,
+          location: resetAddress,
           expiryDate: "",
           pickupTime: "",
           foodType: "",
@@ -118,12 +121,14 @@ export default function FreeFoodDonation() {
           storageCondition: "",
           cookedTime: ""
         })
+        setAddress(resetAddress)
         setImageOfDonatedFood(null)
         setPreview(null)
         setError(null)
         toast.success(inEng ? "Donation submitted successfully!" : "দান সফলভাবে জমা হয়েছে!")
-      } else {
-        setError(data.message)
+      }
+      else {
+        setError(res.data.message)
       }
       setLoading(false)
     } catch (err) {
@@ -134,7 +139,7 @@ export default function FreeFoodDonation() {
 
   return (
     <div className="min-h-screen w-full bg-cover bg-center flex items-center justify-center relative">
-  
+
       <div className="relative z-10 w-[90%] my-[20px] max-w-3xl bg-white/10 backdrop-blur-md rounded-2xl p-8 shadow-xl text-black flex flex-col items-center">
         <h2 className="text-3xl font-bold text-center text-black mb-6">
           {inEng ? "Donate Food" : "খাবার দান করুন"}
