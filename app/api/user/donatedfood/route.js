@@ -5,27 +5,32 @@ import { uploadImage } from "@/app/Utils/uploadimage"
 import { NextResponse } from "next/server"
 // /api/user/donatedfood
 export const POST = async (req) => {
-    await connectToDB()
+    await connectToDB();
     try {
-        const auth = await userAuth(req)
+        const auth = await userAuth(req);
         if (!auth.authorized) {
             return NextResponse.json(
                 { success: false, message: auth.error },
                 { status: 401 }
-            )
+            );
         }
+
         const formData = await req.formData()
         const title = formData.get('title')
         const quantity = formData.get('quantity')
         const location = formData.get('location')
         const expiryDate = formData.get('expiryDate')
         const description = formData.get('description')
+        const pickupTime = formData.get('pickupTime')
+        const foodType = formData.get('foodType')
+        const foodCategory = formData.get('foodCategory')
+        const cookedTime = formData.get('cookedTime')
+        const storageCondition = formData.get('storageCondition')
 
         let imageOfDonatedFood
         try {
             imageOfDonatedFood = await uploadImage(formData, 'imageOfDonatedFood', 'donated-foods')
         } catch (uploadError) {
-            console.error('Upload failed:', uploadError);
             return NextResponse.json({
                 success: false,
                 message: uploadError.message
@@ -39,19 +44,24 @@ export const POST = async (req) => {
             description,
             location,
             expiryDate,
+            pickupTime,
+            foodType,
+            foodCategory,
+            storageCondition,
             imageOfDonatedFood,
-            quantity
+            quantity,
+            cookedTime
         }, auth.userid)
-        return result
+
+        return result;
     } catch (error) {
-        
         console.error("donate error:", error)
-        return NextResponse.json(
-            { success: false, message: "Something went wrong" },
-            { status: 500 }
-        )
+        return NextResponse.json({
+            success: false,
+            message: `server error`
+        })
     }
-}
+};
 // /api/user/donatedfood
 export const GET = async (req) => {
     try {

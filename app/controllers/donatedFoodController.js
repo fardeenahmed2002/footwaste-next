@@ -16,7 +16,8 @@ export const postOfFoodDonation = async (formData, userid) => {
         pickupTime,
         foodType,
         foodCategory,
-        storageCondition
+        storageCondition,
+        cookedTime
     } = formData;
 
     if (!userid) {
@@ -35,20 +36,11 @@ export const postOfFoodDonation = async (formData, userid) => {
             });
         }
 
-        if (!title || !description || !quantity || !location || !expiryDate || !imageOfDonatedFood) {
+        if (!title || !description || !quantity || !location || !expiryDate || !imageOfDonatedFood || !pickupTime || !foodType || !foodCategory || !storageCondition || !cookedTime) {
             return NextResponse.json({
                 success: false,
                 message: "All required fields must be filled"
             }, { status: 400 });
-        }
-
-        if (user.role === "donor") {
-            if (!pickupTime || !foodType || !foodCategory || !storageCondition) {
-                return NextResponse.json({
-                    success: false,
-                    message: "All required fields must be filled"
-                }, { status: 400 });
-            }
         }
 
         const food = new DonatedFoodModel({
@@ -59,12 +51,11 @@ export const postOfFoodDonation = async (formData, userid) => {
             expiryDate,
             imageOfDonatedFood,
             donorOfThisFood: userid,
-            ...(user.role === "donor" && {
-                pickupTime,
-                foodType,
-                foodCategory,
-                storageCondition
-            })
+            pickupTime,
+            foodType,
+            foodCategory,
+            storageCondition,
+            cookedTime
         });
 
 
@@ -260,57 +251,76 @@ export const deletefoodbyid = async (userid, foodid) => {
     }
 }
 
-
 export const freeDonateFood = async (data) => {
-    try {
-        const {
-            donorName,
-            address,
-            email,
-            phone,
-            pickupLocation,
-            time,
-            foodName,
-            quantity,
-        } = data;
+  try {
+    const {
+      donorName,
+      address,
+      email,
+      phone,
+      location,
+      pickupTime,
+      title,
+      description,
+      quantity,
+      foodType,
+      foodCategory,
+      storageCondition,
+      cookedTime,
+      imageOfDonatedFood,
+    } = data;
 
-        if (
-            !donorName ||
-            !address ||
-            !email ||
-            !phone ||
-            !pickupLocation ||
-            !time ||
-            !foodName ||
-            !quantity
-        ) {
-            return NextResponse.json(
-                { success: false, message: "All fields are required!" },
-                { status: 400 }
-            );
-        }
-
-        const newDonation = await FreeFoodDonation.create({
-            donorName,
-            address,
-            email,
-            phone,
-            pickupLocation,
-            time,
-            foodName,
-            quantity,
-        });
-
-        return NextResponse.json({
-            success: true,
-            message: "Food donation submitted successfully!",
-            donation: newDonation,
-        });
-    } catch (err) {
-        console.error("Error in donateFood controller:", err);
-        return NextResponse.json(
-            { success: false, message: "Something went wrong!" },
-            { status: 500 }
-        );
+    // Check required fields
+    if (
+      !donorName ||
+      !address ||
+      !email ||
+      !phone ||
+      !location ||
+      !pickupTime ||
+      !title ||
+      !description ||
+      !quantity ||
+      !foodType ||
+      !foodCategory ||
+      !storageCondition ||
+      !cookedTime ||
+      !imageOfDonatedFood
+    ) {
+      return NextResponse.json(
+        { success: false, message: "All fields are required!" },
+        { status: 400 }
+      );
     }
+
+    const newDonation = await FreeFoodDonation.create({
+      donorName,
+      address,
+      email,
+      phone,
+      location,
+      pickupTime,
+      title,
+      description,
+      quantity,
+      foodType,
+      foodCategory,
+      storageCondition,
+      cookedTime,
+      imageOfDonatedFood,
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: "Food donation submitted successfully!",
+      donation: newDonation,
+    });
+  } catch (err) {
+    console.error("Error in donateFood controller:", err);
+    return NextResponse.json(
+      { success: false, message: "Something went wrong!" },
+      { status: 500 }
+    );
+  }
 };
+

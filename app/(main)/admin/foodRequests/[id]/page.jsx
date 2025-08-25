@@ -3,6 +3,7 @@ import axios from "axios"
 import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
+import FoodDetailsSkeleton from "./FoodDetailsSkeleton"
 
 const FoodDetailsPage = () => {
     const { id } = useParams()
@@ -26,17 +27,22 @@ const FoodDetailsPage = () => {
     }, [id])
 
     const accept = async (id) => {
+        setLoading(true)
         try {
             const { data } = await axios.post(`/api/admin/acceptFood`, { id })
             if (data.success) {
                 toast.success("Food accepted successfully")
-
+                setLoading(false)
             } else {
                 toast.error(data.message)
+                setLoading(false)
             }
         } catch (error) {
             console.error(error)
             toast.error("Something went wrong")
+            setLoading(false)
+        } finally {
+            setLoading(false)
         }
     }
     const reject = async (id) => {
@@ -54,7 +60,7 @@ const FoodDetailsPage = () => {
         }
     }
 
-    if (!food) return <p>Loading...</p>
+    if (!food) return <FoodDetailsSkeleton />
 
     return (
         <div className="max-w-lg mx-auto p-4 bg-white rounded-lg shadow space-y-4">

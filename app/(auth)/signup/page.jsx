@@ -90,7 +90,6 @@ export default function Page() {
       form.append("name", formdata.name);
       form.append("email", formdata.email);
       form.append("password", formdata.password);
-      
       form.append("contactNumber", formdata.contactNumber);
       form.append("role", formdata.role);
       form.append("userType", formdata.userType);

@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import CountDown from './CountDown'
+import PickupTimer from './PickupTimer'
 import Skeleton from './Skeleton'
 
 const Page = () => {
@@ -73,6 +74,7 @@ const Page = () => {
                                             </span>
                                         </p>
                                         <CountDown expiryDate={food.expiryDate} />
+                                        <PickupTimer createdAt={food.createdAt} pickupTime={food.pickupTime} /> <br />
                                     </div>
                                     <div className="flex flex-wrap justify-between items-center mt-auto">
                                         {food.pickedBy ? (
@@ -90,7 +92,7 @@ const Page = () => {
                                                 View Details
                                             </Link>
                                         )}
-                                        
+
                                     </div>
                                 </div>
                             </div>

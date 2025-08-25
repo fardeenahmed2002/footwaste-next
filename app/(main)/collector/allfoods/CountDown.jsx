@@ -27,7 +27,7 @@ const CountDown = ({ expiryDate }) => {
 
     return (
         <p className=" text-[black] font-semibold text-center rounded-xl px-4 py-2 shadow-md shadow-[#BB71FF]/20 max-w-[350px] mx-auto mb-[10px]">
-            ⏰ Time to expire: {timeLeft}
+            ⏰ This food will expire in: {timeLeft}
         </p>
     )
 }

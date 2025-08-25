@@ -10,7 +10,6 @@ export const getStatus = async () => {
     try {
         const totalUsers = await Usermodel.countDocuments({ role: `user` })
         const totalNgos = await Usermodel.countDocuments({ role: `collector` })
-        const totalDonors = await Usermodel.countDocuments({ role: `donor` })
         const totalOrgs = await Usermodel.countDocuments({ role: `organization` })
         const newNgos = await Usermodel.countDocuments({ role: `collector`, isVerified: false })
         const totalBannedUsers = await Usermodel.countDocuments({ isBanned: true })
@@ -19,7 +18,6 @@ export const getStatus = async () => {
             success: true,
             message: `data found`,
             totalUsers,
-            totalDonors,
             totalNgos,
             totalOrgs,
             newNgos,

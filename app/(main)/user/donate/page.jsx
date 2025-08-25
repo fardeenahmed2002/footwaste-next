@@ -11,12 +11,18 @@ export default function Page() {
     const [address, setAddress] = useState("Searching location...")
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(false)
+
     const [formData, setFormData] = useState({
         title: '',
         description: '',
         quantity: '',
         location: address,
         expiryDate: '',
+        pickupTime: '',
+        foodType: '',
+        foodCategory: '',
+        storageCondition: '',
+        cookedTime: ''
     })
 
     const handleImageChange = (e) => {
@@ -38,49 +44,57 @@ export default function Page() {
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(
             async (position) => {
-                const { latitude, longitude } = position.coords;
+                const { latitude, longitude } = position.coords
                 try {
-                    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`);
-                    const data = await res.json();
+                    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`)
+                    const data = await res.json()
                     if (data?.display_name) {
-                        setAddress(data.display_name);
-                        setFormData(prev => ({ ...prev, location: data.display_name }));
+                        setAddress(data.display_name)
+                        setFormData(prev => ({ ...prev, location: data.display_name }))
                     } else {
-                        setAddress("Address not found");
+                        setAddress("Address not found")
                     }
                 } catch {
-                    setAddress("Failed to fetch address");
+                    setAddress("Failed to fetch address")
                 }
             },
             () => {
-                setAddress("Failed to get current location");
-                setFormData(prev => ({ ...prev, location: "Failed to get current location" }));
+                setAddress("Failed to get current location")
+                setFormData(prev => ({ ...prev, location: "Failed to get current location" }))
             }
-        );
-    }, []);
+        )
+    }, [])
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         setLoading(true)
-        if (!formData.title || !formData.quantity || !formData.location || !formData.expiryDate || !formData.description || !imageOfDonatedFood) {
+        const requiredFields = ['title', 'description', 'quantity', 'location', 'expiryDate', 'pickupTime', 'foodType', 'foodCategory', 'storageCondition', 'cookedTime']
+        const hasEmptyField = requiredFields.some(field => !formData[field]) || !imageOfDonatedFood
+
+        if (hasEmptyField) {
             setLoading(false)
-            setError("all field required")
-            return;
+            setError("All fields are required")
+            return
         }
         try {
-            const form = new FormData();
+            const form = new FormData()
             form.append("title", formData.title)
+            form.append("description", formData.description)
             form.append("quantity", formData.quantity)
             form.append("location", formData.location)
             form.append("expiryDate", formData.expiryDate)
-            form.append("description", formData.description)
+            form.append("pickupTime", formData.pickupTime)
+            form.append("foodType", formData.foodType)
+            form.append("foodCategory", formData.foodCategory)
+            form.append("cookedTime", formData.cookedTime)
+            form.append("storageCondition", formData.storageCondition)
             form.append("imageOfDonatedFood", imageOfDonatedFood)
+
             axios.defaults.withCredentials = true
             const { data } = await axios.post("/api/user/donatedfood", form, {
-                headers: {
-                    "Content-Type": "multipart/form-data"
-                }
+                headers: { "Content-Type": "multipart/form-data" }
             })
+
             if (data.success) {
                 setFormData({
                     title: '',
@@ -88,101 +102,175 @@ export default function Page() {
                     quantity: '',
                     location: address,
                     expiryDate: '',
+                    pickupTime: '',
+                    foodType: '',
+                    foodCategory: '',
+                    storageCondition: '',
+                    cookedTime: ''
                 })
-                setLoading(false)
                 setImageOfDonatedFood(null)
                 setPreview(null)
                 setError(null)
-                toast.success("post published successfully")
-            }
-            if (!data.success) {
-                setLoading(false)
+                toast.success("Post published successfully")
+            } else {
                 setError(data.message)
             }
-        } catch (err) {
-            if (err.response) {
-                console.log(err.response.data);
-            } else {
-                console.log(err.message);
-            }
+
+            setLoading(false)
+        } catch (error) {
+            setError(error.message)
+            setLoading(false)
         }
     }
     return (
-        <div className="min-h-screen w-full bg-cover bg-center flex items-center justify-center relative px-2 sm:px-4"
-            style={{ backgroundImage: "url('/donatebg.jpg')" }}>
+        <div className="min-h-screen w-full bg-cover bg-center flex items-center justify-center relative" style={{ backgroundImage: "url('/donatebg.jpg')" }}>
             <div className="absolute inset-0 bg-black/30 backdrop-blur-sm z-0"></div>
-            <div className="relative z-10 w-full sm:w-[90%] max-w-2xl bg-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-8 shadow-xl text-white flex flex-col items-center">
-                <h2 className="text-2xl sm:text-3xl font-bold text-center text-white">Post a Food For Donation</h2>
-                <br />
+            <div className="relative z-10 w-[90%] my-[20px] max-w-2xl bg-white/10 backdrop-blur-md rounded-2xl p-8 shadow-xl text-white flex flex-col items-center">
+                <h2 className="text-3xl font-bold text-center text-white mb-6">Post a Food For Donation</h2>
                 {error && (<p className='text-center text-[red] mb-[20px]'>{error}</p>)}
-                <form onSubmit={handleSubmit} className="space-y-6 w-full">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="relative">
-                            <Package className="absolute top-3 left-3 text-white" size={18} />
+                            <label className="block text-sm mb-1">Food Title</label>
+                            <Package className="absolute top-9 left-3 text-white" size={18} />
                             <input
                                 type="text"
                                 name="title"
                                 placeholder="Food Title"
                                 value={formData.title}
                                 onChange={handleChange}
-                                className="text-white pl-10 pr-4 py-2 w-full border rounded-lg shadow-sm bg-transparent"
+                                className="text-white pl-10 pr-4 py-2 w-full border rounded-lg shadow-sm"
                                 autoComplete='off'
                             />
                         </div>
                         <div className="relative">
-                            <StickyNote className="absolute top-3 left-3 text-white" size={18} />
+                            <label className="block text-sm mb-1">Quantity</label>
+                            <StickyNote className="absolute top-9 left-3 text-white" size={18} />
                             <input
                                 type="text"
                                 name="quantity"
                                 placeholder="Quantity (e.g. 3 kg)"
                                 value={formData.quantity}
                                 onChange={handleChange}
-                                className="text-white pl-10 pr-4 py-2 w-full border rounded-lg shadow-sm bg-transparent"
+                                className="text-white pl-10 pr-4 py-2 w-full border rounded-lg shadow-sm"
                                 autoComplete='off'
                             />
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="relative">
-                            <MapPin className="absolute top-3 left-3 text-white" size={18} />
+                            <label className="block text-sm mb-1">Pickup Location</label>
+                            <MapPin className="absolute top-9 left-3 text-white" size={18} />
                             <input
                                 type="text"
                                 name="location"
                                 placeholder="Pickup Location"
                                 value={formData.location}
                                 onChange={handleChange}
-                                className="text-white pl-10 pr-4 py-2 w-full border rounded-lg shadow-sm bg-transparent"
+                                className="text-white pl-10 pr-4 py-2 w-full border rounded-lg shadow-sm"
                                 autoComplete='off'
                             />
                         </div>
                         <div className="relative">
-                            <Calendar className="absolute top-3 left-3 text-white" size={18} />
+                            <label className="block text-sm mb-1">Expiry Date</label>
+                            <Calendar className="absolute top-9 left-3 text-white" size={18} />
                             <input
                                 type="date"
                                 name="expiryDate"
                                 value={formData.expiryDate}
                                 onChange={handleChange}
-                                className="text-white pl-10 pr-4 py-2 w-full border rounded-lg shadow-sm bg-transparent"
+                                className="text-white pl-10 pr-4 py-2 w-full border rounded-lg shadow-sm"
                                 autoComplete='off'
                             />
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div className="relative">
-                            <PencilLine className="absolute top-3 left-3 text-white" size={18} />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm mb-1">Pickup Time</label>
+                            <input
+                                type="time"
+                                name="pickupTime"
+                                value={formData.pickupTime}
+                                onChange={handleChange}
+                                className="text-white pl-4 pr-4 py-2 w-full border rounded-lg shadow-sm"
+                                autoComplete='off'
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm mb-1">Food Type</label>
+                            <select
+                                name="foodType"
+                                value={formData.foodType}
+                                onChange={handleChange}
+                                className="text-white bg-transparent border py-2 px-4 w-full rounded-lg shadow-sm"
+                            >
+                                <option value="" className='text-black'>Select Food Type</option>
+                                <option value="Cooked" className='text-black'>Cooked</option>
+                                <option value="Packaged" className='text-black'>Packaged</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm mb-1">Food Category</label>
+                            <select
+                                name="foodCategory"
+                                value={formData.foodCategory}
+                                onChange={handleChange}
+                                className="text-white bg-transparent border py-2 px-4 w-full rounded-lg shadow-sm"
+                            >
+                                <option value="" className='text-black'>Select Food Category</option>
+                                <option value="Vegetarian" className='text-black'>Vegetarian</option>
+                                <option value="Non-Vegetarian" className='text-black'>Non-Vegetarian</option>
+                                <option value="Vegan" className='text-black'>Vegan</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-sm mb-1">Storage Condition</label>
+                            <select
+                                name="storageCondition"
+                                value={formData.storageCondition}
+                                onChange={handleChange}
+                                className="text-white bg-transparent border py-2 px-4 w-full rounded-lg shadow-sm"
+                            >
+                                <option value="" className='text-black'>Select Storage Condition</option>
+                                <option value="Refrigerated" className='text-black'>Refrigerated</option>
+                                <option value="Room Temperature" className='text-black'>Room Temperature</option>
+                                <option value="Frozen" className='text-black'>Frozen</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm mb-1">Cooked Time</label>
+                        <input
+                            type="time"
+                            name="cookedTime"
+                            value={formData.cookedTime}
+                            onChange={handleChange}
+                            className="text-white pl-4 pr-4 py-2 w-full border rounded-lg shadow-sm"
+                            autoComplete='off'
+                        />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm mb-1">Food Description</label>
+                            <PencilLine className="absolute top-144 left-13 text-white" size={18} />
                             <textarea
                                 name="description"
                                 placeholder="Food description"
                                 value={formData.description}
                                 onChange={handleChange}
-                                className="text-white pl-10 pr-4 pt-2 h-40 w-full resize-none border rounded-lg shadow-sm bg-transparent"
+                                className="text-white pl-10 pr-4 pt-2 h-40 w-full resize-none border rounded-lg shadow-sm"
                                 autoComplete='off'
                             />
                         </div>
-
-                        <div className="relative w-full h-40 sm:w-[290px] sm:h-[160px]">
+                        <div className="relative w-[290px] h-[160px]">
+                            <label className="block text-sm mb-1">Food Image</label>
                             {preview ? (
                                 <img
                                     src={preview}
@@ -190,17 +278,16 @@ export default function Page() {
                                     className="w-full h-full object-cover rounded-xl shadow-md"
                                 />
                             ) : (
-                                <div className="w-full h-full border border-dashed border-gray-300 rounded-xl flex items-center justify-center text-black bg-white/50 text-sm">
+                                <div className="w-full h-full border border-dashed border-gray-300 rounded-xl flex items-center justify-center text-black">
                                     No Image Selected
                                 </div>
                             )}
-                            <label className="absolute top-2 left-2 sm:top-2 sm:left-2 transform sm:-translate-x-0 sm:-translate-y-0 flex items-center gap-2 px-3 py-1.5 bg-[#FFF7E6] bg-opacity-80 rounded-md text-sm text-[green] shadow cursor-pointer hover:bg-opacity-100 transition">
-
+                            <label className="absolute bottom-[80px] left-[30px] transform -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 px-3 py-1.5 bg-[#FFF7E6] bg-opacity-80 rounded-md text-sm text-[green] shadow cursor-pointer hover:bg-opacity-100 transition">
                                 <ImageIcon size={18} />
                                 <input
                                     type="file"
                                     name="imageOfDonatedFood"
-                                    accept='image/*'
+                                    accept="image/*"
                                     onChange={handleImageChange}
                                     className="hidden"
                                 />
@@ -208,22 +295,15 @@ export default function Page() {
                         </div>
                     </div>
 
-                    {loading ? (
-                        <button
-                            type="submit"
-                            className="w-full flex items-center justify-center gap-2 bg-[#FFC808] text-[#1F2937] hover:text-[#FFC808] hover:bg-[#1C2532] py-2 rounded-xl font-semibold active:scale-95 transition-all shadow-md"
-                        >
-                            <Loader message={'Posting food. Please wait....'} />
-                        </button>
-                    ) : (
-                        <button
-                            type="submit"
-                            className="w-full flex items-center justify-center gap-2 bg-[#FFC808] text-[#1F2937] hover:text-[#FFC808] hover:bg-[#1C2532] py-2 rounded-xl font-semibold active:scale-95 transition-all shadow-md"
-                        >
+                    <button
+                        type="submit"
+                        className="w-full flex items-center justify-center gap-2 bg-green-600 text-white py-2 rounded-xl font-semibold hover:bg-green-700 active:scale-95 transition-all shadow-md"
+                    >
+                        {loading ? <Loader message={'Posting food. Please wait....'} /> : <>
                             <HandHeart size={18} />
                             Post Food For Donation
-                        </button>
-                    )}
+                        </>}
+                    </button>
                 </form>
             </div>
         </div>

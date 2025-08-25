@@ -1,15 +1,13 @@
 "use client"
 import axios from "axios"
-import { Sandwich,BookOpen,PenIcon } from "lucide-react"
+import { BookOpen, PenIcon, Sandwich } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import { FaBuilding, FaHandHoldingHeart, FaUsers, FaUserShield, } from "react-icons/fa"
+import { FaBuilding, FaUsers, FaUserShield } from "react-icons/fa"
 export default function AdminDashboard() {
     const [stats, setStats] = useState({
         totalUsers: 0,
-        totalDonors: 0,
         totalNgos: 0,
-        totalOrgs: 0,
         newNgos: 0,
         totalBannedUsers: 0,
         totalFoods: 0
@@ -21,9 +19,7 @@ export default function AdminDashboard() {
                 const { data } = await axios.get("/api/admin/stats")
                 setStats({
                     totalUsers: data.totalUsers,
-                    totalDonors: data.totalDonors,
                     totalNgos: data.totalNgos,
-                    totalOrgs: data.totalOrgs,
                     newNgos: data.newNgos,
                     totalBannedUsers: data.totalBannedUsers,
                     totalFoods: data.totalFoods
@@ -45,9 +41,7 @@ export default function AdminDashboard() {
             case "Collectors":
                 console.log("Clicked Collectors")
                 break
-            case "Donors":
-                console.log("Clicked Donors")
-                break
+
             case "Banned Users":
                 navigate.push('/admin/accounts')
 
@@ -55,9 +49,7 @@ export default function AdminDashboard() {
             case "New NGO Requests":
                 navigate.push('/admin/newNgo')
                 break
-            case "Organizations":
-                console.log("Clicked Organizations")
-                break
+
             case "Submitted Food Requests":
                 navigate.push(`/admin/foodRequests`)
                 break
@@ -73,15 +65,28 @@ export default function AdminDashboard() {
     }
 
     const cards = [
-        { title: "Total Users", value: stats.totalUsers, icon: <FaUsers size={28} />, color: "bg-gray-100 text-gray-800" },
-        { title: "Collectors", value: stats.totalNgos, icon: <FaBuilding size={28} />, color: "bg-green-100 text-green-700" },
-        { title: "Donors", value: stats.totalDonors, icon: <FaHandHoldingHeart size={28} />, color: "bg-blue-100 text-blue-700" },
-        { title: "Banned Users", value: stats.totalBannedUsers, icon: <FaUserShield size={28} />, color: "bg-red-100 text-red-700" },
-        { title: "New NGO Requests", value: stats.newNgos, icon: <FaBuilding size={28} />, color: "bg-yellow-100 text-yellow-700" },
-        { title: "Organizations", value: stats.totalOrgs, icon: <FaBuilding size={28} />, color: "bg-yellow-100 text-yellow-700" },
-        { title: "Submitted Food Requests", value: stats.totalFoods, icon: <Sandwich size={28} />, color: "bg-yellow-100 text-yellow-700" },
-        { title: "Post Ngo", icon: <PenIcon size={28} />, color: "bg-yellow-100 text-yellow-700" },
-        { title: "Post Blog",  icon: <BookOpen size={28} />, color: "bg-yellow-100 text-yellow-700" },
+        {
+            title: "Total Users",
+            value: stats.totalUsers, icon: <FaUsers size={28} />, color: "bg-gray-100 text-gray-800"
+        },
+        {
+            title: "Collectors",
+            value: stats.totalNgos, icon: <FaBuilding size={28} />, color: "bg-green-100 text-green-700"
+        },
+        {
+            title: "Banned Users",
+            value: stats.totalBannedUsers, icon: <FaUserShield size={28} />, color: "bg-red-100 text-red-700"
+        },
+        {
+            title: "New NGO Requests",
+            value: stats.newNgos, icon: <FaBuilding size={28} />, color: "bg-yellow-100 text-yellow-700"
+        },
+        {
+            title: "Submitted Food Requests",
+            value: stats.totalFoods, icon: <Sandwich size={28} />, color: "bg-yellow-100 text-yellow-700"
+        },
+        { title: "Post A Ngo", icon: <PenIcon size={28} />, color: "bg-yellow-100 text-yellow-700" },
+        { title: "Post Blog", icon: <BookOpen size={28} />, color: "bg-yellow-100 text-yellow-700" },
     ]
 
     return (

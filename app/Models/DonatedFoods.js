@@ -18,6 +18,9 @@ const donatedFoodsSchema = new mongoose.Schema({
     pickupTime: {
         type: String
     },
+    cookedTime: {
+        type: String
+    },
     foodType: {
         type: String
     },
