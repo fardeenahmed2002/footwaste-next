@@ -12,7 +12,6 @@ import Tips from "./pages/home/Tips.jsx";
 export default function page() {
   return (
     <div>
-
       <Hero />
       <DonationPage />
       <FreeFoodDonation /> <br />
