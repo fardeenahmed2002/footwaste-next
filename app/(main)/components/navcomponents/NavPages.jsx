@@ -70,6 +70,9 @@ const NavPages = () => {
         {/* User routes */}
         {user?.role === "user" && user?.isVerified && (
           <>
+            <button onClick={() => handleNavClick("/user/policy")} className={navLinkClass}>
+              {inEng ? "Policy and Rules" : "নীতি ও নিয়ম"}
+            </button>
             <button onClick={() => handleNavClick("/user/donate")} className={navLinkClass}>
               {inEng ? "Donate" : "দান করুন"}
             </button>

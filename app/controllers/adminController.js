@@ -380,7 +380,10 @@ export const rejectTheFood = async (id, reason) => {
     try {
         const food = await DonatedFoodModel.findByIdAndUpdate(
             id,
-            { isApprovedByAdmin: "rejected" },
+            {
+                isApprovedByAdmin: "rejected",
+                status: "Rejected By Admin"
+            },
             { new: true }
         ).populate("donorOfThisFood")
 
